@@ -59,7 +59,8 @@ Temas de la jam que cumple: **One More Time** (base) y **Something's Off** (el g
 Assets/_Project/
 ├── Scenes/      MainMenu.unity (Tania), Game.unity (Otoniel)
 ├── Scripts/
-│   ├── Core/      GameEvents.cs, GameManager.cs, RuleManager.cs, SaveManager.cs, AudioManager.cs
+│   ├── Core/      GameEvents.cs, GameManager.cs, RuleManager.cs, SaveManager.cs, PrizeOfferBuilder.cs, AudioManager.cs
+│   ├── DevTools/  DebugOverlay.cs, DebugContestant.cs (solo para probar)
 │   ├── Data/      BalanceConfig.cs, PrizeData.cs, RuleData.cs, PlayerModifiers.cs, GameStats.cs
 │   ├── Gameplay/  ContestantController.cs, TrackGenerator.cs, TrackSegment.cs, Obstacle.cs,
 │   │              Star.cs, WaterZone.cs, HammerSwing.cs, Hologram.cs, FinishArch.cs, StarMeshBuilder.cs
@@ -105,8 +106,8 @@ public static class GameEvents
     public static event Action<HitCause> ContestantHit;
     public static event Action<int, int> RoundWon;               // ronda, cantidad de premios a elegir
     public static event Action<GameStats> GameOver;              // ronda alcanzada, estrellas totales, récords
-    public static event Action<RuleData, bool> RuleAnnounced;    // regla anunciada, ¿es mentira?
-    public static event Action<RuleData> RuleApplied;            // regla que realmente se aplica
+    public static event Action<RuleData, bool> RuleAnnounced;    // regla anunciada (null en rondas sin regla), ¿es mentira?
+    public static event Action<RuleData> RuleApplied;            // regla que realmente se aplica (null en rondas sin regla)
     public static event Action<bool> BetResolved;                // true = aceptó la apuesta
     public static event Action<bool> CheatCalled;               // true = acertó
     public static event Action<PrizeData> PrizeChosen;
@@ -122,6 +123,21 @@ public static class GameEvents
 - sin estrellas suficientes o sin vidas: `GameOver` → «¿Una ronda más?» reinicia en la ronda 1 sin pasar por el menú.
 
 El **temporizador manda**: la ronda termina a los 40 s exactos; el arco de meta es solo visual y se crea para que llegue al jugador justo a tiempo.
+
+## Cómo usar los sistemas de Nicole (ya implementados)
+
+- `GameSystems.prefab` (`Prefabs/Gameplay`) trae `GameManager` + `RuleManager` + `TrackGenerator`. Va **una vez** en `Game.unity`, en (0, 0, 0). Si se agregan tramos nuevos: menú **Una Ronda Más/Prefabs/Crear o actualizar GameSystems**.
+- Cuando llega cualquier evento, las propiedades de `GameManager.Instance` ya están actualizadas. `PhaseChanged` siempre se lanza al final.
+- **Anuncio:** `RuleAnnounced` → `PhaseChanged(Announcement)`. Leer `CurrentRound`, `BaseGoal`, `BetGoal`, `IsBetOffered`, `Rules.AnnouncedRule`. Sin apuesta (rondas 1–2) empieza sola a los `AnnouncementDuration` s; con apuesta espera a que la UI llame `AcceptBet()` o `DeclineBet()` (o `ConfirmAnnouncement(bool)`).
+- **Carrera:** `BetResolved` (solo si hubo apuesta) → `RuleApplied` → `RoundStarted` → `PhaseChanged(Running)`.
+- **Fin:** `RoundWon` → `PhaseChanged(PrizeSelection)`: la UI muestra `PrizeOffers` (3 `PrizeData`, `IsPoisoned` para el brillo raro) y llama `ChoosePrize(0..2)`; con apuesta ganada se eligen 2 (`PrizePicksRemaining`, `IsPrizeTaken(i)`). O bien `GameOver(stats)` → `PhaseChanged(GameOver)`; `LastStats` también tiene los datos.
+- **Concursante (Otoniel):** al chocar lanza `GameEvents.RaiseContestantHit(HitCause.Obstacle o Water)`; GameManager aplica Escudo/Flotador y quita la vida. Lee `GameManager.Instance.Modifiers` (`JumpHeightMultiplier`, `JumpDurationMultiplier`, `LaneChangeDurationMultiplier`, `HasPoisonSpring`, `HasMagnet`), `Rules.IsApplied(RuleType.Mirror/Giant/NoJump/Blackout)` y los números de la sección «Concursante» de `Balance`. Tag **Player**.
+- **Estrellas:** prefabs `Star_Normal` y `Star_Golden` (`Prefabs/Gameplay`). Se ponen dentro de los tramos; llaman solas a `GameManager.Instance.CollectStar(esDorada)`.
+- **Tramos (Otoniel):** raíz con `TrackSegment` (pivote al **inicio**, 20 m hacia +Z, primeros y últimos 3 m sin obstáculos), marcar dificultad, obstáculos que tiene y `requiresJump` / `requiresSlide`; `hologramSlots` = puntos vacíos donde puede salir un holograma. Guardar en `Prefabs/Segments`; el que tenga «Safe» en el nombre es el tramo vacío. Revisar con **Una Ronda Más/Pruebas/Validar tramos**. Arco: `Prefabs/Gameplay/FinishArch.prefab`; holograma: un prefab con «Holo» en el nombre en `Prefabs/Obstacles`.
+- **Pausa:** Esc o P la maneja GameManager. La UI de pausa escucha `PauseToggled` y llama `SetPaused(false)`, `RestartGame()` o `GoToMainMenu()`.
+- **«¡Trampa!»:** tecla T (RuleManager) o `GameManager.Instance.Rules.CallCheat()` desde un botón; `Rules.CanCallCheat` para el aviso del HUD.
+- **Guardado (Tania):** `SaveManager.BestRound`, `BestStars`, `GamesPlayed` (≥ 1 → el menú cambia), `MusicVolume`, `SfxVolume`.
+- **Pruebas:** `Scenes/Test_Nicole.unity` + `DebugOverlay` (panel F1 y atajos). Quitar `DebugOverlay` o desactivar «handleKeys» cuando la UI use las teclas 1-2-3.
 
 ## Convenciones de gameplay
 
