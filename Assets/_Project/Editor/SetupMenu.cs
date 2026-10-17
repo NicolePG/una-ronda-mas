@@ -12,17 +12,23 @@ public static class SetupMenu
         PrepareAll();
     }
 
-    /// <summary>Materiales, datos, estrellas, GameSystems, escena de prueba y ajustes de WebGL (sin cambiar de plataforma).</summary>
+    /// <summary>
+    /// TMP Essentials, materiales, datos, estrellas, GameSystems, escena de prueba, informe de balance
+    /// y ajustes de WebGL (sin cambiar de plataforma). Se puede repetir: no pisa lo que ya existe.
+    /// Desde la terminal (Unity cerrado): tools/preparar-todo.ps1
+    /// </summary>
     public static void PrepareAll()
     {
+        TmpEssentialsImporter.Import();
         MaterialCreator.CreateAll();
         DataAssetCreator.CreateAll();
         StarPrefabCreator.CreateAll();
         GameSystemsPrefabCreator.CreateOrUpdate();
         TestSceneCreator.Create();
+        BalanceReport.Generate();
         WebGLBuildTools.Configure(false);
         AssetDatabase.SaveAssets();
-        Debug.Log("Listo: materiales, Balance, premios, reglas, estrellas, GameSystems y Test_Nicole.unity.");
+        Debug.Log("Listo: TMP Essentials, materiales, Balance, premios, reglas, estrellas, GameSystems, Test_Nicole.unity y docs/BALANCE.md.");
     }
 
     [MenuItem("Una Ronda Más/Pruebas/Borrar datos guardados")]

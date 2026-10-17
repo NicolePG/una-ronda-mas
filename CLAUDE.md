@@ -52,6 +52,7 @@ Temas de la jam que cumple: **One More Time** (base) y **Something's Off** (el g
 - Pausa con `Time.timeScale = 0`; la UI y las animaciones de menú usan `Time.unscaledDeltaTime`.
 - Después de cada cambio, di **qué probar en Play Mode** y pide que te peguen los errores de la Consola si aparecen.
 - Git: commits pequeños con mensaje en español (`feat: ...`, `fix: ...`, `chore: ...`). Nunca hagas push, force push ni cambios de rama sin que te lo pidan.
+- Commits y PRs **sin** líneas `Co-Authored-By` ni menciones a Claude: el autor es solo quien commitea. Cada integrante sube su trabajo a su rama (`Nicole`, `Tanina`, `alain`) y se une a `main` cuando funciona.
 
 ## Estructura de carpetas
 

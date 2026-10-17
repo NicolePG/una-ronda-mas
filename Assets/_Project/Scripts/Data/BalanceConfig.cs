@@ -148,6 +148,8 @@ public class BalanceConfig : ScriptableObject
     [SerializeField, Min(1)] private int hammerFromRound = 3;
     [Tooltip("Ronda desde la que aparecen tramos con hueco al agua.")]
     [SerializeField, Min(1)] private int waterGapFromRound = 4;
+    [Tooltip("Qué parte de las estrellas de una ronda debería hacer falta juntar para llegar a la meta (lo usa «Informe de balance»).")]
+    [SerializeField, Range(0.1f, 1f)] private float targetCollectRatio = 0.5f;
     [Tooltip("Pesos de dificultad según la ronda. Se usa la última fila cuya ronda ya llegó.")]
     [SerializeField] private DifficultyStage[] difficultyStages =
     {
@@ -220,6 +222,7 @@ public class BalanceConfig : ScriptableObject
     public int HighBarFromRound => highBarFromRound;
     public int HammerFromRound => hammerFromRound;
     public int WaterGapFromRound => waterGapFromRound;
+    public float TargetCollectRatio => targetCollectRatio;
 
     /// <summary>Meta de estrellas de la ronda (sin apuesta ni penalización).</summary>
     public int GetGoal(int round) => baseGoal + goalPerRound * Mathf.Max(0, round - 1);

@@ -36,10 +36,10 @@ El equipo empieza a programar el **sábado 17 de octubre a las ~19:00** y la bui
 - [ ] 4 tramos de 20 m (2 fáciles, 2 medios) con obstáculos y estrellas.
 
 **Nicole**
-- [ ] `GameManager`: estados, ronda, meta, estrellas, vidas, temporizador de 40 s y velocidad según `BalanceConfig`.
-- [ ] `TrackGenerator` + `TrackSegment`: crear tramos adelante, moverlos, destruirlos atrás; arco de meta a tiempo.
-- [ ] `Star` (normal +1, dorada +3) y malla de estrella (`StarMeshBuilder`).
-- [ ] `SaveManager` con récord y partidas jugadas.
+- [x] `GameManager`: estados, ronda, meta, estrellas, vidas, temporizador de 40 s y velocidad según `BalanceConfig`.
+- [x] `TrackGenerator` + `TrackSegment`: crear tramos adelante, moverlos, destruirlos atrás; arco de meta a tiempo.
+- [x] `Star` (normal +1, dorada +3) y malla de estrella (`StarMeshBuilder`).
+- [x] `SaveManager` con récord y partidas jugadas.
 
 **Tania**
 - [ ] Fuente TextMeshPro en modo Dynamic (tildes, ñ, ¡, ¿, «») y estilo de botones como prefab.
@@ -57,11 +57,11 @@ El equipo empieza a programar el **sábado 17 de octubre a las ~19:00** y la bui
 - [ ] 4 tramos más (2 medios, 2 difíciles).
 
 **Nicole**
-- [ ] Progresión de rondas 1 a 10 según la tabla de `docs/GDD.md` (meta, velocidad, obstáculos por ronda).
-- [ ] Premios: `PrizeData` (ScriptableObjects), `PlayerModifiers`, 6 premios y 4 premios envenenados.
-- [ ] `RuleManager`: 5 reglas, mentira de Tito (30% desde la ronda 4), hologramas en la pista y botón «¡Trampa!» (tecla T, una vez por ronda).
-- [ ] Apuesta de Tito: meta ×1,5 y 2 premios si gana.
-- [ ] Generador sin caminos imposibles (Sin salto / Gigante).
+- [x] Progresión de rondas 1 a 10 según la tabla de `docs/GDD.md` (meta, velocidad, obstáculos por ronda).
+- [x] Premios: `PrizeData` (ScriptableObjects), `PlayerModifiers`, 6 premios y 4 premios envenenados.
+- [x] `RuleManager`: 5 reglas, mentira de Tito (30% desde la ronda 4), hologramas en la pista y botón «¡Trampa!» (tecla T, una vez por ronda).
+- [x] Apuesta de Tito: meta ×1,5 y 2 premios si gana.
+- [x] Generador sin caminos imposibles (Sin salto / Gigante).
 
 **Tania**
 - [ ] `HostBanner`: anuncio de ronda, meta, regla y apuesta (aceptar/rechazar).
@@ -80,8 +80,8 @@ El equipo empieza a programar el **sábado 17 de octubre a las ~19:00** y la bui
 - [ ] 4 tramos más (hasta 12) y ajuste de la sensación de juego.
 
 **Nicole**
-- [ ] Balance: ajustar `Balance.asset` jugando las rondas 1 a 6.
-- [ ] Ronda de pruebas con registro de bugs (los 3 juegan 15 minutos).
+- [ ] Balance: ajustar `Balance.asset` jugando las rondas 1 a 6. (Herramienta lista: **Una Ronda Más → Pruebas → Informe de balance** → `docs/BALANCE.md`; falta jugar con los tramos de Otoniel.)
+- [ ] Ronda de pruebas con registro de bugs (los 3 juegan 15 minutos). Plantilla: `docs/BUGS.md`.
 
 **Tania**
 - [ ] `AudioManager`: música, efectos y volúmenes desde Opciones.
@@ -92,7 +92,7 @@ El equipo empieza a programar el **sábado 17 de octubre a las ~19:00** y la bui
 
 ## Fase 4 — Entrega (hasta domingo 21:00)
 
-- [ ] Nicole: build WebGL final y prueba en **otra computadora** y otro navegador.
+- [ ] Nicole: build WebGL final y prueba en **otra computadora** y otro navegador. (`tools/build-webgl.ps1` arma la build y el zip; pasos en `docs/ENTREGA.md`.)
 - [ ] Nicole: subir a itch.io (zip con `index.html`, marcado «This file will be played in the browser»), unirse a la jam de GJ+ y enviar.
 - [ ] Nicole: registrar la build en la Plataforma Oficial de GJ+.
 - [ ] Los 3: jugar la versión publicada una vez cada uno.
@@ -100,7 +100,7 @@ El equipo empieza a programar el **sábado 17 de octubre a las ~19:00** y la bui
 ## Fase 5 — Pitch (lunes y martes, plazo martes 23:59)
 
 - [ ] Otoniel: grabar gameplay con OBS y editar el video.
-- [ ] Nicole: presupuesto en 3 escenarios (mínimo viable, ideal, máximo), competidores y cronograma.
+- [x] Nicole: presupuesto en 3 escenarios (mínimo viable, ideal, máximo), competidores y cronograma. Borrador en `docs/PITCH_NICOLE.md` (revisar montos).
 - [ ] Tania: guion, diapositivas, subtítulos en inglés y diapositiva final de contactos.
 - [ ] Los 3: video de 3 a 5 minutos con gameplay real, subido a YouTube (no listado) y registrado en la Plataforma Oficial.
 
