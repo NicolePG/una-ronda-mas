@@ -1,0 +1,55 @@
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+/// <summary>Cierra el panel de créditos mediante su botón Volver.</summary>
+public class CreditsUI : MonoBehaviour
+{
+    [Tooltip("Botón para cerrar los créditos y volver al menú.")]
+    [SerializeField] private Button closeButton;
+    [Tooltip("Texto con integrantes, herramientas y créditos de assets.")]
+    [SerializeField] private TMP_Text creditsText;
+
+    private void Awake()
+    {
+        if (closeButton == null || creditsText == null)
+        {
+            Debug.LogError("CreditsUI: asigna el botón Volver y el texto de créditos.", this);
+            enabled = false;
+        }
+    }
+
+    private void Start()
+    {
+        if (creditsText != null)
+        {
+            creditsText.text =
+                "<b>Equipo</b>\n" +
+                "Otoniel — Jugabilidad, pista y animación\n" +
+                "Nicole — Sistemas y lógica\n" +
+                "Tanina — Interfaz, presentador y audio\n\n" +
+                "<b>Hecho con</b>\n" +
+                "Unity 2022.3 LTS · C# · TextMeshPro\n\n" +
+                "<b>Audio</b>\n" +
+                "Música: Denis-Pavlov-Music y Jalastram\n" +
+                "Voces: VoiceBosch\n\n" +
+                "Los elementos visuales del prototipo se crean con formas y recursos incluidos en Unity. " +
+                "Verifica y conserva las licencias de los recursos de audio antes de publicar.";
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (closeButton != null) closeButton.onClick.AddListener(Close);
+    }
+
+    private void OnDisable()
+    {
+        if (closeButton != null) closeButton.onClick.RemoveListener(Close);
+    }
+
+    private void Close()
+    {
+        gameObject.SetActive(false);
+    }
+}
