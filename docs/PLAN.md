@@ -1,6 +1,6 @@
 # Plan de trabajo — ¡Una Ronda Más!
 
-El equipo empieza a programar el **sábado 17 de octubre a las ~19:00** y la build final debe estar subida el **domingo 18 a las 21:00** (plazo oficial 23:59, hora de Bolivia). Son unas 18 horas de trabajo por persona descontando el descanso. Cada fase tiene un objetivo, tareas por integrante y una condición de «listo». Si una fase se atrasa, se aplica la lista de **Recortes** del final antes de seguir.
+El equipo empieza a programar el **sábado 17 de octubre a las ~19:00** y la build final debe estar subida el **domingo 18 a las 21:00** (plazo de la Plataforma Oficial: domingo 23:00, hora de Bolivia). Son unas 18 horas de trabajo por persona descontando el descanso. Cada fase tiene un objetivo, tareas por integrante y una condición de «listo». Si una fase se atrasa, se aplica la lista de **Recortes** del final antes de seguir.
 
 | Fase | Objetivo | Hasta |
 | --- | --- | --- |

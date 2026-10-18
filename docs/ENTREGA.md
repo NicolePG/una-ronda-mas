@@ -1,6 +1,6 @@
 # Entrega — build WebGL, itch.io y GJ+ (Nicole)
 
-Plazo: **domingo 18 de octubre de 2026, 23:59** (meta interna **21:00**). Cierre de funciones: domingo 17:00.
+Plazo: **domingo 18 de octubre de 2026, 23:00** (meta interna **21:00**). Cierre de funciones: domingo 17:00.
 
 ## 0. Una sola vez
 
@@ -40,7 +40,7 @@ Resultado: `Builds/UnaRondaMas_WebGL.zip` con `index.html` en la raíz (la carpe
 
 ## 4. Plataforma Oficial de GJ+
 
-- [ ] Registrar la build (enlace de itch.io) en la Plataforma Oficial de GJ+ antes de las 23:59.
+- [ ] Registrar la build (enlace de itch.io) en la Plataforma Oficial de GJ+ antes del domingo a las 23:00.
 - [ ] Los 3 juegan la versión publicada una vez cada uno.
 
 ## Pitch (martes 20 de octubre, 23:59)

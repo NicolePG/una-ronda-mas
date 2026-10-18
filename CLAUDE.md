@@ -9,7 +9,7 @@ Temas de la jam que cumple: **One More Time** (base) y **Something's Off** (el g
 
 ## Fechas (hora de Bolivia, UTC−4)
 
-- Build final subida a itch.io y a la Plataforma Oficial: **domingo 18 de octubre de 2026, 23:59** (meta interna: 21:00).
+- Build final subida a itch.io y a la Plataforma Oficial: **domingo 18 de octubre de 2026, 23:00** (meta interna: 21:00).
 - Pitch en video: **martes 20 de octubre de 2026, 23:59**.
 - Puntos de control: ver `docs/PLAN.md`. Cierre de funciones: domingo 17:00; después solo pulido y bugs.
 
