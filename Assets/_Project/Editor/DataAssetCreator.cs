@@ -17,14 +17,14 @@ public static class DataAssetCreator
         Prize("Prize_Float", PrizeType.Float, false, "Flotador", "La primera caída al agua de cada ronda no quita vida.", "");
         Prize("Prize_Shield", PrizeType.Shield, false, "Escudo", "Absorbe 1 choque por ronda.", "");
         Prize("Prize_Spring", PrizeType.Spring, false, "Resorte", "Salto más alto y más largo.", "");
-        Prize("Prize_SlowMotion", PrizeType.SlowMotion, false, "Cámara lenta", "La pista va 10% más lenta.", "");
+        Prize("Prize_SlowMotion", PrizeType.SlowMotion, false, "Cámara lenta", "La pista va 10% más lenta: más tiempo para esquivar.", "");
 
         // Envenenados: mismo nombre y descripción que el normal; la sorpresa se ve al elegirlo.
         Prize("Poison_ExtraHeart", PrizeType.ExtraHeart, true, "Corazón extra", "+1 vida (máximo 5).",
             "¡Regalo de Tito! Tienes la vida… pero la meta de la próxima ronda sube 5 estrellas.");
         Prize("Poison_Spring", PrizeType.Spring, true, "Resorte", "Salto más alto y más largo.",
             "¡Regalo de Tito! Cada salto es doble y cuesta caer donde quieres.");
-        Prize("Poison_SlowMotion", PrizeType.SlowMotion, true, "Cámara lenta", "La pista va 10% más lenta.",
+        Prize("Poison_SlowMotion", PrizeType.SlowMotion, true, "Cámara lenta", "La pista va 10% más lenta: más tiempo para esquivar.",
             "¡Regalo de Tito! La cámara lenta era para tus pies: cambiar de carril ahora es lento.");
         Prize("Poison_Shield", PrizeType.Shield, true, "Escudo", "Absorbe 1 choque por ronda.",
             "¡Regalo de Tito! El escudo solo dura los primeros 10 segundos de cada ronda.");
@@ -43,6 +43,37 @@ public static class DataAssetCreator
         AssetDatabase.SaveAssets();
         Debug.Log("Datos listos en " + ProjectPaths.Data);
     }
+
+    /// <summary>
+    /// Balance del domingo: la meta empieza en 20 y sube 8 por ronda (antes 10 y 5: sobraban estrellas)
+    /// y la Cámara lenta explica para qué sirve. Cambia los assets que ya existen.
+    /// </summary>
+    [MenuItem("Una Ronda Más/Datos/Aplicar balance del domingo")]
+    public static void ApplySundayBalance()
+    {
+        var balance = AssetDatabase.LoadAssetAtPath<BalanceConfig>(ProjectPaths.Balance);
+        if (balance != null)
+        {
+            var so = new SerializedObject(balance);
+            so.FindProperty("baseGoal").intValue = SundayBaseGoal;
+            so.FindProperty("goalPerRound").intValue = SundayGoalPerRound;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+        foreach (PrizeData prize in ProjectPaths.LoadAll<PrizeData>(ProjectPaths.Prizes))
+        {
+            if (prize.Type != PrizeType.SlowMotion) continue;
+            var so = new SerializedObject(prize);
+            so.FindProperty("description").stringValue = SlowMotionText;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+        AssetDatabase.SaveAssets();
+        BalanceReport.Generate();
+        Debug.Log($"Balance del domingo aplicado: meta {SundayBaseGoal} + {SundayGoalPerRound} por ronda.");
+    }
+
+    private const int SundayBaseGoal = 20;
+    private const int SundayGoalPerRound = 8;
+    private const string SlowMotionText = "La pista va 10% más lenta: más tiempo para esquivar.";
 
     private static void Prize(string file, PrizeType type, bool poisoned, string name, string description, string reveal)
     {

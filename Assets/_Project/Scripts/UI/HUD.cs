@@ -64,7 +64,7 @@ public class HUD : MonoBehaviour
         if (game == null) return;
 
         if (roundText != null) roundText.text = $"RONDA: {game.CurrentRound}";
-        if (starsText != null) starsText.text = $"ESTRELLAS: {game.RoundStars} / {game.CurrentGoal}";
+        if (starsText != null) starsText.text = FormatStars(game.RoundStars, game.CurrentGoal);
         SetRuleText(game.Phase == RoundPhase.Running ? game.Rules.AppliedRule : null);
         RefreshCheatPrompt();
     }
@@ -72,12 +72,20 @@ public class HUD : MonoBehaviour
     private void HandleRoundStarted(int round, int goal, float speed)
     {
         if (roundText != null) roundText.text = $"RONDA: {round}";
-        if (starsText != null) starsText.text = $"ESTRELLAS: 0 / {goal}";
+        if (starsText != null) starsText.text = FormatStars(0, goal);
     }
 
     private void HandleStarsChanged(int stars, int goal)
     {
-        if (starsText != null) starsText.text = $"ESTRELLAS: {stars} / {goal}";
+        if (starsText != null) starsText.text = FormatStars(stars, goal);
+    }
+
+    // Estrellas de la ronda contra la meta y, abajo, el puntaje total de la partida.
+    private static string FormatStars(int stars, int goal)
+    {
+        GameManager game = GameManager.Instance;
+        int total = game != null ? game.TotalStars : stars;
+        return $"ESTRELLAS: {stars} / {goal}\n<size=60%><color=#FFFFFF>PUNTAJE: {total}</color></size>";
     }
 
     private void HandleLivesChanged(int lives)
@@ -112,7 +120,7 @@ public class HUD : MonoBehaviour
         if (game == null) return;
 
         if (roundText != null) roundText.text = $"RONDA: {game.CurrentRound}";
-        if (starsText != null) starsText.text = $"ESTRELLAS: {game.RoundStars} / {game.CurrentGoal}";
+        if (starsText != null) starsText.text = FormatStars(game.RoundStars, game.CurrentGoal);
         if (livesText != null) livesText.text = $"VIDAS: {game.Lives}";
         HandleTimeChanged(game.TimeRemaining);
         SetRuleText(game.Phase == RoundPhase.Running ? game.Rules.AppliedRule : null);

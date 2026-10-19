@@ -47,9 +47,9 @@ public class BalanceConfig : ScriptableObject
     [SerializeField, Min(0f)] private float poisonRevealDelay = 2f;
 
     [Header("Meta de estrellas")]
-    [SerializeField, Min(1)] private int baseGoal = 10;
+    [SerializeField, Min(1)] private int baseGoal = 20;
     [Tooltip("Cuánto sube la meta en cada ronda.")]
-    [SerializeField, Min(0)] private int goalPerRound = 5;
+    [SerializeField, Min(0)] private int goalPerRound = 8;
 
     [Header("Velocidad de la pista (m/s)")]
     [SerializeField, Min(0.1f)] private float baseSpeed = 8f;

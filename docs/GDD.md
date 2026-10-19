@@ -53,7 +53,7 @@ El concursante corre solo hacia adelante; el jugador elige el carril, salta y se
 **Reglas base**
 
 - La pista tiene 3 carriles sobre el agua y cada ronda dura 40 segundos hasta la meta.
-- La meta de estrellas empieza en 10 y sube 5 por ronda (10, 15, 20…).
+- La meta de estrellas empieza en 20 y sube 8 por ronda (20, 28, 36…). Ajustado el domingo: con 10 y +5 sobraban estrellas (en la ronda 1 bastaba juntar ~9%).
 - Estrella normal: 1 punto. Estrella dorada: 3 puntos; suele estar en lugares arriesgados.
 - El jugador empieza con 3 vidas. Chocar con un obstáculo o caer al agua quita 1 vida; el concursante reaparece en el carril central con 1 segundo de invulnerabilidad.
 - Si llega a la meta sin las estrellas necesarias o se queda sin vidas, queda eliminado.
@@ -70,30 +70,30 @@ El puntaje final es la suma de estrellas de todas las rondas. Todos los números
 
 ## Ronda por ronda
 
-La ronda 3 es la primera con regla especial y desde la ronda 4 Tito puede mentir; cada ronda la pista va 8% más rápido y la meta sube 5 estrellas.
+La ronda 3 es la primera con regla especial y desde la ronda 4 Tito puede mentir; cada ronda la pista va 8% más rápido y la meta sube 8 estrellas.
 
 | Ronda | Meta | Velocidad | Obstáculos que aparecen | Tito |
 | --- | --- | --- | --- | --- |
-| 1 | 10 | 8 m/s | Bloques y barras bajas | Explica cómo se juega |
-| 2 | 15 | 8,6 m/s | Se suman las barras altas | Sin regla especial |
-| 3 | 20 | 9,3 m/s | Se suma el martillo | Primera regla, siempre verdadera |
-| 4 | 25 | 10,1 m/s | Se suman los huecos al agua | Puede mentir; aparecen hologramas y premios envenenados |
-| 5 | 30 | 10,9 m/s | Tramos medios | Puede mentir |
-| 6 | 35 | 11,8 m/s | Tramos medios | Puede mentir |
-| 7 | 40 | 12,7 m/s | Tramos medios y difíciles | Puede mentir |
-| 8 | 45 | 13,7 m/s | Tramos difíciles | Puede mentir |
-| 9 | 50 | 14,8 m/s | Tramos difíciles | Puede mentir |
-| 10 | 55 | 16 m/s | Tramos difíciles | Final falso «FIN DEL PROGRAMA» (extra) |
+| 1 | 20 | 8 m/s | Bloques y barras bajas | Explica cómo se juega |
+| 2 | 28 | 8,6 m/s | Se suman las barras altas | Sin regla especial |
+| 3 | 36 | 9,3 m/s | Se suma el martillo | Primera regla, siempre verdadera |
+| 4 | 44 | 10,1 m/s | Se suman los huecos al agua | Puede mentir; aparecen hologramas y premios envenenados |
+| 5 | 52 | 10,9 m/s | Tramos medios | Puede mentir |
+| 6 | 60 | 11,8 m/s | Tramos medios | Puede mentir |
+| 7 | 68 | 12,7 m/s | Tramos medios y difíciles | Puede mentir |
+| 8 | 76 | 13,7 m/s | Tramos difíciles | Puede mentir |
+| 9 | 84 | 14,8 m/s | Tramos difíciles | Puede mentir |
+| 10 | 92 | 16 m/s | Tramos difíciles | Final falso «FIN DEL PROGRAMA» (extra) |
 
 Desde la ronda 11 la velocidad se queda en 16 m/s y solo sube la meta.
 
 **Ejemplo: la ronda 3**
 
-1. Tito aparece en la pantalla gigante: «¡Ronda 3! Meta: 20 estrellas. Y hoy… ¡todo vale doble!».
+1. Tito aparece en la pantalla gigante: «¡Ronda 3! Meta: 36 estrellas. Y hoy… ¡todo vale doble!».
 2. Tito ofrece su apuesta; el jugador la rechaza para ir seguro.
 3. La regla se aplica: cada estrella vale el doble, pero la pista va 30% más rápido.
 4. El jugador ya tiene 2 premios, por ejemplo Imán y Flotador. Aparece el primer martillo gigante.
-5. Si llega a la meta con 20 estrellas, elige otro premio y pasa a la ronda 4, donde Tito ya puede mentir.
+5. Si llega a la meta con 36 estrellas, elige otro premio y pasa a la ronda 4, donde Tito ya puede mentir.
 
 ## Contenido del juego
 
@@ -120,7 +120,7 @@ El MVP necesita 5 obstáculos, 6 premios, 4 premios envenenados y 5 reglas; lo m
 | Flotador | La primera caída al agua de cada ronda no quita vida | MVP |
 | Escudo | Absorbe 1 choque por ronda | MVP |
 | Resorte | Salto más alto y más largo | MVP |
-| Cámara lenta | La pista va 10% más lenta | MVP |
+| Cámara lenta | La pista va 10% más lenta: más tiempo para esquivar (la ronda sigue durando 40 s, así que pasan menos estrellas) | MVP |
 | Trébol | Aparecen más estrellas doradas | Extra |
 | Lupa | El cartel de Tito da una pista extra cuando miente | Extra |
 
