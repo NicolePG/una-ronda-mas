@@ -30,11 +30,13 @@ public class CreditsUI : MonoBehaviour
                 "Tanina — Interfaz, presentador y audio\n\n" +
                 "<b>Hecho con</b>\n" +
                 "Unity 2022.3 LTS · C# · TextMeshPro\n\n" +
+                "<b>Gráficos</b>\n" +
+                "Personajes: Kenney Mini Characters (CC0) · kenney.nl\n" +
+                "Fondos, íconos y estrellas: hechos por el equipo\n\n" +
                 "<b>Audio</b>\n" +
                 "Música: Denis-Pavlov-Music y Jalastram\n" +
-                "Voces: VoiceBosch\n\n" +
-                "Los elementos visuales del prototipo se crean con formas y recursos incluidos en Unity. " +
-                "Verifica y conserva las licencias de los recursos de audio antes de publicar.";
+                "Voces del presentador: VoiceBosch\n\n" +
+                "Hecho en 48 horas para GameJamPlus 26/27.";
         }
     }
 

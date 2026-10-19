@@ -23,7 +23,8 @@ public static class GameSceneCreator
     private const float FogEnd = 115f;
 
     // Pantalla gigante, fija en el mundo al fondo de la pista.
-    private static readonly Vector3 ScreenPosition = new Vector3(0f, 10f, 110f);
+    private static readonly Vector3 ScreenPosition = new Vector3(0f, 11.5f, 110f);
+    private const float ScreenScale = 1.4f;   // más grande para que Tito se vea desde la pista
     private static readonly Vector3 ScreenSize = new Vector3(16f, 10f, 0.6f);
     private const float HostFaceScale = 1.7f;
 
@@ -217,6 +218,7 @@ public static class GameSceneCreator
     {
         Transform screen = new GameObject("TitoScreen").transform;
         screen.position = ScreenPosition;
+        screen.localScale = Vector3.one * ScreenScale;
         Material frame = GameMaterials.GetOrCreateNoFog("Mat_ScreenFrame", "#3A3150", 0f);
         Material panel = GameMaterials.GetOrCreateNoFog("Mat_ScreenPanel", "#F2EFE8", 0.35f);
         Material onAir = GameMaterials.GetOrCreateNoFog("Mat_ScreenOnAir", "#D13B3B", 0.8f);
