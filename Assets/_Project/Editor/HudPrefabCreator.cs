@@ -48,8 +48,8 @@ public static class HudPrefabCreator
             new Vector2(0.03f, 0.88f), new Vector2(0f, -12f), new Vector2(360f, 48f),
             28f, TextAlignmentOptions.TopLeft, Color.white);
         TMP_Text rule = CreateLabel(root.transform, "Rule", font, "REGLA: —",
-            new Vector2(0.5f, 0.83f), new Vector2(0f, 0f), new Vector2(900f, 58f),
-            30f, TextAlignmentOptions.Top, Color.white);
+            new Vector2(0.03f, 0.81f), new Vector2(0f, -12f), new Vector2(520f, 48f),
+            26f, TextAlignmentOptions.TopLeft, Color.white);
         TMP_Text cheat = CreateLabel(root.transform, "CheatPrompt", font, "¡TRAMPA! (T)",
             new Vector2(0.5f, 0.08f), new Vector2(0f, 0f), new Vector2(440f, 66f),
             36f, TextAlignmentOptions.Bottom, new Color32(247, 177, 29, 255));

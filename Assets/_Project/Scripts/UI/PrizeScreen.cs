@@ -27,6 +27,8 @@ public class PrizeScreen : MonoBehaviour
     [Tooltip("Indicadores visuales de posible regalo envenenado.")]
     [SerializeField] private GameObject[] poisonIndicators = new GameObject[OfferCount];
 
+    private static readonly Color PoisonTint = new Color(0.78f, 1f, 0.7f);
+
     private readonly UnityEngine.Events.UnityAction[] chooseActions =
         new UnityEngine.Events.UnityAction[OfferCount];
 
@@ -158,7 +160,7 @@ public class PrizeScreen : MonoBehaviour
             }
 
             if (prizeNames[i] != null)
-                prizeNames[i].text = taken ? $"{prize.DisplayName} ✓" : prize.DisplayName;
+                prizeNames[i].text = taken ? $"{prize.DisplayName} <color=#F7B11D>(elegido)</color>" : prize.DisplayName;
 
             if (prizeDescriptions[i] != null)
                 prizeDescriptions[i].text = taken && prize.IsPoisoned
@@ -168,6 +170,7 @@ public class PrizeScreen : MonoBehaviour
             if (prizeIcons[i] != null)
             {
                 prizeIcons[i].sprite = prize.Icon;
+                prizeIcons[i].color = prize.IsPoisoned ? PoisonTint : Color.white;
                 prizeIcons[i].gameObject.SetActive(prize.Icon != null);
             }
 

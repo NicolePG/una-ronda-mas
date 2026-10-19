@@ -95,8 +95,19 @@ public class HostBanner : MonoBehaviour
 
         if (acceptBetButton != null) acceptBetButton.gameObject.SetActive(betOffered);
         if (declineBetButton != null) declineBetButton.gameObject.SetActive(betOffered);
-        if (declineBetText != null && !betOffered) declineBetText.text = "¡A correr!";
+        if (acceptBetText != null) acceptBetText.text = "¡Acepto! (1)";
+        if (declineBetText != null) declineBetText.text = betOffered ? "No, gracias (2)" : "¡A correr!";
         if (panel != null) panel.SetActive(true);
+    }
+
+    private void Update()
+    {
+        // Teclas 1 y 2 para la apuesta (además de los botones).
+        if (panel == null || !panel.activeSelf) return;
+        GameManager game = GameManager.Instance;
+        if (game == null || game.Phase != RoundPhase.Announcement || !game.IsBetOffered) return;
+        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) AcceptBet();
+        else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) DeclineBet();
     }
 
     private void UpdateRule(RuleData rule)

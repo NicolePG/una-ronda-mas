@@ -17,6 +17,8 @@ public class GameOverScreen : MonoBehaviour
     [Tooltip("Botón para volver al menú principal.")]
     [SerializeField] private Button menuButton;
 
+    private bool leaving;
+
     private void Awake()
     {
         if (panel == null || statsText == null || restartButton == null || menuButton == null)
@@ -73,6 +75,14 @@ public class GameOverScreen : MonoBehaviour
         SelectRestartButton();
     }
 
+    private void Update()
+    {
+        // Atajos además de los botones (Enter ya funciona con el botón seleccionado).
+        if (panel == null || !panel.activeSelf || leaving) return;
+        if (Input.GetKeyDown(KeyCode.R)) RestartGame();
+        else if (Input.GetKeyDown(KeyCode.M)) GoToMainMenu();
+    }
+
     private void HandlePhaseChanged(RoundPhase phase)
     {
         if (phase != RoundPhase.GameOver && panel != null) panel.SetActive(false);
@@ -86,6 +96,7 @@ public class GameOverScreen : MonoBehaviour
             Debug.LogError("No se puede reiniciar: no hay GameManager activo.", this);
             return;
         }
+        leaving = true;
         game.RestartGame();
     }
 
@@ -97,6 +108,7 @@ public class GameOverScreen : MonoBehaviour
             Debug.LogError("No se puede volver al menú: no hay GameManager activo.", this);
             return;
         }
+        leaving = true;
         game.GoToMainMenu();
     }
 

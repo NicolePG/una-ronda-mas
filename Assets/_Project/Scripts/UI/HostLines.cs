@@ -162,7 +162,11 @@ public class HostLines : MonoBehaviour
         return true;
     }
 
-    private void HandleRuleAnnounced(RuleData rule, bool isLie) => ShowMoment("rule");
+    private void HandleRuleAnnounced(RuleData rule, bool isLie)
+    {
+        // En las rondas sin regla no hay frase de regla.
+        if (rule != null) ShowMoment("rule");
+    }
 
     private void HandleRoundStarted(int round, int goal, float speed)
     {

@@ -59,9 +59,9 @@ public static class HostBannerPrefabCreator
             28f, TextAlignmentOptions.Center, Color.white);
 
         GameObject acceptObject = CreateButton(buttonTemplate, card.transform, "AcceptBetButton",
-            "¡Acepto!", new Vector2(-220f, -185f), new Vector2(380f, 82f));
+            "¡Acepto! (1)", new Vector2(-220f, 72f), new Vector2(380f, 82f));
         GameObject declineObject = CreateButton(buttonTemplate, card.transform, "DeclineBetButton",
-            "No, gracias", new Vector2(220f, -185f), new Vector2(380f, 82f));
+            "No, gracias (2)", new Vector2(220f, 72f), new Vector2(380f, 82f));
 
         HostBanner banner = root.GetComponent<HostBanner>();
         SerializedObject serializedBanner = new SerializedObject(banner);

@@ -58,9 +58,9 @@ public static class GameOverPrefabCreator
         stats.alignment = TextAlignmentOptions.Center;
 
         GameObject restartObject = CreateButton(buttonTemplate, card.transform,
-            "RestartButton", "¿Una ronda más?", new Vector2(-205f, -225f), new Vector2(370f, 90f));
+            "RestartButton", "¿Una ronda más? (Enter)", new Vector2(-180f, 80f), new Vector2(420f, 90f));
         GameObject menuObject = CreateButton(buttonTemplate, card.transform,
-            "MenuButton", "Menú", new Vector2(205f, -225f), new Vector2(300f, 90f));
+            "MenuButton", "Menú (M)", new Vector2(250f, 80f), new Vector2(240f, 90f));
 
         GameOverScreen screen = root.GetComponent<GameOverScreen>();
         SerializedObject serializedScreen = new SerializedObject(screen);
