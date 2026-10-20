@@ -3,7 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>Muestra el resultado de la partida y permite reiniciar o volver al menú.</summary>
+/// <summary>
+/// Muestra el resultado de la partida y permite reiniciar o volver al menú.
+/// Al aparecer ignora las teclas un momento y las flechas no mueven la selección: así quien sigue apretando
+/// los controles del juego (flechas, Espacio) no vuelve al menú sin querer. Enter o Espacio = «¿Una ronda más?».
+/// </summary>
 public class GameOverScreen : MonoBehaviour
 {
     [Header("Panel")]
@@ -16,8 +20,13 @@ public class GameOverScreen : MonoBehaviour
     [SerializeField] private Button restartButton;
     [Tooltip("Botón para volver al menú principal.")]
     [SerializeField] private Button menuButton;
+    [Header("Teclado")]
+    [Tooltip("Segundos sin aceptar teclas al aparecer la pantalla.")]
+    [SerializeField, Min(0f)] private float inputDelay = 0.8f;
 
     private bool leaving;
+    private bool inputReady;
+    private float shownAt;
 
     private void Awake()
     {
@@ -25,6 +34,8 @@ public class GameOverScreen : MonoBehaviour
         {
             Debug.LogError("GameOverScreen: asigna el panel, el texto de resultados y ambos botones.", this);
         }
+        DisableArrowNavigation(restartButton);
+        DisableArrowNavigation(menuButton);
     }
 
     private void OnEnable()
@@ -72,15 +83,42 @@ public class GameOverScreen : MonoBehaviour
         }
 
         if (panel != null) panel.SetActive(true);
-        SelectRestartButton();
+        // Los botones esperan inputDelay antes de aceptar teclas o clics.
+        shownAt = Time.unscaledTime;
+        inputReady = false;
+        SetButtonsInteractable(false);
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
     }
 
     private void Update()
     {
-        // Atajos además de los botones (Enter ya funciona con el botón seleccionado).
         if (panel == null || !panel.activeSelf || leaving) return;
+        if (!inputReady)
+        {
+            if (Time.unscaledTime < shownAt + inputDelay) return;
+            inputReady = true;
+            SetButtonsInteractable(true);
+            SelectRestartButton();
+        }
+
+        // Atajos además de los botones (Enter y Espacio activan «¿Una ronda más?»).
         if (Input.GetKeyDown(KeyCode.R)) RestartGame();
         else if (Input.GetKeyDown(KeyCode.M)) GoToMainMenu();
+        else if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == null) SelectRestartButton();
+    }
+
+    private void SetButtonsInteractable(bool value)
+    {
+        if (restartButton != null) restartButton.interactable = value;
+        if (menuButton != null) menuButton.interactable = value;
+    }
+
+    private static void DisableArrowNavigation(Button button)
+    {
+        if (button == null) return;
+        Navigation navigation = button.navigation;
+        navigation.mode = Navigation.Mode.None;
+        button.navigation = navigation;
     }
 
     private void HandlePhaseChanged(RoundPhase phase)
