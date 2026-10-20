@@ -64,8 +64,10 @@ Assets/_Project/
 │   ├── DevTools/  DebugOverlay.cs, DebugContestant.cs (solo para probar)
 │   ├── Data/      BalanceConfig.cs, PrizeData.cs, RuleData.cs, PlayerModifiers.cs, GameStats.cs
 │   ├── Gameplay/  ContestantController.cs, TrackGenerator.cs, TrackSegment.cs, Obstacle.cs,
-│   │              Star.cs, WaterZone.cs, HammerSwing.cs, Hologram.cs, FinishArch.cs, StarMeshBuilder.cs
-│   ├── Effects/   RuleEffects.cs, CameraShake.cs
+│   │              Star.cs, WaterZone.cs, HammerSwing.cs, Hologram.cs, FinishArch.cs, StarMeshBuilder.cs,
+│   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs
+│   ├── Effects/   RuleEffects.cs, CameraShake.cs, CameraFollow.cs, RoundDrama.cs, FloatingTexts.cs, SpeedLines.cs,
+│   │              MarqueeLights.cs, StudioLightBeam.cs, WaterSurface.cs, FloatingBob.cs, Billboard.cs
 │   └── UI/        MainMenuUI.cs, HowToPlayUI.cs, OptionsUI.cs, CreditsUI.cs, HUD.cs, HostBanner.cs,
 │                  HostFace.cs, HostLines.cs, PrizeScreen.cs, PauseMenu.cs, GameOverScreen.cs
 ├── Editor/      herramientas del menú «Una Ronda Más/...»
@@ -86,6 +88,8 @@ Assets/_Project/
 | `TrackGenerator` | Nicole | Crea tramos adelante según la dificultad de la ronda, los mueve hacia el jugador y los borra al pasar |
 | `ContestantController` | Otoniel | Carriles, salto, deslizamiento, choques, caída al agua, invulnerabilidad |
 | `RuleEffects` | Otoniel | Efectos visibles de cada regla aplicada (apagón, espejo, gigante, sin salto) |
+| `StarStreak`, `RoundDrama`, `FloatingTexts` | Otoniel | Racha de estrellas con premio, destello y micro-pausa al chocar, cuenta regresiva, cámara lenta final, textos «+1» / «¡Uff!» |
+| `StudioSetCreator`, `GameFeelCreator` (Editor) | Otoniel | Arman el estudio (gradas con público, cartel, haces, flotadores, cañones) y el post-procesado en `Game.unity` |
 | `AudioManager` | Tania | Música y efectos; persiste entre escenas (`DontDestroyOnLoad`); se crea solo si falta |
 | `HostBanner`, `HostFace`, `HostLines` | Tania | Anuncio de ronda/regla/apuesta, cara de Tito con expresiones, frases desde CSV |
 
@@ -116,6 +120,9 @@ public static class GameEvents
     // Cada evento tiene su método Raise...(): GameEvents.RaiseStarsChanged(stars, goal);
 }
 ```
+
+Eventos locales de efectos (Otoniel, fuera de `GameEvents` porque solo los usan los efectos): `StarStreak.StreakChanged(int)`,
+`StarStreak.MilestoneReached(int racha, int premio)`, `Obstacle.NearMiss(Obstacle)` y `ContestantController.StarCollected(Star)`.
 
 ## Flujo de una ronda
 

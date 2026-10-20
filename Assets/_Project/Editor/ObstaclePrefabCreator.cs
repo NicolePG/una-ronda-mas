@@ -14,11 +14,16 @@ public static class ObstaclePrefabCreator
     public const string LowBarPath = ProjectPaths.PrefabsObstacles + "/Obstacle_LowBar.prefab";
     public const string HighBarPath = ProjectPaths.PrefabsObstacles + "/Obstacle_HighBar.prefab";
     public const string HammerPath = ProjectPaths.PrefabsObstacles + "/Obstacle_Hammer.prefab";
+    public const string RollingBallPath = ProjectPaths.PrefabsObstacles + "/Obstacle_RollingBall.prefab";
+    public const string SweeperPath = ProjectPaths.PrefabsObstacles + "/Obstacle_Sweeper.prefab";
+    public const string SweeperReversePath = ProjectPaths.PrefabsObstacles + "/Obstacle_Sweeper_Reverse.prefab";
     public const string EffectsFolder = ProjectPaths.Root + "/Prefabs/Effects";
     public const string SplashPath = EffectsFolder + "/FX_Splash.prefab";
     public const string ConfettiPath = EffectsFolder + "/FX_Confetti.prefab";
     public const string SparklePath = EffectsFolder + "/FX_StarSparkle.prefab";
     private const string FontPath = ProjectPaths.Root + "/Fonts/Font_UI_Dynamic.asset";
+    private const string ParticleArt = ProjectPaths.Art + "/Particles";
+    private const string ParticleMaterials = ProjectPaths.Materials + "/Particles";
 
     // Medidas (m). 1 unidad = 1 metro; un carril mide 2 m.
     private const float BlockSize = 1.7f;
@@ -39,6 +44,13 @@ public static class ObstaclePrefabCreator
     private const float ArchRise = 1.4f;
     private const float ArchTube = 0.7f;
     private const int ArchSegments = 10;
+    private const float BallRadius = 0.8f;
+    private const float SweeperArmHalfLength = 3.2f;
+    private const float SweeperArmHeight = 0.45f;
+    private const float SweeperArmDiameter = 0.3f;
+    private const float SweeperColliderTop = 0.65f;   // igual que la barra baja: se pasa saltando
+    private const float SweeperPostHeight = 0.6f;
+    private const float StarGlowSize = 1.5f;
 
     [MenuItem("Una Ronda Más/Prefabs/Crear obstáculos, arco y efectos (Otoniel)")]
     public static void CreateAll()
@@ -51,8 +63,12 @@ public static class ObstaclePrefabCreator
         CreateBar(LowBarPath, LowBarHeight, 0f, LowBarColliderTop);
         CreateBar(HighBarPath, HighBarHeight, HighBarColliderBottom, HighBarColliderTop);
         CreateHammer();
+        CreateRollingBall();
+        CreateSweeper(SweeperPath, false);
+        CreateSweeper(SweeperReversePath, true);
         CreateFinishArch();
         AssignStarSparkle();
+        AddStarGlow();
         AssetDatabase.SaveAssets();
     }
 
@@ -148,6 +164,74 @@ public static class ObstaclePrefabCreator
         Save(root, HammerPath);
     }
 
+    // Pelota gigante a rayas que rueda por su carril (RollingBall). No se puede saltar: hay que cambiar de carril.
+    private static void CreateRollingBall()
+    {
+        var root = new GameObject("Obstacle_RollingBall");
+        Material red = MaterialCreator.Load("Mat_Red");
+        Material stripe = GameMaterials.GetOrCreate("Mat_Stripe", "#F2EFE8");
+        Transform ball = NewChild(root.transform, "Ball");
+        ball.localPosition = new Vector3(0f, BallRadius, 0f);
+        float diameter = BallRadius * 2f;
+        Part(PrimitiveType.Sphere, ball, "Sphere", Vector3.zero, Vector3.one * diameter, red);
+        // Bandas blancas: una se ve girar al rodar y la otra marca el eje.
+        Part(PrimitiveType.Cylinder, ball, "BandA", Vector3.zero, new Vector3(diameter * 1.015f, 0.05f, diameter * 1.015f), stripe);
+        Part(PrimitiveType.Cylinder, ball, "BandB", Vector3.zero, new Vector3(diameter * 1.015f, 0.05f, diameter * 1.015f), stripe,
+            Quaternion.Euler(90f, 0f, 0f));
+
+        var sphere = root.AddComponent<SphereCollider>();
+        sphere.isTrigger = true;
+        sphere.center = new Vector3(0f, BallRadius, 0f);
+        sphere.radius = BallRadius * 0.9f;
+        root.AddComponent<Obstacle>().EditorSetup(false, null);
+        root.AddComponent<RollingBall>().EditorSetup(ball, BallRadius);
+        Save(root, RollingBallPath);
+    }
+
+    // Rodillo barredor: brazo bajo que gira sobre un poste corto (SweeperArm). Se pasa saltando.
+    private static void CreateSweeper(string path, bool reverse)
+    {
+        var root = new GameObject(Path.GetFileNameWithoutExtension(path));
+        Material red = MaterialCreator.Load("Mat_Red");
+        Material grey = MaterialCreator.Load("Mat_Grey");
+        Material stripe = GameMaterials.GetOrCreate("Mat_Stripe", "#F2EFE8");
+        Material gold = MaterialCreator.Load("Mat_Gold");
+
+        Transform post = NewChild(root.transform, "Post");
+        Part(PrimitiveType.Cylinder, post, "Column", new Vector3(0f, SweeperPostHeight * 0.5f, 0f),
+            new Vector3(0.6f, SweeperPostHeight * 0.5f, 0.6f), grey);
+        Part(PrimitiveType.Cylinder, post, "Base", new Vector3(0f, 0.04f, 0f), new Vector3(1.1f, 0.04f, 1.1f), gold);
+        var postBox = post.gameObject.AddComponent<BoxCollider>();
+        postBox.isTrigger = true;
+        postBox.center = new Vector3(0f, SweeperPostHeight * 0.5f, 0f);
+        postBox.size = new Vector3(0.6f, SweeperPostHeight, 0.6f);
+
+        Transform pivot = NewChild(root.transform, "Pivot");
+        Quaternion alongX = Quaternion.Euler(0f, 0f, 90f);
+        Part(PrimitiveType.Cylinder, pivot, "Arm", new Vector3(0f, SweeperArmHeight, 0f),
+            new Vector3(SweeperArmDiameter, SweeperArmHalfLength, SweeperArmDiameter), red, alongX);
+        foreach (float x in new[] { -2.4f, -1.2f, 1.2f, 2.4f })
+        {
+            Part(PrimitiveType.Cylinder, pivot, "Stripe", new Vector3(x, SweeperArmHeight, 0f),
+                new Vector3(SweeperArmDiameter * 1.08f, 0.1f, SweeperArmDiameter * 1.08f), stripe, alongX);
+        }
+        foreach (float side in new[] { -1f, 1f })
+        {
+            Part(PrimitiveType.Sphere, pivot, "Bumper", new Vector3(side * SweeperArmHalfLength, SweeperArmHeight, 0f),
+                Vector3.one * 0.5f, gold);
+        }
+        Part(PrimitiveType.Cylinder, pivot, "Hub", new Vector3(0f, SweeperArmHeight, 0f), new Vector3(0.7f, 0.12f, 0.7f), red);
+        var armBox = NewChild(pivot, "ArmTrigger").gameObject.AddComponent<BoxCollider>();
+        armBox.isTrigger = true;
+        float bottom = SweeperArmHeight - SweeperArmDiameter * 0.5f - 0.05f;
+        armBox.center = new Vector3(0f, (bottom + SweeperColliderTop) * 0.5f, 0f);
+        armBox.size = new Vector3(SweeperArmHalfLength * 2f + 0.3f, SweeperColliderTop - bottom, 0.4f);
+
+        root.AddComponent<Obstacle>().EditorSetup(false, post);
+        root.AddComponent<SweeperArm>().EditorSetup(pivot, reverse);
+        Save(root, path);
+    }
+
     // ---------- Arco de meta ----------
 
     private static void CreateFinishArch()
@@ -210,6 +294,8 @@ public static class ObstaclePrefabCreator
         main.startColor = new ParticleSystem.MinMaxGradient(water, Color.white);
         SetBurst(splash, 45);
         SetCone(splash, 25f, 0.45f);
+        SetMaterial(splash, ParticleMaterial("Mat_FX_Drop", "circle_05.png", false));
+        ShrinkOverLifetime(splash);
         SaveEffect(splash, SplashPath);
 
         // Confeti del arco de meta.
@@ -227,6 +313,18 @@ public static class ObstaclePrefabCreator
         main.startColor = new ParticleSystem.MinMaxGradient(colors) { mode = ParticleSystemGradientMode.RandomColor };
         SetBurst(confetti, 140);
         SetCone(confetti, 35f, 1.5f);
+        SetMaterial(confetti, ConfettiMaterial());
+        main.startSize3D = true;
+        main.startSizeX = new ParticleSystem.MinMaxCurve(0.14f, 0.26f);
+        main.startSizeY = new ParticleSystem.MinMaxCurve(0.08f, 0.14f);
+        main.startSizeZ = 1f;
+        var spin = confetti.rotationOverLifetime;
+        spin.enabled = true;
+        spin.z = new ParticleSystem.MinMaxCurve(-6f, 6f);
+        var drag = confetti.limitVelocityOverLifetime;
+        drag.enabled = true;
+        drag.limit = 4f;
+        drag.dampen = 0.08f;
         SaveEffect(confetti, ConfettiPath);
 
         // Destello al tomar una estrella.
@@ -234,12 +332,15 @@ public static class ObstaclePrefabCreator
         main = sparkle.main;
         main.startLifetime = new ParticleSystem.MinMaxCurve(0.3f, 0.5f);
         main.startSpeed = new ParticleSystem.MinMaxCurve(2f, 4f);
-        main.startSize = new ParticleSystem.MinMaxCurve(0.1f, 0.2f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
+        main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.startColor = new ParticleSystem.MinMaxGradient(gold, starLight);
         SetBurst(sparkle, 16);
         var shape = sparkle.shape;
         shape.shapeType = ParticleSystemShapeType.Sphere;
         shape.radius = 0.2f;
+        SetMaterial(sparkle, ParticleMaterial("Mat_FX_Sparkle", "star_06.png", true));
+        ShrinkOverLifetime(sparkle);
         SaveEffect(sparkle, SparklePath);
     }
 
@@ -260,6 +361,93 @@ public static class ObstaclePrefabCreator
         go.GetComponent<ParticleSystemRenderer>().sharedMaterial =
             AssetDatabase.GetBuiltinExtraResource<Material>("Default-Particle.mat");
         return ps;
+    }
+
+    private static void SetMaterial(ParticleSystem ps, Material material)
+    {
+        if (material != null) ps.GetComponent<ParticleSystemRenderer>().sharedMaterial = material;
+    }
+
+    private static void ShrinkOverLifetime(ParticleSystem ps)
+    {
+        var size = ps.sizeOverLifetime;
+        size.enabled = true;
+        size.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 1f, 1f, 0f));
+    }
+
+    /// <summary>Material de partículas con una textura del Kenney Particle Pack (aditivo o con transparencia).</summary>
+    public static Material ParticleMaterial(string name, string textureFile, bool additive)
+    {
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>($"{ParticleArt}/{textureFile}");
+        if (texture == null)
+        {
+            Debug.LogWarning($"Falta la textura {ParticleArt}/{textureFile} (Kenney Particle Pack).");
+            return null;
+        }
+        return ParticleMaterial(name, texture, additive);
+    }
+
+    public static Material ParticleMaterial(string name, Texture texture, bool additive)
+    {
+        ProjectPaths.EnsureFolder(ParticleMaterials);
+        string path = $"{ParticleMaterials}/{name}.mat";
+        Shader shader = Shader.Find(additive ? "Legacy Shaders/Particles/Additive" : "Legacy Shaders/Particles/Alpha Blended");
+        var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+        if (material == null)
+        {
+            material = new Material(shader) { name = name };
+            AssetDatabase.CreateAsset(material, path);
+        }
+        material.shader = shader;
+        material.mainTexture = texture;
+        material.SetColor("_TintColor", new Color(0.5f, 0.5f, 0.5f, 0.5f));   // x1 (el shader multiplica por 2)
+        EditorUtility.SetDirty(material);
+        return material;
+    }
+
+    // Papelito rectangular con las esquinas suaves.
+    private static Material ConfettiMaterial()
+    {
+        string path = ProjectPaths.Art + "/Textures/Tex_Confetti.png";
+        var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if (texture == null)
+        {
+            texture = IconPainter.SaveTexture(path, IconPainter.Paint(32, 32, (u, v) =>
+            {
+                float edge = Mathf.Min(Mathf.Min(u, 1f - u), Mathf.Min(v, 1f - v));
+                return new Color(1f, 1f, 1f, Mathf.Clamp01(edge * 16f));
+            }), false, false);
+        }
+        return ParticleMaterial("Mat_FX_Confetti", texture, false);
+    }
+
+    // Halo dorado que mira a la cámara detrás de cada estrella (se ve de lejos y con el bloom).
+    private static void AddStarGlow()
+    {
+        Material glow = ParticleMaterial("Mat_FX_StarGlow", "circle_05.png", true);
+        if (glow == null) return;
+        foreach (string path in new[] { StarPrefabCreator.NormalPath, StarPrefabCreator.GoldenPath })
+        {
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(path) == null) continue;
+            GameObject root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                Transform old = root.transform.Find("Glow");
+                if (old != null) Object.DestroyImmediate(old.gameObject);
+                bool golden = path == StarPrefabCreator.GoldenPath;
+                GameObject quad = Part(PrimitiveType.Quad, root.transform, "Glow", Vector3.zero,
+                    Vector3.one * StarGlowSize * (golden ? 1.25f : 1f) / Mathf.Max(root.transform.localScale.x, 0.01f), glow);
+                var renderer = quad.GetComponent<Renderer>();
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+                quad.AddComponent<Billboard>();
+                PrefabUtility.SaveAsPrefabAsset(root, path);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
     }
 
     private static void SetBurst(ParticleSystem ps, short count)

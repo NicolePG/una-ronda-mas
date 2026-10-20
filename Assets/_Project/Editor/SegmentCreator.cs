@@ -4,7 +4,8 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Crea los 12 tramos de 20 m del MVP (4 fáciles, 4 medios, 4 difíciles) y el tramo vacío en Prefabs/Segments.
+/// Crea los tramos de 20 m (4 fáciles, 6 medios, 6 difíciles; los últimos con la pelota rodante y el rodillo)
+/// y el tramo vacío en Prefabs/Segments.
 /// Pivote al inicio del tramo, obstáculos solo entre z = 3 y z = 17, y siempre hay un camino posible.
 /// Carriles: −1 = izquierda (x = −2), 0 = centro, 1 = derecha (x = 2).
 /// </summary>
@@ -54,6 +55,16 @@ public static class SegmentCreator
         {
             HasHammer = true;
             Add(ObstaclePrefabCreator.HammerPath, new Vector3(0f, 0f, z));
+        }
+
+        /// <summary>Pelota gigante que rueda por el carril desde z hacia el concursante (solo dentro del tramo).</summary>
+        public void Ball(int lane, float z) => Add(ObstaclePrefabCreator.RollingBallPath, new Vector3(X(lane), 0f, z));
+
+        /// <summary>Rodillo barredor que gira en el centro de la pista: obliga a saltar.</summary>
+        public void Sweeper(float z, bool reverse = false)
+        {
+            RequiresJump = true;
+            Add(reverse ? ObstaclePrefabCreator.SweeperReversePath : ObstaclePrefabCreator.SweeperPath, new Vector3(0f, 0f, z));
         }
 
         /// <summary>Hueco al agua en un carril entre start y end (m).</summary>
@@ -169,6 +180,20 @@ public static class SegmentCreator
             s.Golden(C, 9.5f, JumpStarHeight);
             s.HoloSlot(L, 6f);
         }},
+        new Spec { Name = "Mid_05_PelotaRodante", Difficulty = SegmentDifficulty.Mid, Build = s =>
+        {
+            s.Ball(C, 16f);
+            foreach (float z in new[] { 5f, 8f, 11f }) s.Star(L, z);
+            s.Star(R, 6f); s.Star(R, 9f);
+            s.Golden(R, 14f);
+            s.HoloSlot(L, 15f);
+        }},
+        new Spec { Name = "Mid_06_DosPelotas", Difficulty = SegmentDifficulty.Mid, Build = s =>
+        {
+            s.Ball(L, 16f); s.Ball(R, 13f);
+            foreach (float z in new[] { 4f, 7f, 10f, 13f }) s.Star(C, z);
+            s.Golden(C, 16f);
+        }},
 
         // ---------- Difíciles (desde la ronda 7) ----------
         new Spec { Name = "Hard_01_MartilloYHueco", Difficulty = SegmentDifficulty.Hard, Build = s =>
@@ -207,6 +232,23 @@ public static class SegmentCreator
             s.Star(R, 4f); s.Golden(C, 10f); s.Star(L, 16f);
             s.Star(R, 7f); s.Star(L, 13f);
             s.HoloSlot(C, 13f);
+        }},
+        new Spec { Name = "Hard_05_Rodillo", Difficulty = SegmentDifficulty.Hard, Build = s =>
+        {
+            s.Sweeper(10f);
+            s.Star(C, 4.5f); s.Star(L, 4.5f); s.Star(R, 4.5f);
+            s.Golden(C, 10f, JumpStarHeight);
+            s.Star(L, 10f, JumpStarHeight); s.Star(R, 10f, JumpStarHeight);
+            s.Star(C, 16f);
+        }},
+        new Spec { Name = "Hard_06_RodilloYBloques", Difficulty = SegmentDifficulty.Hard, Build = s =>
+        {
+            s.Sweeper(7f, true);
+            s.Block(L, 15f); s.Block(R, 15f);
+            s.Star(L, 7f, JumpStarHeight); s.Star(R, 7f, JumpStarHeight);
+            s.Golden(C, 15f);
+            s.Star(C, 12.5f);
+            s.HoloSlot(L, 12f);
         }},
     };
 

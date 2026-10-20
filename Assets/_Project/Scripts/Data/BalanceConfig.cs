@@ -104,6 +104,38 @@ public class BalanceConfig : ScriptableObject
     [Tooltip("Vidas que pierde si se equivoca.")]
     [SerializeField, Min(0)] private int cheatPenaltyLives = 1;
 
+    [Header("Racha de estrellas (Otoniel)")]
+    [Tooltip("Cada cuántas estrellas seguidas sin chocar hay premio.")]
+    [SerializeField, Min(2)] private int streakMilestone = 5;
+    [Tooltip("Estrellas de premio por hito: ×1 en el primero, ×2 en el segundo… (no se multiplican por reglas).")]
+    [SerializeField, Min(0)] private int streakBonusPerMilestone = 1;
+    [Tooltip("Tope de estrellas de premio por hito.")]
+    [SerializeField, Min(0)] private int streakMaxBonus = 4;
+
+    [Header("Emoción (Otoniel)")]
+    [Tooltip("Segundos antes de pasar un obstáculo en los que esquivarlo cuenta como «¡Uff!».")]
+    [SerializeField, Min(0f)] private float nearMissWindow = 0.4f;
+    [Tooltip("Segundos (reales) que se congela el juego al chocar.")]
+    [SerializeField, Min(0f)] private float hitStopDuration = 0.07f;
+    [Tooltip("Velocidad del tiempo durante el congelado al chocar.")]
+    [SerializeField, Range(0f, 1f)] private float hitStopTimeScale = 0.05f;
+    [Tooltip("Últimos segundos de la ronda en cámara lenta si ya llegó a la meta.")]
+    [SerializeField, Min(0f)] private float finishSlowMoWindow = 0.8f;
+    [Tooltip("Velocidad del tiempo en la cámara lenta del final.")]
+    [SerializeField, Range(0.05f, 1f)] private float finishSlowMoTimeScale = 0.35f;
+    [Tooltip("Desde cuántos segundos para el final se ve el borde rojo de peligro.")]
+    [SerializeField, Min(0f)] private float dangerSeconds = 10f;
+    [Tooltip("Desde cuántos segundos se muestra la cuenta regresiva grande.")]
+    [SerializeField, Min(0)] private int countdownSeconds = 5;
+
+    [Header("Obstáculos que se mueven (Otoniel)")]
+    [Tooltip("Velocidad extra de la pelota rodante sobre la pista (m/s).")]
+    [SerializeField, Min(0f)] private float rollingBallSpeed = 7f;
+    [Tooltip("En qué parte de su recorrido (0 a 1) la pelota pasa junto al concursante; define cuándo arranca.")]
+    [SerializeField, Range(0.1f, 1f)] private float rollingBallPassPoint = 0.7f;
+    [Tooltip("Grados por segundo que gira el rodillo barredor.")]
+    [SerializeField, Min(0f)] private float sweeperDegreesPerSecond = 90f;
+
     [Header("Apuesta")]
     [SerializeField, Min(1)] private int firstBetRound = 3;
     [Tooltip("La meta se multiplica por esto si acepta (se redondea hacia arriba).")]
@@ -194,6 +226,25 @@ public class BalanceConfig : ScriptableObject
     public float HologramChancePerSlot => hologramChancePerSlot;
     public int CheatRewardStars => cheatRewardStars;
     public int CheatPenaltyLives => cheatPenaltyLives;
+
+    // Racha
+    public int StreakMilestone => streakMilestone;
+    public int StreakBonusPerMilestone => streakBonusPerMilestone;
+    public int StreakMaxBonus => streakMaxBonus;
+
+    // Emoción
+    public float NearMissWindow => nearMissWindow;
+    public float HitStopDuration => hitStopDuration;
+    public float HitStopTimeScale => hitStopTimeScale;
+    public float FinishSlowMoWindow => finishSlowMoWindow;
+    public float FinishSlowMoTimeScale => finishSlowMoTimeScale;
+    public float DangerSeconds => dangerSeconds;
+    public int CountdownSeconds => countdownSeconds;
+
+    // Obstáculos que se mueven
+    public float RollingBallSpeed => rollingBallSpeed;
+    public float RollingBallPassPoint => rollingBallPassPoint;
+    public float SweeperDegreesPerSecond => sweeperDegreesPerSecond;
 
     // Apuesta
     public int FirstBetRound => firstBetRound;

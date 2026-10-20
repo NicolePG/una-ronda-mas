@@ -82,6 +82,14 @@ public class ContestantController : MonoBehaviour
     private float lateralSpeedRatio;   // −1 a 1: hacia dónde y qué tan rápido se mueve de carril
     private float lean;
     private float landedAt = -1f;
+    private int dodgedFromLane;
+    private float dodgedAt = -10f;
+
+    /// <summary>El concursante de la escena (para efectos que necesitan saber dónde está).</summary>
+    public static ContestantController Current { get; private set; }
+
+    /// <summary>Tocó una estrella durante la carrera (rachas, textos flotantes).</summary>
+    public event System.Action<Star> StarCollected;
 
     /// <summary>Lo que está haciendo ahora (para animaciones).</summary>
     public ContestantState State
@@ -110,6 +118,16 @@ public class ContestantController : MonoBehaviour
     public bool IsGrounded => !jumping && !inWater;
     public bool IsInvulnerable => Time.time < invulnerableUntil;
 
+    /// <summary>
+    /// ¿Esquivó a último momento un obstáculo que estaba en x? (dejó ese carril hace menos de NearMissWindow s).
+    /// </summary>
+    public bool DodgedAt(float obstacleX, BalanceConfig b)
+    {
+        if (IsInvulnerable || inWater || lane == dodgedFromLane) return false;
+        if (Time.time - dodgedAt > b.NearMissWindow) return false;
+        return Mathf.Abs(obstacleX - dodgedFromLane * b.LaneWidth) < b.LaneWidth * 0.5f;
+    }
+
     private void Awake()
     {
         Rigidbody body = GetComponent<Rigidbody>();
@@ -131,12 +149,14 @@ public class ContestantController : MonoBehaviour
 
     private void OnEnable()
     {
+        Current = this;
         GameEvents.RoundStarted += HandleRoundStarted;
         GameEvents.PhaseChanged += HandlePhaseChanged;
     }
 
     private void OnDisable()
     {
+        if (Current == this) Current = null;
         GameEvents.RoundStarted -= HandleRoundStarted;
         GameEvents.PhaseChanged -= HandlePhaseChanged;
     }
@@ -227,6 +247,8 @@ public class ContestantController : MonoBehaviour
     {
         int target = Mathf.Clamp(lane + direction, -1, 1);
         if (target == lane) return;
+        dodgedFromLane = lane;
+        dodgedAt = Time.time;
         SetLane(target);
         if (AudioManager.Instance != null) AudioManager.Instance.PlayLaneChange();
     }
@@ -234,6 +256,7 @@ public class ContestantController : MonoBehaviour
     // El cambio de carril empieza desde donde está ahora (sirve también si cambia a mitad de camino).
     private void SetLane(int target)
     {
+        if (target != lane && Time.time != dodgedAt) dodgedAt = -10f;   // choques y reinicios no cuentan como esquive
         lane = target;
         laneStartX = transform.position.x;
         laneTime = 0f;
@@ -364,7 +387,12 @@ public class ContestantController : MonoBehaviour
     {
         GameManager gm = GameManager.Instance;
         if (gm == null || gm.Phase != RoundPhase.Running || gm.IsPaused || inWater) return;
-        if (other.GetComponentInParent<Star>(true) != null) return;
+        Star star = other.GetComponentInParent<Star>(true);
+        if (star != null)
+        {
+            StarCollected?.Invoke(star);
+            return;
+        }
 
         if (other.GetComponentInParent<WaterZone>() != null)
         {

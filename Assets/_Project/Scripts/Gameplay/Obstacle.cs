@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +8,9 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class Obstacle : MonoBehaviour
 {
+    /// <summary>El concursante lo esquivó a último momento («¡Uff!»).</summary>
+    public static event Action<Obstacle> NearMiss;
+
     [Header("Tipo")]
     [Tooltip("Holograma: el concursante lo atraviesa sin perder vida.")]
     [SerializeField] private bool isFake;
@@ -26,17 +30,21 @@ public class Obstacle : MonoBehaviour
     private Vector3 baseScale = Vector3.one;
     private float phase;
     private float wobbleUntil;
+    private Collider hitbox;
+    private bool passed;
 
     public bool IsFake => isFake;
 
     private void Awake()
     {
         if (visual != null) baseScale = visual.localScale;
-        phase = Random.value * Mathf.PI * 2f;
+        phase = UnityEngine.Random.value * Mathf.PI * 2f;
+        if (!isFake) hitbox = GetComponentInChildren<Collider>();
     }
 
     private void Update()
     {
+        CheckNearMiss();
         if (visual == null) return;
         float breathe = 1f + Mathf.Sin(Time.time * breatheSpeed + phase) * breatheAmount;
         float wobble = 0f;
@@ -49,7 +57,24 @@ public class Obstacle : MonoBehaviour
     }
 
     /// <summary>El concursante lo chocó: vibra un momento.</summary>
-    public void Wobble() => wobbleUntil = Time.time + wobbleTime;
+    public void Wobble()
+    {
+        wobbleUntil = Time.time + wobbleTime;
+        passed = true;   // si lo chocó, ya no cuenta como esquive
+    }
+
+    // Una sola vez: cuando el obstáculo termina de pasar al concursante.
+    private void CheckNearMiss()
+    {
+        if (passed || hitbox == null) return;
+        ContestantController contestant = ContestantController.Current;
+        GameManager gm = GameManager.Instance;
+        if (contestant == null || gm == null || gm.Phase != RoundPhase.Running) return;
+        Bounds bounds = hitbox.bounds;
+        if (bounds.max.z > contestant.transform.position.z) return;
+        passed = true;
+        if (contestant.DodgedAt(bounds.center.x, gm.Balance)) NearMiss?.Invoke(this);
+    }
 
 #if UNITY_EDITOR
     /// <summary>Solo para las herramientas de Editor que crean los prefabs.</summary>

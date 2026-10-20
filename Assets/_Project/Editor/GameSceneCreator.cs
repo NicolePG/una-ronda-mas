@@ -7,8 +7,9 @@ using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// Arma Scenes/Game.unity (Otoniel): estudio, agua, pantalla gigante con la cara de Tito (HostFace, de Tania),
-/// Tito en persona en su tarima, el concursante, GameSystems (Nicole) y las pantallas de UI (Tania).
+/// Arma Scenes/Game.unity (Otoniel): estudio con público (StudioSetCreator), agua, pantalla gigante con la cara de
+/// Tito (HostFace, de Tania), Tito en persona en su tarima, el concursante, GameSystems (Nicole), la emoción y el
+/// post-procesado (GameFeelCreator) y las pantallas de UI (Tania).
 /// Antes crea obstáculos, tramos y personajes. Se puede repetir: vuelve a generar la escena.
 /// Desde la terminal (Unity cerrado): tools/crear-escena-game.ps1
 /// </summary>
@@ -36,6 +37,7 @@ public static class GameSceneCreator
 
     private const float WaterHeight = -0.6f;
     private const float PoolFloorHeight = -2.5f;
+    private const float PoolWidth = 20f;   // entre las paredes de la piscina (StudioSetCreator)
 
     private static readonly string[] UiPrefabs =
         { "HUD_Canvas", "HostBanner_Canvas", "HostLines_Canvas", "PrizeScreen_Canvas", "PauseMenu_Canvas", "GameOver_Canvas" };
@@ -65,7 +67,7 @@ public static class GameSceneCreator
         string segments = SegmentValidator.ValidateAll(out int problems);
         if (problems > 0) Debug.LogWarning("Validar tramos: " + segments);
         else Debug.Log("Validar tramos: " + segments);
-        Debug.Log($"Listo: {ScenePath} con el concursante, Tito, 12 tramos y la UI. Abre la escena y dale Play (o empieza desde MainMenu).");
+        Debug.Log($"Listo: {ScenePath} con el concursante, Tito, el estudio, los tramos y la UI. Abre la escena y dale Play (o empieza desde MainMenu).");
     }
 
     /// <summary>Para la terminal: arma todo y guarda una captura en Logs/Previews/game_preview.png.</summary>
@@ -98,11 +100,13 @@ public static class GameSceneCreator
         CreatePool(balance);
         CreateScreen();
         CreateHost();
+        ParticleSystem[] cannons = StudioSetCreator.Build();
 
         PrefabUtility.InstantiatePrefab(systemsPrefab, scene);
 
         var contestantPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(CharacterPrefabCreator.ContestantPath);
         Light contestantSpot = null;
+        ContestantController contestantController = null;
         if (contestantPrefab != null)
         {
             var contestant = (GameObject)PrefabUtility.InstantiatePrefab(contestantPrefab, scene);
@@ -110,8 +114,10 @@ public static class GameSceneCreator
             Transform spot = contestant.transform.Find("BlackoutSpot");
             if (spot != null) contestantSpot = spot.GetComponent<Light>();
             rig.AddComponent<CameraFollow>().EditorSetup(contestant.transform, camera);
+            contestantController = contestant.GetComponent<ContestantController>();
         }
         else Debug.LogError("Falta Contestant.prefab.");
+        GameFeelCreator.Build(camera, rig.transform, contestantController, cannons);
 
         var effects = new GameObject("RuleEffects").AddComponent<RuleEffects>();
         effects.EditorSetup(mainLight, studioLights, contestantSpot);
@@ -206,16 +212,19 @@ public static class GameSceneCreator
         GameObject water = GameObject.CreatePrimitive(PrimitiveType.Plane); // Plane = 10 × 10 m
         water.name = "Water";
         water.transform.position = new Vector3(0f, WaterHeight, balance.SpawnAheadDistance * 0.5f);
-        water.transform.localScale = new Vector3(5f, 1f, length / 10f);
+        water.transform.localScale = new Vector3(PoolWidth / 10f, 1f, length / 10f);
         Object.DestroyImmediate(water.GetComponent<Collider>());
-        water.GetComponent<Renderer>().sharedMaterial = MaterialCreator.Load("Mat_Water");
+        var waterRenderer = water.GetComponent<Renderer>();
+        waterRenderer.sharedMaterial = StudioSetCreator.WaterMaterial();
+        waterRenderer.shadowCastingMode = ShadowCastingMode.Off;
+        water.AddComponent<WaterSurface>();
 
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
         floor.name = "PoolFloor";
         floor.transform.position = new Vector3(0f, PoolFloorHeight, balance.SpawnAheadDistance * 0.5f);
-        floor.transform.localScale = new Vector3(5f, 1f, length / 10f);
+        floor.transform.localScale = new Vector3(PoolWidth / 10f, 1f, length / 10f);
         Object.DestroyImmediate(floor.GetComponent<Collider>());
-        floor.GetComponent<Renderer>().sharedMaterial = GameMaterials.GetOrCreate("Mat_PoolFloor", "#173B66");
+        floor.GetComponent<Renderer>().sharedMaterial = StudioSetCreator.PoolFloorMaterial();
     }
 
     private static void CreateScreen()
@@ -293,6 +302,7 @@ public static class GameSceneCreator
         }
         Pose(CharacterPrefabCreator.ContestantModel, "sprint", 0.12f);
         Pose(CharacterPrefabCreator.HostModel, "interact-right", 0.3f);
+        PoseAudience();
 
         Directory.CreateDirectory(PreviewRenderer.OutputFolder);
         Texture2D shot = PreviewRenderer.Capture(Camera.main, 1280, 720);
@@ -303,6 +313,23 @@ public static class GameSceneCreator
 
         // No guardar: la pista y las poses eran solo para la foto.
         EditorSceneManager.OpenScene(scene.path, OpenSceneMode.Single);
+    }
+
+    // El público, cada uno con el «idle» de su modelo y en un momento distinto.
+    private static void PoseAudience()
+    {
+        var random = new System.Random(3);
+        foreach (Animator animator in Object.FindObjectsOfType<Animator>())
+        {
+            RuntimeAnimatorController controller = animator.runtimeAnimatorController;
+            if (controller == null || !controller.name.StartsWith("Audience")) continue;
+            foreach (AnimationClip clip in controller.animationClips)
+            {
+                if (clip.name != "idle") continue;
+                clip.SampleAnimation(animator.gameObject, (float)random.NextDouble() * clip.length);
+                break;
+            }
+        }
     }
 
     private static void Pose(string model, string clipName, float time)

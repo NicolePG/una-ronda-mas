@@ -82,6 +82,33 @@ public static class IconPainter
         return AssetDatabase.LoadAssetAtPath<Sprite>(path);
     }
 
+    /// <summary>Guarda la textura como PNG para materiales (repetible); normalMap = mapa de normales.</summary>
+    public static Texture2D SaveTexture(string path, Texture2D texture, bool normalMap, bool repeat = true)
+    {
+        ProjectPaths.EnsureFolder(Path.GetDirectoryName(path).Replace('\\', '/'));
+        File.WriteAllBytes(path, texture.EncodeToPNG());
+        Object.DestroyImmediate(texture);
+        AssetDatabase.ImportAsset(path);
+        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+        importer.textureType = normalMap ? TextureImporterType.NormalMap : TextureImporterType.Default;
+        importer.wrapMode = repeat ? TextureWrapMode.Repeat : TextureWrapMode.Clamp;
+        importer.alphaIsTransparency = !normalMap;
+        importer.mipmapEnabled = true;
+        importer.SaveAndReimport();
+        return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+    }
+
+    /// <summary>Textura nueva a partir de una función de color por píxel (u, v de 0 a 1).</summary>
+    public static Texture2D Paint(int width, int height, System.Func<float, float, Color> pixel)
+    {
+        var pixels = new Color[width * height];
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++) pixels[y * width + x] = pixel((x + 0.5f) / width, (y + 0.5f) / height);
+        }
+        return ToTexture(width, height, pixels);
+    }
+
     // ---------- Formas (distancia con signo; negativa = adentro) ----------
 
     public static float Circle(Vector2 p, Vector2 c, float r) => (p - c).magnitude - r;
