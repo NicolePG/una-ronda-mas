@@ -55,6 +55,7 @@ public class AudienceCrowd : MonoBehaviour
         GameEvents.ContestantHit += HandleHit;
         GameEvents.GameOver += HandleGameOver;
         GameEvents.RuleAnnounced += HandleRuleAnnounced;
+        SurpriseEvents.SurpriseStarted += HandleSurprise;
     }
 
     private void OnDisable()
@@ -64,12 +65,15 @@ public class AudienceCrowd : MonoBehaviour
         GameEvents.ContestantHit -= HandleHit;
         GameEvents.GameOver -= HandleGameOver;
         GameEvents.RuleAnnounced -= HandleRuleAnnounced;
+        SurpriseEvents.SurpriseStarted -= HandleSurprise;
     }
 
     private void HandleMilestone(int streak, int bonus) => React(CheerState, streakShare);
     private void HandleRoundWon(int round, int prizes) => React(JumpState, 1f);
     private void HandleHit(HitCause cause) => React(OohState, 0.7f);
     private void HandleGameOver(GameStats stats) => React(OohState, 1f);
+    private void HandleSurprise(SurpriseType type, float duration) =>
+        React(type == SurpriseType.Blackout ? OohState : CheerState, 0.6f);
 
     private void HandleRuleAnnounced(RuleData rule, bool isLie)
     {

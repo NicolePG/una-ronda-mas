@@ -3,7 +3,8 @@ using UnityEngine.Rendering;
 
 /// <summary>
 /// Efectos visibles de la regla que realmente se aplica.
-/// Apagón: luz ambiental casi negra, luces del estudio apagadas y solo el reflector del concursante.
+/// Apagón: luz ambiental casi negra, luces del estudio apagadas y solo el reflector del concursante
+/// (también lo usa el evento sorpresa de apagón corto, ver SurpriseEvents).
 /// Espejo, Gigante y Sin salto los resuelve ContestantController.
 /// </summary>
 [DisallowMultipleComponent]
@@ -21,6 +22,8 @@ public class RuleEffects : MonoBehaviour
     [SerializeField] private Color blackoutAmbient = new Color(0.02f, 0.02f, 0.04f);
 
     private bool blackoutActive;
+    private bool ruleBlackout;
+    private bool eventBlackout;
     private Color savedAmbient;
     private AmbientMode savedAmbientMode;
 
@@ -38,11 +41,25 @@ public class RuleEffects : MonoBehaviour
         SetBlackout(false); // RenderSettings sobrevive al cambio de escena
     }
 
-    private void HandleRuleApplied(RuleData rule) => SetBlackout(rule != null && rule.Type == RuleType.Blackout);
+    private void HandleRuleApplied(RuleData rule)
+    {
+        ruleBlackout = rule != null && rule.Type == RuleType.Blackout;
+        SetBlackout(ruleBlackout || eventBlackout);
+    }
 
     private void HandlePhaseChanged(RoundPhase phase)
     {
-        if (phase != RoundPhase.Running) SetBlackout(false);
+        if (phase == RoundPhase.Running) return;
+        ruleBlackout = false;
+        eventBlackout = false;
+        SetBlackout(false);
+    }
+
+    /// <summary>Apagón corto del evento sorpresa (se suma a la regla Apagón si la hubiera).</summary>
+    public void SetEventBlackout(bool on)
+    {
+        eventBlackout = on;
+        SetBlackout(ruleBlackout || eventBlackout);
     }
 
     private void SetBlackout(bool on)

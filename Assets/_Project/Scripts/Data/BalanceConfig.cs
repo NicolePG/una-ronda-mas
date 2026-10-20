@@ -136,6 +136,25 @@ public class BalanceConfig : ScriptableObject
     [Tooltip("Grados por segundo que gira el rodillo barredor.")]
     [SerializeField, Min(0f)] private float sweeperDegreesPerSecond = 90f;
 
+    [Header("Eventos sorpresa (Otoniel)")]
+    [Tooltip("Desde qué ronda Tito puede lanzar un evento a mitad de ronda.")]
+    [SerializeField, Min(1)] private int surpriseFromRound = 2;
+    [Tooltip("Probabilidad de que haya un evento en una ronda (0 a 1).")]
+    [SerializeField, Range(0f, 1f)] private float surpriseChance = 0.65f;
+    [Tooltip("El evento empieza entre estos segundos de la ronda (y termina antes del final).")]
+    [SerializeField, Min(0f)] private float surpriseWindowStart = 10f;
+    [SerializeField, Min(0f)] private float surpriseWindowEnd = 24f;
+    [Tooltip("Segundos de lluvia de estrellas.")]
+    [SerializeField, Min(0.5f)] private float starRainDuration = 5f;
+    [Tooltip("Segundos entre estrellas de la lluvia.")]
+    [SerializeField, Min(0.05f)] private float starRainInterval = 0.3f;
+    [Tooltip("Probabilidad de que una estrella de la lluvia sea dorada.")]
+    [SerializeField, Range(0f, 1f)] private float starRainGoldenChance = 0.15f;
+    [Tooltip("Segundos de estrellas dobles.")]
+    [SerializeField, Min(0.5f)] private float doubleStarsDuration = 6f;
+    [Tooltip("Segundos del apagón sorpresa.")]
+    [SerializeField, Min(0.5f)] private float blackoutEventDuration = 3f;
+
     [Header("Apuesta")]
     [SerializeField, Min(1)] private int firstBetRound = 3;
     [Tooltip("La meta se multiplica por esto si acepta (se redondea hacia arriba).")]
@@ -245,6 +264,17 @@ public class BalanceConfig : ScriptableObject
     public float RollingBallSpeed => rollingBallSpeed;
     public float RollingBallPassPoint => rollingBallPassPoint;
     public float SweeperDegreesPerSecond => sweeperDegreesPerSecond;
+
+    // Eventos sorpresa
+    public int SurpriseFromRound => surpriseFromRound;
+    public float SurpriseChance => surpriseChance;
+    public float SurpriseWindowStart => surpriseWindowStart;
+    public float SurpriseWindowEnd => Mathf.Max(surpriseWindowStart, surpriseWindowEnd);
+    public float StarRainDuration => starRainDuration;
+    public float StarRainInterval => starRainInterval;
+    public float StarRainGoldenChance => starRainGoldenChance;
+    public float DoubleStarsDuration => doubleStarsDuration;
+    public float BlackoutEventDuration => blackoutEventDuration;
 
     // Apuesta
     public int FirstBetRound => firstBetRound;

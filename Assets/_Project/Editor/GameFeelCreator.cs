@@ -230,7 +230,7 @@ public static class GameFeelCreator
         var chip = new GameObject("StreakChip", typeof(RectTransform)).GetComponent<RectTransform>();
         chip.SetParent(root.transform, false);
         chip.anchorMin = chip.anchorMax = chip.pivot = new Vector2(0f, 1f);
-        chip.anchoredPosition = new Vector2(24f, -184f);
+        chip.anchoredPosition = new Vector2(24f, -204f);
         chip.sizeDelta = new Vector2(180f, 40f);
         var chipBackground = chip.gameObject.AddComponent<Image>();
         chipBackground.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(ProjectPaths.Art + "/UI/Hud_RuleChip.png");
@@ -246,6 +246,57 @@ public static class GameFeelCreator
         chipText.rectTransform.sizeDelta = Vector2.zero;
 
         root.AddComponent<RoundDrama>().EditorSetup(flash, vignette, countdown, banner, title, bonus, chipGroup, chipText, cannons);
+        CreateAnnouncer(root.transform, font);
+    }
+
+    // Carteles con barrido tipo TV (RoundAnnouncer): franjas diagonales, título y subtítulo, y cartel del evento activo.
+    private static void CreateAnnouncer(Transform root, TMP_FontAsset font)
+    {
+        Color[] stripeColors = { Gold, new Color(1f, 1f, 1f, 0.85f), IconPainter.Hex("#7653E0") };
+        float[] widths = { 170f, 70f, 110f };
+        var stripes = new RectTransform[stripeColors.Length];
+        for (int i = 0; i < stripes.Length; i++)
+        {
+            var go = new GameObject($"Stripe_{i + 1}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            var rect = (RectTransform)go.transform;
+            rect.SetParent(root, false);
+            rect.sizeDelta = new Vector2(widths[i], 1700f);
+            rect.localRotation = Quaternion.Euler(0f, 0f, -18f);
+            var image = go.GetComponent<Image>();
+            image.color = stripeColors[i];
+            image.raycastTarget = false;
+            go.SetActive(false);
+            stripes[i] = rect;
+        }
+
+        TMP_Text title = Text(root, "AnnounceTitle", font, "¡YA!", 74f, Gold);
+        title.rectTransform.anchorMin = title.rectTransform.anchorMax = new Vector2(0.5f, 0.72f);
+        title.rectTransform.sizeDelta = new Vector2(1100f, 120f);
+        TMP_Text subtitle = Text(root, "AnnounceSubtitle", font, "", 28f, Color.white);
+        subtitle.rectTransform.anchorMin = subtitle.rectTransform.anchorMax = new Vector2(0.5f, 0.72f);
+        subtitle.rectTransform.anchoredPosition = new Vector2(0f, -76f);
+        subtitle.rectTransform.sizeDelta = new Vector2(1000f, 44f);
+
+        // Evento activo y sus segundos, debajo del reloj.
+        var chip = new GameObject("EventChip", typeof(RectTransform)).GetComponent<RectTransform>();
+        chip.SetParent(root, false);
+        chip.anchorMin = chip.anchorMax = chip.pivot = new Vector2(1f, 1f);
+        chip.anchoredPosition = new Vector2(-24f, -150f);
+        chip.sizeDelta = new Vector2(320f, 44f);
+        var chipImage = chip.gameObject.AddComponent<Image>();
+        chipImage.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(ProjectPaths.Art + "/UI/Hud_RuleChip.png");
+        chipImage.type = Image.Type.Sliced;
+        chipImage.raycastTarget = false;
+        var chipGroup = chip.gameObject.AddComponent<CanvasGroup>();
+        chipGroup.blocksRaycasts = false;
+        chipGroup.interactable = false;
+        chipGroup.alpha = 0f;
+        TMP_Text chipText = Text(chip, "Text", font, "ESTRELLAS DOBLES  6s", 20f, Gold);
+        chipText.rectTransform.anchorMin = Vector2.zero;
+        chipText.rectTransform.anchorMax = Vector2.one;
+        chipText.rectTransform.sizeDelta = Vector2.zero;
+
+        root.gameObject.AddComponent<RoundAnnouncer>().EditorSetup(stripes, title, subtitle, chipGroup, chipText);
     }
 
     private static Image FullScreen(Transform parent, string name, Sprite sprite, Color color)

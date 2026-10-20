@@ -65,10 +65,10 @@ Assets/_Project/
 │   ├── Data/      BalanceConfig.cs, PrizeData.cs, RuleData.cs, PlayerModifiers.cs, GameStats.cs
 │   ├── Gameplay/  ContestantController.cs, TrackGenerator.cs, TrackSegment.cs, Obstacle.cs,
 │   │              Star.cs, WaterZone.cs, HammerSwing.cs, Hologram.cs, FinishArch.cs, StarMeshBuilder.cs,
-│   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs
+│   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs, SurpriseEvents.cs
 │   ├── Effects/   RuleEffects.cs, CameraShake.cs, CameraFollow.cs, RoundDrama.cs, FloatingTexts.cs, SpeedLines.cs,
 │   │              MarqueeLights.cs, StudioLightBeam.cs, WaterSurface.cs, FloatingBob.cs, Billboard.cs,
-│   │              MenuStage.cs, MenuCameraDrift.cs
+│   │              MenuStage.cs, MenuCameraDrift.cs, RoundAnnouncer.cs, SpeedRibbon.cs
 │   └── UI/        MainMenuUI.cs, HowToPlayUI.cs, OptionsUI.cs, CreditsUI.cs, HUD.cs, HostBanner.cs,
 │                  HostFace.cs, HostLines.cs, PrizeScreen.cs, PauseMenu.cs, GameOverScreen.cs, TitlePulse.cs
 ├── Editor/      herramientas del menú «Una Ronda Más/...»
@@ -90,6 +90,7 @@ Assets/_Project/
 | `ContestantController` | Otoniel | Carriles, salto, deslizamiento, choques, caída al agua, invulnerabilidad |
 | `RuleEffects` | Otoniel | Efectos visibles de cada regla aplicada (apagón, espejo, gigante, sin salto) |
 | `StarStreak`, `RoundDrama`, `FloatingTexts` | Otoniel | Racha de estrellas con premio, destello y micro-pausa al chocar, cuenta regresiva, cámara lenta final, textos «+1» / «¡Uff!» |
+| `SurpriseEvents`, `RoundAnnouncer` | Otoniel | Eventos de Tito a mitad de ronda (lluvia de estrellas, estrellas dobles, apagón; F7 en el Editor) y carteles con barrido «¡YA!», «¡META!» |
 | `StudioSetCreator`, `GameFeelCreator` (Editor) | Otoniel | Arman el estudio (gradas con público, cartel, haces, flotadores, cañones) y el post-procesado en `Game.unity` |
 | `MainMenuStudioCreator` (Editor) | Otoniel | Menú principal con el estudio 3D detrás (Tito y la concursante saludando) y la UI en una columna; menú «Una Ronda Más/UI/Menú con el estudio 3D» |
 | `AudioManager` | Tania | Música y efectos; persiste entre escenas (`DontDestroyOnLoad`); se crea solo si falta |
@@ -124,7 +125,8 @@ public static class GameEvents
 ```
 
 Eventos locales de efectos (Otoniel, fuera de `GameEvents` porque solo los usan los efectos): `StarStreak.StreakChanged(int)`,
-`StarStreak.MilestoneReached(int racha, int premio)`, `Obstacle.NearMiss(Obstacle)` y `ContestantController.StarCollected(Star)`.
+`StarStreak.MilestoneReached(int racha, int premio)`, `Obstacle.NearMiss(Obstacle)`, `ContestantController.StarCollected(Star)`,
+`SurpriseEvents.SurpriseStarted(SurpriseType, float duración)` y `SurpriseEvents.SurpriseEnded(SurpriseType)`.
 
 ## Flujo de una ronda
 

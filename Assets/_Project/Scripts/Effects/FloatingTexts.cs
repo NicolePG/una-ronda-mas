@@ -40,6 +40,9 @@ public class FloatingTexts : MonoBehaviour
     private Entry[] pool = new Entry[0];
     private int next;
     private int lastStars;
+    private int lastStarEntry = -1;
+    private int lastStarAmount;
+    private float lastStarTime = -10f;
     private Camera cachedCamera;
 
     private void Awake()
@@ -79,7 +82,21 @@ public class FloatingTexts : MonoBehaviour
         lastStars = stars;
         GameManager gm = GameManager.Instance;
         if (gained <= 0 || gm == null || gm.Phase != RoundPhase.Running) return;
+        // Lo que llega casi junto (estrella + premio de racha o estrellas dobles) se suma en un solo texto.
+        if (lastStarEntry >= 0 && Time.unscaledTime - lastStarTime < 0.12f && pool[lastStarEntry].Age >= 0f)
+        {
+            lastStarAmount += gained;
+            ref Entry entry = ref pool[lastStarEntry];
+            bool bigger = lastStarAmount >= bigStarAmount;
+            entry.Text.text = $"+{lastStarAmount}";
+            entry.Color = bigger ? bigStarColor : starColor;
+            entry.Scale = bigger ? 1.35f : 1f;
+            return;
+        }
         bool big = gained >= bigStarAmount;
+        lastStarEntry = next;
+        lastStarAmount = gained;
+        lastStarTime = Time.unscaledTime;
         Spawn($"+{gained}", Vector3.zero, big ? bigStarColor : starColor, big ? 1.35f : 1f);
     }
 

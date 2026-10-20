@@ -33,7 +33,7 @@ public static class HudDesignCreator
 
     private struct Sprites
     {
-        public Sprite Panel, RuleChip, Cheat, Key, Star, Heart;
+        public Sprite Panel, RuleChip, Cheat, Key, Star, Heart, Bar;
     }
 
     [MenuItem("Una Ronda Más/UI/HUD con el diseño del lienzo")]
@@ -75,6 +75,8 @@ public static class HudDesignCreator
                 IconPainter.Panel(128, 128, 24f, 0f, Red, Red, 8f, DarkRed), new Vector4(36, 36, 36, 36)),
             Key = IconPainter.Save($"{UiFolder}/Hud_Key.png",
                 IconPainter.Panel(64, 64, 12f, 4f, Color.clear, Color.white), new Vector4(18, 18, 18, 18)),
+            Bar = IconPainter.Save($"{UiFolder}/Hud_Bar.png",
+                IconPainter.Panel(64, 16, 8f, 0f, Color.white, Color.white), new Vector4(8, 8, 8, 8)),
             Star = IconPainter.Save($"{IconFolder}/Icon_Star.png", IconPainter.Icon(IconSize, IconOutline,
                 new IconPainter.Layer(p => IconPainter.Star(p, new Vector2(0f, -0.04f), 0.86f, 0.4f), Gold),
                 new IconPainter.Layer(p => IconPainter.Star(p, new Vector2(-0.08f, 0.02f), 0.4f, 0.18f), StarLight)), Vector4.zero),
@@ -136,17 +138,31 @@ public static class HudDesignCreator
         Vector2 left = new Vector2(0f, 0.5f);
 
         // Estrellas, puntaje, vidas y premios.
-        RectTransform stats = Panel(root.transform, "StatsPanel", s.Panel, topLeft, new Vector2(24f, -20f), new Vector2(300f, 152f));
+        RectTransform stats = Panel(root.transform, "StatsPanel", s.Panel, topLeft, new Vector2(24f, -20f), new Vector2(300f, 172f));
         RectTransform starsGroup = Rect(stats, "StarsGroup", topLeft, new Vector2(16f, -12f), new Vector2(268f, 56f));
-        Img(starsGroup, "StarIcon", s.Star, left, Vector2.zero, new Vector2(46f, 46f));
+        Image starIcon = Img(starsGroup, "StarIcon", s.Star, left, Vector2.zero, new Vector2(46f, 46f));
         TMP_Text stars = Text(starsGroup, "StarsText", font, "0 / 20", left, new Vector2(56f, 2f), new Vector2(210f, 56f),
             44f, TextAlignmentOptions.Left, Color.white, true);
-        TMP_Text score = Text(stats, "ScoreText", font, "PUNTAJE 0", topLeft, new Vector2(72f, -64f), new Vector2(210f, 22f),
+        // Barra de progreso hacia la meta.
+        Image barBack = Img(stats, "GoalBar", s.Bar, topLeft, new Vector2(16f, -72f), new Vector2(268f, 12f));
+        barBack.type = Image.Type.Sliced;
+        barBack.preserveAspect = false;
+        barBack.color = new Color(1f, 1f, 1f, 0.14f);
+        Image goalFill = Img(barBack.transform, "Fill", s.Bar, Vector2.zero, Vector2.zero, Vector2.zero);
+        goalFill.rectTransform.anchorMin = Vector2.zero;
+        goalFill.rectTransform.anchorMax = Vector2.one;
+        goalFill.rectTransform.sizeDelta = Vector2.zero;
+        goalFill.preserveAspect = false;
+        goalFill.type = Image.Type.Filled;
+        goalFill.fillMethod = Image.FillMethod.Horizontal;
+        goalFill.fillAmount = 0f;
+        goalFill.color = StarLight;
+        TMP_Text score = Text(stats, "ScoreText", font, "PUNTAJE 0", topLeft, new Vector2(18f, -88f), new Vector2(264f, 22f),
             17f, TextAlignmentOptions.Left, Muted, false);
-        RectTransform heartsRow = Row(stats, "HeartsRow", new Vector2(16f, -92f), new Vector2(268f, 30f), 6f);
+        RectTransform heartsRow = Row(stats, "HeartsRow", new Vector2(16f, -112f), new Vector2(268f, 30f), 6f);
         var hearts = new Image[maxLives];
         for (int i = 0; i < maxLives; i++) hearts[i] = Img(heartsRow, $"Heart_{i + 1}", s.Heart, left, Vector2.zero, new Vector2(30f, 30f));
-        RectTransform prizeRow = Row(stats, "PrizeRow", new Vector2(16f, -124f), new Vector2(268f, 24f), 5f);
+        RectTransform prizeRow = Row(stats, "PrizeRow", new Vector2(16f, -144f), new Vector2(268f, 24f), 5f);
         Image prizeTemplate = Img(prizeRow, "PrizeIconTemplate", null, left, Vector2.zero, new Vector2(24f, 24f));
         prizeTemplate.gameObject.SetActive(false);
 
@@ -191,7 +207,7 @@ public static class HudDesignCreator
         cheat.gameObject.SetActive(false);
 
         root.GetComponent<HUD>().EditorSetup(stars, score, starsGroup, hearts, heartsRow, prizeRow, prizeTemplate,
-            time, round, chip.gameObject, ruleIcon, ruleText, button);
+            time, round, chip.gameObject, ruleIcon, ruleText, button, goalFill, starIcon);
 
         ProjectPaths.EnsureFolder(ProjectPaths.Root + "/Prefabs/UI");
         PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);

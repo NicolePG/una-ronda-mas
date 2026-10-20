@@ -90,7 +90,83 @@ public static class CharacterPrefabCreator
         spot.color = new Color(1f, 0.95f, 0.85f);
         spot.enabled = false;
 
+        AddSpeedRibbon(root.transform);
         ObstaclePrefabCreator.Save(root, ContestantPath);
+    }
+
+    // Estela de luz en los pies y gotas al correr (SpeedRibbon).
+    private static void AddSpeedRibbon(Transform root)
+    {
+        var go = new GameObject("SpeedRibbon", typeof(LineRenderer));
+        go.transform.SetParent(root, false);
+        go.transform.localPosition = new Vector3(0f, 0.08f, 0f);
+        var line = go.GetComponent<LineRenderer>();
+        line.useWorldSpace = true;
+        line.positionCount = 0;
+        line.alignment = LineAlignment.View;
+        line.numCapVertices = 2;
+        line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        line.receiveShadows = false;
+        line.widthCurve = new AnimationCurve(new Keyframe(0f, 0.5f), new Keyframe(1f, 0.22f));
+        // Con transparencia normal (no aditiva): sobre la pista blanca una luz aditiva no se vería.
+        ColorUtility.TryParseHtmlString("#4FA3E0", out Color water);
+        ColorUtility.TryParseHtmlString("#2A78D4", out Color player);
+        var gradient = new Gradient();
+        gradient.SetKeys(
+            new[] { new GradientColorKey(water, 0f), new GradientColorKey(player, 0.35f), new GradientColorKey(player, 1f) },
+            new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0.9f, 0.6f), new GradientAlphaKey(0f, 1f) });
+        line.colorGradient = gradient;
+        Material ribbon = ObstaclePrefabCreator.ParticleMaterial("Mat_FX_Ribbon", RibbonTexture(), false);
+        // Va pegada al piso: sin esto las «partículas suaves» del shader la desvanecen casi por completo.
+        if (ribbon != null) ribbon.SetFloat("_InvFade", 10f);
+        line.sharedMaterial = ribbon;
+
+        // Gotas: salen hacia arriba y se van hacia atrás con la pista.
+        var sprayGo = new GameObject("RunSpray");
+        sprayGo.transform.SetParent(root, false);
+        sprayGo.transform.localPosition = new Vector3(0f, 0.05f, 0f);
+        var spray = sprayGo.AddComponent<ParticleSystem>();
+        spray.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        var main = spray.main;
+        main.loop = true;
+        main.playOnAwake = true;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(0.25f, 0.4f);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(1f, 2.2f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.06f, 0.14f);
+        main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 1f, 1f, 0.7f), new Color(water.r, water.g, water.b, 0.7f));
+        main.gravityModifier = 1.5f;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.maxParticles = 80;
+        var emission = spray.emission;
+        emission.rateOverTime = 0f;
+        var shape = spray.shape;
+        shape.shapeType = ParticleSystemShapeType.Cone;
+        shape.angle = 30f;
+        shape.radius = 0.2f;
+        shape.rotation = new Vector3(-90f, 0f, 0f);
+        var velocity = spray.velocityOverLifetime;
+        velocity.enabled = true;
+        velocity.space = ParticleSystemSimulationSpace.World;
+        velocity.x = new ParticleSystem.MinMaxCurve(0f);
+        velocity.y = new ParticleSystem.MinMaxCurve(0f);
+        velocity.z = new ParticleSystem.MinMaxCurve(0f);
+        Material drop = ObstaclePrefabCreator.ParticleMaterial("Mat_FX_Drop", "circle_05.png", false);
+        if (drop != null) sprayGo.GetComponent<ParticleSystemRenderer>().sharedMaterial = drop;
+
+        go.AddComponent<SpeedRibbon>().EditorSetup(spray);
+    }
+
+    // Franja suave: opaca en el centro y transparente en los bordes (a lo ancho de la cinta).
+    private static Texture2D RibbonTexture()
+    {
+        string path = ProjectPaths.Art + "/Textures/Tex_Ribbon.png";
+        var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+        if (existing != null) return existing;
+        return IconPainter.SaveTexture(path, IconPainter.Paint(8, 64, (u, v) =>
+        {
+            float edge = 1f - Mathf.Abs(v - 0.5f) * 2f;
+            return new Color(1f, 1f, 1f, Mathf.SmoothStep(0f, 1f, edge));
+        }), false, false);
     }
 
     private static void CreateHost()

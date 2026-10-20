@@ -61,6 +61,8 @@ public static class GameSceneCreator
         CharacterPrefabCreator.CreateAll(AssetDatabase.LoadAssetAtPath<ParticleSystem>(ObstaclePrefabCreator.SplashPath));
         GameObject systems = GameSystemsPrefabCreator.CreateOrUpdate();
         CreateScene(balance, systems);
+        // El menú usa tramos y confeti: al regenerar los prefabs sus referencias cambian, así que se rearma también.
+        MainMenuStudioCreator.Create();
         WebGLBuildTools.UpdateBuildScenes();
         AssetDatabase.SaveAssets();
 
@@ -121,6 +123,9 @@ public static class GameSceneCreator
 
         var effects = new GameObject("RuleEffects").AddComponent<RuleEffects>();
         effects.EditorSetup(mainLight, studioLights, contestantSpot);
+        new GameObject("SurpriseEvents").AddComponent<SurpriseEvents>().EditorSetup(
+            AssetDatabase.LoadAssetAtPath<GameObject>(StarPrefabCreator.NormalPath),
+            AssetDatabase.LoadAssetAtPath<GameObject>(StarPrefabCreator.GoldenPath), effects);
 
         foreach (string name in UiPrefabs)
         {

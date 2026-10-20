@@ -115,6 +115,9 @@ public class ContestantController : MonoBehaviour
     public float CurrentJumpDuration => jumpDuration;
 
     public int Lane => lane;
+
+    /// <summary>−1 a 1: hacia dónde y qué tan rápido se mueve de carril (cámara, estela).</summary>
+    public float LateralSpeedRatio => lateralSpeedRatio;
     public bool IsGrounded => !jumping && !inWater;
     public bool IsInvulnerable => Time.time < invulnerableUntil;
 
