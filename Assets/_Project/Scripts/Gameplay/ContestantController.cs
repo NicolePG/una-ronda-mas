@@ -46,6 +46,18 @@ public class ContestantController : MonoBehaviour
     [Tooltip("Al deslizarse en el aire, el salto termina así de rápido.")]
     [SerializeField, Min(1f)] private float fastFallMultiplier = 2.5f;
 
+    [Header("Controles")]
+    [Tooltip("Segundos que se recuerda un salto apretado justo antes de aterrizar.")]
+    [SerializeField, Min(0f)] private float jumpBufferTime = 0.15f;
+    [Tooltip("Grados que se inclina el modelo al cambiar de carril.")]
+    [SerializeField, Range(0f, 30f)] private float leanAngle = 12f;
+    [Tooltip("Qué tan rápido se inclina y se endereza.")]
+    [SerializeField, Min(0.1f)] private float leanSpeed = 14f;
+    [Tooltip("Alto relativo del modelo justo al aterrizar.")]
+    [SerializeField, Range(0.5f, 1f)] private float landSquash = 0.82f;
+    [Tooltip("Segundos que dura el aplastado al aterrizar.")]
+    [SerializeField, Min(0.01f)] private float landSquashTime = 0.14f;
+
     private CapsuleCollider capsule;
     private Renderer[] modelRenderers = new Renderer[0];
     private Vector3 modelBaseScale = Vector3.one;
@@ -64,6 +76,12 @@ public class ContestantController : MonoBehaviour
     private float invulnerableUntil;
     private float hitAnimUntil;
     private float currentScale = 1f;
+    private float jumpBufferedUntil = -1f;
+    private float laneStartX;
+    private float laneTime;
+    private float lateralSpeedRatio;   // −1 a 1: hacia dónde y qué tan rápido se mueve de carril
+    private float lean;
+    private float landedAt = -1f;
 
     /// <summary>Lo que está haciendo ahora (para animaciones).</summary>
     public ContestantState State
@@ -134,15 +152,16 @@ public class ContestantController : MonoBehaviour
     public void ResetPose()
     {
         StopAllCoroutines();
-        lane = 0;
         jumping = false;
         fastFall = false;
         slideQueued = false;
         inWater = false;
         hitAnimUntil = 0f;
         invulnerableUntil = 0f;
+        jumpBufferedUntil = -1f;
         EndSlide();
         transform.position = new Vector3(0f, 0f, transform.position.z);
+        SetLane(0);
     }
 
     private void Update()
@@ -167,13 +186,19 @@ public class ContestantController : MonoBehaviour
             if (r != null && r.enabled != visible) r.enabled = visible;
         }
 
-        // Giro al chocar y aplastado al deslizarse.
+        // Giro al chocar e inclinación hacia el carril al que va.
         float spin = 0f;
         if (Time.time < hitAnimUntil)
             spin = 360f * hitSpinTurns * (1f - (hitAnimUntil - Time.time) / hitSpinTime);
-        model.localRotation = modelBaseRotation * Quaternion.Euler(0f, spin, 0f);
+        lean = Mathf.Lerp(lean, -lateralSpeedRatio * leanAngle, 1f - Mathf.Exp(-leanSpeed * Time.deltaTime));
+        model.localRotation = modelBaseRotation * Quaternion.Euler(0f, spin, lean);
+
+        // Aplastado al deslizarse y al aterrizar (ensancha un poco para que no pierda volumen).
         float squash = sliding ? slideSquash : 1f;
-        model.localScale = new Vector3(modelBaseScale.x, modelBaseScale.y * squash, modelBaseScale.z);
+        float sinceLanding = (Time.time - landedAt) / landSquashTime;
+        if (landedAt >= 0f && sinceLanding < 1f) squash *= Mathf.Lerp(landSquash, 1f, sinceLanding);
+        float widen = 1f + (1f - squash) * 0.5f;
+        model.localScale = new Vector3(modelBaseScale.x * widen, modelBaseScale.y * squash, modelBaseScale.z * widen);
     }
 
     // ---------- Controles ----------
@@ -186,21 +211,37 @@ public class ContestantController : MonoBehaviour
         if (IsRuleApplied(gm, RuleType.Mirror)) direction = -direction;
         if (direction != 0) ChangeLane(direction);
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) TryJump(gm);
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) TrySlide(gm);
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            // Apretado en el aire: se guarda un momento y sale al aterrizar.
+            if (!TryJump(gm) && jumping) jumpBufferedUntil = Time.time + jumpBufferTime;
+        }
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            jumpBufferedUntil = -1f;
+            TrySlide(gm);
+        }
     }
 
     private void ChangeLane(int direction)
     {
         int target = Mathf.Clamp(lane + direction, -1, 1);
         if (target == lane) return;
-        lane = target;
+        SetLane(target);
         if (AudioManager.Instance != null) AudioManager.Instance.PlayLaneChange();
     }
 
-    private void TryJump(GameManager gm)
+    // El cambio de carril empieza desde donde está ahora (sirve también si cambia a mitad de camino).
+    private void SetLane(int target)
     {
-        if (jumping || IsRuleApplied(gm, RuleType.NoJump)) return;
+        lane = target;
+        laneStartX = transform.position.x;
+        laneTime = 0f;
+    }
+
+    private bool TryJump(GameManager gm)
+    {
+        if (jumping || IsRuleApplied(gm, RuleType.NoJump)) return false;
         if (sliding) EndSlide();
 
         BalanceConfig b = gm.Balance;
@@ -209,7 +250,9 @@ public class ContestantController : MonoBehaviour
         jumpTime = 0f;
         jumping = true;
         fastFall = false;
+        jumpBufferedUntil = -1f;
         if (AudioManager.Instance != null) AudioManager.Instance.PlayJump();
+        return true;
     }
 
     private void TrySlide(GameManager gm)
@@ -254,9 +297,16 @@ public class ContestantController : MonoBehaviour
         BalanceConfig b = gm.Balance;
         Vector3 position = transform.position;
 
-        float laneDuration = b.LaneChangeDuration * gm.Modifiers.LaneChangeDurationMultiplier;
-        float lateralSpeed = b.LaneWidth / Mathf.Max(laneDuration, Mathf.Epsilon);
-        position.x = Mathf.MoveTowards(position.x, lane * b.LaneWidth, lateralSpeed * dt);
+        // Cambio de carril con salida rápida y llegada suave (ease-out), en LaneChangeDuration.
+        float laneDuration = Mathf.Max(b.LaneChangeDuration * gm.Modifiers.LaneChangeDurationMultiplier, Mathf.Epsilon);
+        float targetX = lane * b.LaneWidth;
+        float previousX = position.x;
+        laneTime += dt;
+        float progress = Mathf.Clamp01(laneTime / laneDuration);
+        float eased = 1f - (1f - progress) * (1f - progress) * (1f - progress);
+        position.x = Mathf.Lerp(laneStartX, targetX, eased);
+        float maxLateralSpeed = b.LaneWidth / laneDuration;
+        lateralSpeedRatio = dt > 0f ? Mathf.Clamp((position.x - previousX) / dt / maxLateralSpeed, -1f, 1f) : 0f;
 
         if (jumping)
         {
@@ -267,8 +317,10 @@ public class ContestantController : MonoBehaviour
                 jumping = false;
                 fastFall = false;
                 position.y = 0f;
+                landedAt = Time.time;
                 if (slideQueued && !IsRuleApplied(gm, RuleType.Giant)) StartSlide(b);
                 slideQueued = false;
+                if (Time.time <= jumpBufferedUntil) TryJump(gm);
             }
             else
             {
@@ -329,7 +381,7 @@ public class ContestantController : MonoBehaviour
     {
         invulnerableUntil = Time.time + gm.Balance.InvulnerabilityTime;
         hitAnimUntil = Time.time + hitSpinTime;
-        lane = 0; // reaparece en el carril central
+        SetLane(0); // reaparece en el carril central
         slideQueued = false;
         EndSlide();
         obstacle.Wobble();
@@ -354,8 +406,8 @@ public class ContestantController : MonoBehaviour
             yield return null;
         }
 
-        lane = 0;
         transform.position = new Vector3(0f, 0f, start.z);
+        SetLane(0);
         invulnerableUntil = Time.time + gm.Balance.InvulnerabilityTime;
         inWater = false;
     }

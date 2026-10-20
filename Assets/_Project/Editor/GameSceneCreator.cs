@@ -81,8 +81,11 @@ public static class GameSceneCreator
         ColorUtility.TryParseHtmlString(StudioColor, out Color studio);
         SetupEnvironment(studio);
 
+        // Soporte que sigue al concursante; la cámara (con la sacudida) va adentro en (0, 0, 0).
+        var rig = new GameObject("CameraRig");
+        rig.transform.SetPositionAndRotation(CameraPosition, Quaternion.Euler(CameraPitch, 0f, 0f));
         var cameraGo = new GameObject("Main Camera") { tag = "MainCamera" };
-        cameraGo.transform.SetPositionAndRotation(CameraPosition, Quaternion.Euler(CameraPitch, 0f, 0f));
+        cameraGo.transform.SetParent(rig.transform, false);
         var camera = cameraGo.AddComponent<Camera>();
         camera.clearFlags = CameraClearFlags.SolidColor;
         camera.backgroundColor = studio;
@@ -106,6 +109,7 @@ public static class GameSceneCreator
             contestant.transform.position = Vector3.zero;
             Transform spot = contestant.transform.Find("BlackoutSpot");
             if (spot != null) contestantSpot = spot.GetComponent<Light>();
+            rig.AddComponent<CameraFollow>().EditorSetup(contestant.transform, camera);
         }
         else Debug.LogError("Falta Contestant.prefab.");
 
