@@ -67,9 +67,10 @@ Assets/_Project/
 │   │              Star.cs, WaterZone.cs, HammerSwing.cs, Hologram.cs, FinishArch.cs, StarMeshBuilder.cs,
 │   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs
 │   ├── Effects/   RuleEffects.cs, CameraShake.cs, CameraFollow.cs, RoundDrama.cs, FloatingTexts.cs, SpeedLines.cs,
-│   │              MarqueeLights.cs, StudioLightBeam.cs, WaterSurface.cs, FloatingBob.cs, Billboard.cs
+│   │              MarqueeLights.cs, StudioLightBeam.cs, WaterSurface.cs, FloatingBob.cs, Billboard.cs,
+│   │              MenuStage.cs, MenuCameraDrift.cs
 │   └── UI/        MainMenuUI.cs, HowToPlayUI.cs, OptionsUI.cs, CreditsUI.cs, HUD.cs, HostBanner.cs,
-│                  HostFace.cs, HostLines.cs, PrizeScreen.cs, PauseMenu.cs, GameOverScreen.cs
+│                  HostFace.cs, HostLines.cs, PrizeScreen.cs, PauseMenu.cs, GameOverScreen.cs, TitlePulse.cs
 ├── Editor/      herramientas del menú «Una Ronda Más/...»
 ├── Prefabs/     Gameplay/, Obstacles/, Segments/ (Easy_01..04, Mid_01..04, Hard_01..04), UI/
 ├── Data/        Balance.asset, Prizes/*.asset, Rules/*.asset
@@ -90,6 +91,7 @@ Assets/_Project/
 | `RuleEffects` | Otoniel | Efectos visibles de cada regla aplicada (apagón, espejo, gigante, sin salto) |
 | `StarStreak`, `RoundDrama`, `FloatingTexts` | Otoniel | Racha de estrellas con premio, destello y micro-pausa al chocar, cuenta regresiva, cámara lenta final, textos «+1» / «¡Uff!» |
 | `StudioSetCreator`, `GameFeelCreator` (Editor) | Otoniel | Arman el estudio (gradas con público, cartel, haces, flotadores, cañones) y el post-procesado en `Game.unity` |
+| `MainMenuStudioCreator` (Editor) | Otoniel | Menú principal con el estudio 3D detrás (Tito y la concursante saludando) y la UI en una columna; menú «Una Ronda Más/UI/Menú con el estudio 3D» |
 | `AudioManager` | Tania | Música y efectos; persiste entre escenas (`DontDestroyOnLoad`); se crea solo si falta |
 | `HostBanner`, `HostFace`, `HostLines` | Tania | Anuncio de ronda/regla/apuesta, cara de Tito con expresiones, frases desde CSV |
 

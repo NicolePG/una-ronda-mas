@@ -41,7 +41,7 @@ public static class GameFeelCreator
 
     // ---------- Post-procesado ----------
 
-    private static void SetupPostProcessing(Camera camera)
+    public static void SetupPostProcessing(Camera camera)
     {
         var resources = AssetDatabase.LoadAssetAtPath<PostProcessResources>(ResourcesPath);
         if (resources == null)
@@ -64,13 +64,17 @@ public static class GameFeelCreator
         volume.sharedProfile = Profile();
     }
 
+    // Se actualiza en su lugar: lo usan Game.unity y MainMenu.unity.
     private static PostProcessProfile Profile()
     {
-        AssetDatabase.DeleteAsset(ProfilePath);
-        var profile = ScriptableObject.CreateInstance<PostProcessProfile>();
-        AssetDatabase.CreateAsset(profile, ProfilePath);
+        var profile = AssetDatabase.LoadAssetAtPath<PostProcessProfile>(ProfilePath);
+        if (profile == null)
+        {
+            profile = ScriptableObject.CreateInstance<PostProcessProfile>();
+            AssetDatabase.CreateAsset(profile, ProfilePath);
+        }
 
-        var bloom = profile.AddSettings<Bloom>();
+        var bloom = Settings<Bloom>(profile);
         bloom.intensity.Override(1.6f);
         bloom.threshold.Override(1.05f);
         bloom.softKnee.Override(0.6f);
@@ -78,26 +82,33 @@ public static class GameFeelCreator
         bloom.fastMode.Override(true);
 
         // LDR: funciona en WebGL (el modo HDR necesita compute shaders).
-        var grading = profile.AddSettings<ColorGrading>();
+        var grading = Settings<ColorGrading>(profile);
         grading.gradingMode.Override(GradingMode.LowDefinitionRange);
         grading.saturation.Override(14f);
         grading.contrast.Override(12f);
         grading.temperature.Override(4f);
 
-        var vignette = profile.AddSettings<Vignette>();
+        var vignette = Settings<Vignette>(profile);
         vignette.intensity.Override(0.32f);
         vignette.smoothness.Override(0.42f);
         vignette.color.Override(new Color(0.07f, 0.03f, 0.14f));
 
-        foreach (PostProcessEffectSettings settings in profile.settings) AssetDatabase.AddObjectToAsset(settings, profile);
         EditorUtility.SetDirty(profile);
         AssetDatabase.SaveAssets();
         return profile;
     }
 
+    private static T Settings<T>(PostProcessProfile profile) where T : PostProcessEffectSettings
+    {
+        if (profile.TryGetSettings(out T settings)) return settings;
+        settings = profile.AddSettings<T>();
+        AssetDatabase.AddObjectToAsset(settings, profile);
+        return settings;
+    }
+
     // ---------- Reflejos con el HDRI del estudio ----------
 
-    private static void SetupReflections()
+    public static void SetupReflections()
     {
         AssetDatabase.ImportAsset(HdriPath, ImportAssetOptions.ForceUpdate);
         var cubemap = AssetDatabase.LoadAssetAtPath<Cubemap>(HdriPath);

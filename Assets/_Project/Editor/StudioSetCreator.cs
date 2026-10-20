@@ -216,7 +216,7 @@ public static class StudioSetCreator
                         controllers[model] = controller = AudienceController(model.name);
                     // Mira al centro de la pista y un poco hacia la cámara.
                     float yaw = side > 0f ? -115f : 115f;
-                    Animator member = Person(stands, model, new Vector3(x, top, z), yaw, controller);
+                    Animator member = Person(stands, model, new Vector3(x, top, z), yaw, controller, AudienceHeight);
                     if (member != null) members.Add(member);
                 }
             }
@@ -224,14 +224,30 @@ public static class StudioSetCreator
         stands.gameObject.AddComponent<AudienceCrowd>().EditorSetup(members.ToArray());
     }
 
+    /// <summary>Personaje de Kenney con los estados del público (Idle, Cheer, Ooh, Jump, Wave), de la altura pedida.</summary>
+    public static Animator Character(Transform parent, string model, Vector3 position, float yaw, float height)
+    {
+        var asset = AssetDatabase.LoadAssetAtPath<GameObject>(CharacterPrefabCreator.ModelPath(model));
+        if (asset == null)
+        {
+            Debug.LogError($"No encuentro el modelo {CharacterPrefabCreator.ModelPath(model)}.");
+            return null;
+        }
+        Animator animator = Person(parent, asset, position, yaw, AudienceController(model), height);
+        foreach (Renderer renderer in animator.GetComponentsInChildren<Renderer>())
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;   // los protagonistas sí tienen sombra
+        animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        return animator;
+    }
+
     private static Animator Person(Transform parent, GameObject model, Vector3 position, float yaw,
-        RuntimeAnimatorController controller)
+        RuntimeAnimatorController controller, float height)
     {
         var go = (GameObject)PrefabUtility.InstantiatePrefab(model);
         go.transform.SetParent(parent, false);
         go.transform.localScale = Vector3.one;
         Bounds bounds = PreviewRenderer.GetBounds(go);
-        float scale = AudienceHeight / Mathf.Max(bounds.size.y, 0.01f);
+        float scale = height / Mathf.Max(bounds.size.y, 0.01f);
         go.transform.localScale = Vector3.one * scale;
         go.transform.SetPositionAndRotation(position + Vector3.down * bounds.min.y * scale, Quaternion.Euler(0f, yaw, 0f));
         Animator animator = go.GetComponent<Animator>();
@@ -261,29 +277,33 @@ public static class StudioSetCreator
     }
 
     // Un controlador por modelo con sus propios clips (los de un modelo no animan a los otros).
-    private static RuntimeAnimatorController AudienceController(string model)
+    // Si ya existe se reutiliza (Game.unity y MainMenu.unity lo usan y no deben perder la referencia).
+    public static RuntimeAnimatorController AudienceController(string model)
     {
         ProjectPaths.EnsureFolder(CharacterPrefabCreator.AnimatorFolder);
         string path = $"{CharacterPrefabCreator.AnimatorFolder}/{AudienceControllerPrefix}{model}.controller";
-        AssetDatabase.DeleteAsset(path);
-        AnimatorController controller = AnimatorController.CreateAnimatorControllerAtPath(path);
-        AnimatorStateMachine machine = controller.layers[0].stateMachine;
-        var clips = new Dictionary<string, AnimationClip>();
-        foreach (Object asset in AssetDatabase.LoadAllAssetsAtPath(CharacterPrefabCreator.ModelPath(model)))
-        {
-            if (asset is AnimationClip clip && !clip.name.StartsWith("__preview__")) clips[clip.name] = clip;
-        }
         (string state, string clip)[] states =
         {
             (AudienceCrowd.IdleState, "idle"), (AudienceCrowd.CheerState, "emote-yes"), (AudienceCrowd.OohState, "emote-no"),
             (AudienceCrowd.JumpState, "jump"), (AudienceCrowd.WaveState, "interact-left"),
         };
+        AnimatorController controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
+        if (controller != null && controller.layers[0].stateMachine.states.Length == states.Length) return controller;
+        if (controller == null) controller = AnimatorController.CreateAnimatorControllerAtPath(path);
+        AnimatorStateMachine machine = controller.layers[0].stateMachine;
+        foreach (ChildAnimatorState child in machine.states) machine.RemoveState(child.state);
+        var clips = new Dictionary<string, AnimationClip>();
+        foreach (Object asset in AssetDatabase.LoadAllAssetsAtPath(CharacterPrefabCreator.ModelPath(model)))
+        {
+            if (asset is AnimationClip clip && !clip.name.StartsWith("__preview__")) clips[clip.name] = clip;
+        }
         for (int i = 0; i < states.Length; i++)
         {
             AnimatorState state = machine.AddState(states[i].state, new Vector3(300f, 60f * i, 0f));
             if (clips.TryGetValue(states[i].clip, out AnimationClip clip)) state.motion = clip;
             if (i == 0) machine.defaultState = state;
         }
+        EditorUtility.SetDirty(controller);
         return controller;
     }
 

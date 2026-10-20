@@ -3,7 +3,8 @@ using UnityEngine;
 /// <summary>
 /// Público de las gradas (personajes de Kenney): aplaude en las rachas, salta al ganar la ronda,
 /// hace «¡uy!» con las caídas y saluda cuando Tito anuncia una regla. Cada persona reacciona con un
-/// pequeño retraso al azar para que no se muevan todos iguales.
+/// pequeño retraso al azar para que no se muevan todos iguales. Entre reacción y reacción, algunos
+/// saludan o aplauden solos para que el estudio se vea vivo (también en el menú).
 /// </summary>
 [DisallowMultipleComponent]
 public class AudienceCrowd : MonoBehaviour
@@ -22,10 +23,15 @@ public class AudienceCrowd : MonoBehaviour
     [Tooltip("Segundos que dura una reacción antes de volver a quedarse quieto.")]
     [SerializeField, Min(0.1f)] private float reactionTime = 1.4f;
     [SerializeField, Min(0f)] private float crossFade = 0.12f;
+    [Tooltip("Cada cuántos segundos algunos del público saludan o aplauden solos (0 = nunca).")]
+    [SerializeField, Min(0f)] private float ambientInterval = 2.5f;
+    [Tooltip("Qué parte del público se mueve sola en cada ocasión (0 a 1).")]
+    [SerializeField, Range(0f, 1f)] private float ambientShare = 0.12f;
 
     private float[] startAt;
     private float[] returnAt;
     private string[] pending;
+    private float nextAmbientAt;
 
     private void Awake()
     {
@@ -70,12 +76,13 @@ public class AudienceCrowd : MonoBehaviour
         if (rule != null) React(WaveState, 0.4f);
     }
 
-    private void React(string state, float share)
+    private void React(string state, float share, bool onlyIdle = false)
     {
         float now = Time.time;
         for (int i = 0; i < members.Length; i++)
         {
             if (members[i] == null || Random.value > share) continue;
+            if (onlyIdle && (startAt[i] >= 0f || returnAt[i] >= 0f)) continue;
             pending[i] = state;
             startAt[i] = now + Random.Range(0f, maxDelay);
         }
@@ -84,6 +91,11 @@ public class AudienceCrowd : MonoBehaviour
     private void Update()
     {
         float now = Time.time;
+        if (ambientInterval > 0f && now >= nextAmbientAt)
+        {
+            nextAmbientAt = now + ambientInterval * Random.Range(0.7f, 1.3f);
+            React(Random.value < 0.6f ? WaveState : CheerState, ambientShare, true);
+        }
         for (int i = 0; i < members.Length; i++)
         {
             Animator member = members[i];

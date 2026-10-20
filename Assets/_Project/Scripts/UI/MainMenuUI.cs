@@ -1,6 +1,7 @@
 using TMPro;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -74,6 +75,8 @@ public class MainMenuUI : MonoBehaviour
             recordText.text = $"RÉCORD DE RONDA: {SaveManager.BestRound}\nRÉCORD DE ESTRELLAS: {SaveManager.BestStars}";
 
         if (statusText != null) statusText.text = string.Empty;
+        // Enter juega directo (botón principal seleccionado).
+        if (playButton != null && EventSystem.current != null) EventSystem.current.SetSelectedGameObject(playButton.gameObject);
         if (transitionOverlay != null)
         {
             transitionOverlay.alpha = 1f;
