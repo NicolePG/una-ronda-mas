@@ -1,4 +1,5 @@
 using System.IO;
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -131,6 +132,14 @@ public static class GameSceneCreator
             LinkOverlayToPanel((GameObject)PrefabUtility.InstantiatePrefab(prefab, scene));
         }
         new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+
+        // Controles al empezar y mensajes de ánimo (arma su propia interfaz).
+        TMP_FontAsset titleFont = UiModernizer.DisplayFont();
+        new GameObject("CoachMessages").AddComponent<CoachMessages>().EditorSetup(
+            AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(ProjectPaths.Root + "/Fonts/Font_UI_Dynamic.asset"),
+            titleFont, titleFont != null ? UiModernizer.OutlineMaterial(titleFont) : null,
+            AssetDatabase.LoadAssetAtPath<Sprite>(UiModernizer.Folder + "/Glass_Card.png"),
+            AssetDatabase.LoadAssetAtPath<Sprite>(UiModernizer.Folder + "/Pill_Button.png"));
 
         ProjectPaths.EnsureFolder(ProjectPaths.Scenes);
         EditorSceneManager.SaveScene(scene, ScenePath);

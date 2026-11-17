@@ -223,6 +223,10 @@ public static class StudioSetCreator
             }
         }
         stands.gameObject.AddComponent<AudienceCrowd>().EditorSetup(members.ToArray());
+        // Gritos del público («¡WOW!», «¡BUUU!») con la fuente de títulos y contorno.
+        TMP_FontAsset shoutFont = UiModernizer.DisplayFont();
+        stands.gameObject.AddComponent<CrowdShouts>().EditorSetup(shoutFont,
+            shoutFont != null ? UiModernizer.OutlineMaterial(shoutFont) : null);
     }
 
     /// <summary>Personaje de Kenney con los estados del público (Idle, Cheer, Ooh, Jump, Wave), de la altura pedida.</summary>

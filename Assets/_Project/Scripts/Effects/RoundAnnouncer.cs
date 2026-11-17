@@ -141,10 +141,16 @@ public class RoundAnnouncer : MonoBehaviour
 
     private void HandleSurpriseEnded(SurpriseType type) => eventEndsAt = -1f;
 
+    private static float busyUntil = -1f;
+
+    /// <summary>Hay un cartel grande en pantalla (los mensajes de ánimo esperan a que termine).</summary>
+    public static bool IsBusy => Time.unscaledTime < busyUntil;
+
     /// <summary>Muestra un cartel con barrido.</summary>
     public void Show(string text, string sub, Color color, float duration)
     {
         if (title == null) return;
+        busyUntil = Time.unscaledTime + duration + 0.2f;
         title.text = text;
         title.color = color;
         if (subtitle != null) subtitle.text = sub;

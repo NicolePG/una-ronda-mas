@@ -5,14 +5,18 @@ using UnityEngine;
 /// hace «¡uy!» con las caídas y saluda cuando Tito anuncia una regla. Cada persona reacciona con un
 /// pequeño retraso al azar para que no se muevan todos iguales. Entre reacción y reacción, algunos
 /// saludan o aplauden solos para que el estudio se vea vivo (también en el menú).
-/// En el juego las gradas se van llenando: en la ronda 1 hay poca gente y cada ronda llegan más (saltando de
-/// alegría) hasta llenar el estudio (BalanceConfig, «Público»). En el menú está lleno.
+/// En el juego las gradas se van llenando: en las primeras rondas hay público normal y, desde la ronda 3, en cada
+/// carrera llega más gente de a poco (saltando de alegría) hasta llenar el estudio (BalanceConfig, «Público»).
+/// En el menú está lleno. Los gritos («¡WOW!», «¡BUUU!») los pone CrowdShouts.
 /// </summary>
 [DisallowMultipleComponent]
 public class AudienceCrowd : MonoBehaviour
 {
     private const float ArrivalTime = 0.45f;     // segundos que tarda en «aparecer» cada persona nueva
-    private const float ArrivalSpread = 1.2f;    // los nuevos llegan escalonados en este tiempo
+    private const float ArrivalSpread = 10f;     // los nuevos llegan de a poco durante los primeros segundos de la carrera
+
+    /// <summary>Llegó más público: cuántos llegaron, cuántos hay y cuántos caben.</summary>
+    public static event System.Action<int, int, int> CrowdGrew;
     public const string IdleState = "Idle";
     public const string CheerState = "Cheer";
     public const string OohState = "Ooh";
@@ -121,12 +125,20 @@ public class AudienceCrowd : MonoBehaviour
         if (rule != null) React(WaveState, 0.4f);
     }
 
-    // Cada anuncio de ronda llega más gente (la primera vez, sin animación).
+    // La gente nueva llega cuando arranca la carrera (en el anuncio la taparía el cartel de Tito).
+    // La primera vez solo se acomoda el público inicial, sin animación.
     private void HandlePhaseChanged(RoundPhase phase)
     {
         GameManager gm = GameManager.Instance;
-        if (phase != RoundPhase.Announcement || gm == null) return;
-        SetAttendance(gm.Balance.GetCrowdShare(gm.CurrentRound), visibleCount >= 0);
+        if (gm == null) return;
+        if (phase == RoundPhase.Announcement && visibleCount < 0)
+            SetAttendance(gm.Balance.GetCrowdShare(gm.CurrentRound), false);
+        else if (phase == RoundPhase.Running)
+        {
+            int before = visibleCount;
+            SetAttendance(gm.Balance.GetCrowdShare(gm.CurrentRound), true);
+            if (before >= 0 && visibleCount > before) CrowdGrew?.Invoke(visibleCount - before, visibleCount, members.Length);
+        }
     }
 
     private void SetAttendance(float share, bool animate)
@@ -195,6 +207,20 @@ public class AudienceCrowd : MonoBehaviour
                 returnAt[i] = -1f;
             }
         }
+    }
+
+    /// <summary>Alguien del público que está en las gradas (y ya llegó) entre esas z; null si no hay.</summary>
+    public Transform PickVisibleMember(float minZ, float maxZ)
+    {
+        for (int tries = 0; tries < 12 && members.Length > 0; tries++)
+        {
+            int i = Random.Range(0, members.Length);
+            Animator member = members[i];
+            if (member == null || !member.gameObject.activeInHierarchy || arriveAt[i] >= 0f) continue;
+            float z = member.transform.position.z;
+            if (z >= minZ && z <= maxZ) return member.transform;
+        }
+        return null;
     }
 
     // Crece desde 0 con un pequeño rebote.

@@ -196,8 +196,10 @@ public class BalanceConfig : ScriptableObject
     [SerializeField, Min(1)] private int sweeperFromRound = 6;
 
     [Header("Público (Otoniel)")]
-    [Tooltip("Qué parte de las gradas está llena en la ronda 1 (0 a 1).")]
+    [Tooltip("Público normal (parte de las gradas, 0 a 1) en las primeras rondas.")]
     [SerializeField, Range(0f, 1f)] private float crowdStartShare = 0.35f;
+    [Tooltip("Desde qué ronda empieza a llegar más gente (antes queda el público normal).")]
+    [SerializeField, Min(1)] private int crowdGrowFromRound = 3;
     [Tooltip("Ronda en la que el estudio se llena del todo.")]
     [SerializeField, Min(1)] private int crowdFullRound = 8;
 
@@ -431,9 +433,16 @@ public class BalanceConfig : ScriptableObject
     public float GetBaseSpeed(int round) =>
         Mathf.Min(baseSpeed * Mathf.Pow(speedGrowthPerRound, Mathf.Max(0, round - 1)), maxSpeed);
 
-    /// <summary>Qué parte de las gradas está llena en esta ronda (sube hasta 1 en crowdFullRound).</summary>
-    public float GetCrowdShare(int round) =>
-        crowdFullRound <= 1 ? 1f : Mathf.Lerp(crowdStartShare, 1f, Mathf.Clamp01((round - 1f) / (crowdFullRound - 1f)));
+    /// <summary>
+    /// Qué parte de las gradas está llena en esta ronda: el público normal hasta antes de crowdGrowFromRound,
+    /// después sube un poco cada ronda hasta llenarse en crowdFullRound.
+    /// </summary>
+    public float GetCrowdShare(int round)
+    {
+        if (round < crowdGrowFromRound) return crowdStartShare;
+        int steps = Mathf.Max(1, crowdFullRound - crowdGrowFromRound + 1);
+        return Mathf.Lerp(crowdStartShare, 1f, Mathf.Clamp01((round - crowdGrowFromRound + 1f) / steps));
+    }
 
     /// <summary>Probabilidad de que Tito mienta con la regla en esta ronda.</summary>
     public float GetLieChance(int round) =>

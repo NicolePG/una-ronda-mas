@@ -17,7 +17,7 @@ using UnityEngine.UI;
 /// </summary>
 public static class UiModernizer
 {
-    private const string Folder = ProjectPaths.Art + "/UI/Modern";
+    public const string Folder = ProjectPaths.Art + "/UI/Modern";
     private const string MenuScenePath = ProjectPaths.Scenes + "/MainMenu.unity";
     private const string FontsFolder = ProjectPaths.Root + "/Fonts";
     private const string BaseFontPath = FontsFolder + "/Font_UI_Dynamic.asset";
@@ -461,7 +461,7 @@ public static class UiModernizer
     private static TMP_FontAsset BaseFont() => AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(BaseFontPath);
 
     /// <summary>Fuente de títulos: la primera .ttf/.otf de Fonts (si hay) como fuente dinámica; si no, la de siempre.</summary>
-    private static TMP_FontAsset DisplayFont()
+    public static TMP_FontAsset DisplayFont()
     {
         var existing = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(DisplayFontPath);
         if (existing != null) return existing;
@@ -487,7 +487,7 @@ public static class UiModernizer
         return BaseFont();
     }
 
-    private static Material OutlineMaterial(TMP_FontAsset font)
+    public static Material OutlineMaterial(TMP_FontAsset font)
     {
         if (font.name == "Font_UI_Dynamic") return StudioSetCreator.OutlineFontMaterial(font);
         string path = $"{FontsFolder}/{font.name}_Outline.mat";
