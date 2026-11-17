@@ -275,8 +275,8 @@ public class GameManager : MonoBehaviour
         prizeOffers.Clear();
         prizeOffers.AddRange(PrizeOfferBuilder.Build(prizePool, CurrentRound, Lives, Modifiers, BetAccepted, balance));
         prizeTaken = new bool[prizeOffers.Count];
-        int picks = BetAccepted ? balance.PrizesPerBetWin : balance.PrizesPerWin;
-        PrizePicksRemaining = Mathf.Min(picks, prizeOffers.Count);
+        // Siempre un premio por premiación: la apuesta ganada mejora las tarjetas, no da más.
+        PrizePicksRemaining = Mathf.Min(balance.PrizesPerWin, prizeOffers.Count);
         Phase = RoundPhase.PrizeSelection;
 
         GameEvents.RaiseRoundWon(CurrentRound, PrizePicksRemaining);

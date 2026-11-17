@@ -228,8 +228,8 @@ public class BalanceConfig : ScriptableObject
     [Header("Premios")]
     [Tooltip("Cuántas tarjetas se muestran.")]
     [SerializeField, Min(1)] private int prizeChoices = 3;
+    [Tooltip("Premios que se eligen al ganar (los premios se quedan toda la partida). La apuesta ganada no da más: da tarjetas raras o épicas.")]
     [SerializeField, Min(0)] private int prizesPerWin = 1;
-    [SerializeField, Min(0)] private int prizesPerBetWin = 2;
     [SerializeField, Min(1)] private int firstPoisonRound = 4;
     [Tooltip("Probabilidad de que una de las tarjetas sea un premio envenenado.")]
     [SerializeField, Range(0f, 1f)] private float poisonChance = 0.5f;
@@ -393,7 +393,6 @@ public class BalanceConfig : ScriptableObject
     // Premios
     public int PrizeChoices => prizeChoices;
     public int PrizesPerWin => prizesPerWin;
-    public int PrizesPerBetWin => prizesPerBetWin;
     public int FirstPoisonRound => firstPoisonRound;
     public float PoisonChance => poisonChance;
     public int RareFromRound => rareFromRound;

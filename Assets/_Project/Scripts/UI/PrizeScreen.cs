@@ -147,11 +147,13 @@ public class PrizeScreen : MonoBehaviour
         }
 
         if (panel != null) panel.SetActive(true);
+        // Siempre se elige uno; después de elegir, las otras tarjetas quedan bloqueadas hasta la siguiente ronda.
+        bool canPick = game.PrizePicksRemaining > 0;
         if (picksRemainingText != null)
         {
-            picksRemainingText.text = game.PrizePicksRemaining == 1
-                ? "Elige tu premio"
-                : $"Elige {game.PrizePicksRemaining} premios";
+            picksRemainingText.text = !canPick ? "¡Buena elección! Ya viene la siguiente ronda…"
+                : game.BetAccepted ? "¡Ganaste la apuesta! Premios raros o mejores · elige 1"
+                : "Elige 1 · se queda contigo toda la partida";
         }
 
         for (int i = 0; i < OfferCount; i++)
@@ -160,10 +162,10 @@ public class PrizeScreen : MonoBehaviour
             PrizeData prize = hasOffer ? game.PrizeOffers[i] : null;
             bool taken = hasOffer && game.IsPrizeTaken(i);
 
-            if (prizeButtons[i] != null) prizeButtons[i].interactable = hasOffer && !taken;
+            if (prizeButtons[i] != null) prizeButtons[i].interactable = hasOffer && !taken && canPick;
             if (rarityGlows[i] != null)
             {
-                rarityGlows[i].gameObject.SetActive(hasOffer && !taken);
+                rarityGlows[i].gameObject.SetActive(hasOffer && !taken && canPick);
                 if (hasOffer) shownRarity[i] = prize.Rarity;
             }
             if (!hasOffer)

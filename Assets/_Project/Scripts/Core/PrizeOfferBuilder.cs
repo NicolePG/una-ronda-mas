@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// Arma las tarjetas de premio que se ofrecen al ganar una ronda. Cada tarjeta sortea su rareza según la ronda
-/// (los raros y épicos salen más a medida que el juego se pone difícil) y ganar la apuesta asegura una rara.
+/// (los raros y épicos salen más a medida que el juego se pone difícil); ganar la apuesta hace que las tres sean raras o épicas.
 /// Un premio ya elegido no vuelve a salir: cada premiación trae ventajas nuevas. El corazón es la excepción
 /// (se repite, pero no en dos premiaciones seguidas ni con las vidas llenas). Si ya no quedan premios, salen menos tarjetas.
 /// </summary>
@@ -35,7 +35,8 @@ public static class PrizeOfferBuilder
         for (int i = 0; i < count; i++)
         {
             PrizeRarity wanted = RollRarity(epic, rare);
-            if (betWon && i == 0 && wanted == PrizeRarity.Common) wanted = PrizeRarity.Rare;
+            // Apuesta ganada: las tres tarjetas son raras o épicas (si quedan).
+            if (betWon && wanted == PrizeRarity.Common) wanted = PrizeRarity.Rare;
             PrizeData pick = TakeClosest(available, wanted);
             if (pick == null) break;
             offers.Add(pick);
@@ -45,7 +46,7 @@ public static class PrizeOfferBuilder
         if (round >= balance.FirstPoisonRound && poisons.Count > 0 && offers.Count > 0
             && Random.value < balance.PoisonChance)
         {
-            InsertPoison(offers, poisons.FindAll(p => IsOfferable(p, modifiers, livesFull, true)));
+            InsertPoison(offers, poisons.FindAll(p => IsOfferable(p, modifiers, livesFull, true)), !betWon);
         }
         return offers;
     }
@@ -100,7 +101,8 @@ public static class PrizeOfferBuilder
         return pick;
     }
 
-    private static void InsertPoison(List<PrizeData> offers, List<PrizeData> poisons)
+    // allowReplace = false: solo envenena una tarjeta que ya está (así no cambia una rara por una común).
+    private static void InsertPoison(List<PrizeData> offers, List<PrizeData> poisons, bool allowReplace)
     {
         if (poisons.Count == 0) return;
         // Mejor envenenar uno que ya está en la oferta: así se ve igual que el normal.
@@ -117,6 +119,7 @@ public static class PrizeOfferBuilder
         }
 
         // Si no, cambiar una tarjeta al azar por un envenenado de un tipo que no esté.
+        if (!allowReplace) return;
         List<PrizeData> free = poisons.FindAll(p => FindByType(offers, p.Type) == null);
         if (free.Count == 0) return;
         offers[Random.Range(0, offers.Count)] = free[Random.Range(0, free.Count)];

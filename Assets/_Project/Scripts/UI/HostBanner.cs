@@ -91,7 +91,7 @@ public class HostBanner : MonoBehaviour
         if (promptText != null)
         {
             promptText.text = betOffered
-                ? $"¿Aceptas la apuesta? La meta sube a {game.BetGoal} estrellas."
+                ? $"¿Apuestas? La meta sube a {game.BetGoal}; si ganas, premios raros o mejores."
                 : "¡Prepárate para correr!";
             // Aviso de las trampas en vivo: así el jugador sabe que tiene que vigilar a Tito.
             int tricks = game.Balance.GetTrickCount(game.CurrentRound);
