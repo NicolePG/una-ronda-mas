@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 1033793335463975032}
   - component: {fileID: 2857241319794961665}
   - component: {fileID: 5174272916320799124}
+  - component: {fileID: 4978177404037572312}
   m_Layer: 0
   m_Name: SpeechBubble
   m_TagString: Untagged
@@ -318,7 +319,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b55e15e48a316714099a83126ac6dfa2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: aebea36f9bdb4904884f287818106ea7, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -327,4 +328,21 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.5
+--- !u!114 &4978177404037572312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7241232356269256770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53a3e344540ae3c43a18c29717fd82b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delay: 0
+  duration: 0.22
+  fromOffset: {x: 0, y: -24}
+  animateScale: 1
+  fromScale: 0.88

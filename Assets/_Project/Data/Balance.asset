@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed294df66aae2d744b9a15c05a55f5d3, type: 3}
   m_Name: Balance
   m_EditorClassIdentifier: 
+  dataVersion: 3
   roundDuration: 40
   announcementDuration: 3
   afterPrizeDelay: 1
   poisonRevealDelay: 2
-  baseGoal: 20
-  goalPerRound: 8
-  baseSpeed: 8
-  speedGrowthPerRound: 1.08
-  maxSpeed: 16
+  baseGoal: 34
+  goalPerRound: 12
+  baseSpeed: 8.5
+  speedGrowthPerRound: 1.075
+  maxSpeed: 17
   startLives: 3
   maxLives: 5
   laneWidth: 2
@@ -34,14 +35,63 @@ MonoBehaviour:
   goldenStarValue: 3
   magnetRange: 12
   magnetLateralReach: 2.5
-  firstRuleRound: 3
-  firstLieRound: 4
-  lieChance: 0.3
+  superMagnetRange: 20
+  superMagnetLateralReach: 4.5
+  cloverGoldenBonus: 3
+  firstRuleRound: 2
+  firstLieRound: 3
+  lieChance: 0.35
+  lieChancePerRound: 0.05
+  maxLieChance: 0.7
   doubleValueStarMultiplier: 2
   doubleValueSpeedMultiplier: 1.3
   hologramChancePerSlot: 0.5
-  cheatRewardStars: 5
+  cheatRewardBase: 4
+  cheatRewardPerRound: 2
+  detectiveStreakBonus: 0.5
+  detectiveMaxMultiplier: 3
   cheatPenaltyLives: 1
+  falseAlarmCooldown: 2.5
+  firstTrickRound: 2
+  roundsPerExtraTrick: 2
+  maxTricksPerRound: 3
+  trickWindow: 6
+  trickTimeStart: 5
+  trickTimeEnd: 33
+  stealFraction: 0.2
+  stealMin: 3
+  goalRigFromRound: 3
+  goalRigFraction: 0.12
+  goalRigMin: 4
+  crossedFromRound: 5
+  bluffFromRound: 4
+  bluffChance: 0.25
+  bluffChancePerRound: 0.04
+  maxBluffChance: 0.45
+  streakMilestone: 5
+  streakBonusPerMilestone: 1
+  streakMaxBonus: 4
+  nearMissWindow: 0.4
+  hitStopDuration: 0.07
+  hitStopTimeScale: 0.05
+  finishSlowMoWindow: 0.8
+  finishSlowMoTimeScale: 0.35
+  dangerSeconds: 10
+  countdownSeconds: 5
+  rollingBallSpeed: 7
+  rollingBallPassPoint: 0.7
+  sweeperDegreesPerSecond: 90
+  rollingBallFromRound: 4
+  sweeperFromRound: 6
+  surpriseFromRound: 2
+  surpriseChance: 0.65
+  surpriseWindowStart: 10
+  surpriseWindowEnd: 24
+  starRainDuration: 5
+  starRainInterval: 0.3
+  starRainGoldenChance: 0.15
+  doubleStarsDuration: 6
+  blackoutEventDuration: 3
   firstBetRound: 3
   betGoalMultiplier: 1.5
   prizeChoices: 3
@@ -49,6 +99,14 @@ MonoBehaviour:
   prizesPerBetWin: 2
   firstPoisonRound: 4
   poisonChance: 0.5
+  rareFromRound: 2
+  rareChance: 0.25
+  rareChancePerRound: 0.06
+  maxRareChance: 0.6
+  epicFromRound: 5
+  epicChance: 0.12
+  epicChancePerRound: 0.04
+  maxEpicChance: 0.35
   springJumpHeightBonus: 0.4
   springJumpDurationBonus: 0.25
   slowMotionSpeedMultiplier: 0.9
@@ -56,6 +114,11 @@ MonoBehaviour:
   poisonSpringJumpMultiplier: 2
   poisonSlowLaneChangeMultiplier: 2
   poisonShieldDuration: 10
+  tipStars: 5
+  sneakersLaneChangeMultiplier: 0.7
+  safeTrickMultiplier: 0.5
+  detectiveBadgeMultiplier: 2
+  riggedContractGoalMultiplier: 0.9
   segmentLength: 20
   spawnAheadDistance: 100
   destroyBehindZ: -20
@@ -63,26 +126,34 @@ MonoBehaviour:
   segmentEdgeMargin: 3
   highBarFromRound: 2
   hammerFromRound: 3
-  waterGapFromRound: 4
+  waterGapFromRound: 3
   targetCollectRatio: 0.5
   difficultyStages:
   - fromRound: 1
     easy: 1
     mid: 0
     hard: 0
+  - fromRound: 2
+    easy: 0.6
+    mid: 0.4
+    hard: 0
+  - fromRound: 3
+    easy: 0.35
+    mid: 0.55
+    hard: 0.1
+  - fromRound: 4
+    easy: 0.15
+    mid: 0.6
+    hard: 0.25
   - fromRound: 5
-    easy: 0.3
-    mid: 0.7
-    hard: 0
-  - fromRound: 6
-    easy: 0.1
-    mid: 0.9
-    hard: 0
+    easy: 0
+    mid: 0.55
+    hard: 0.45
   - fromRound: 7
     easy: 0
-    mid: 0.5
-    hard: 0.5
-  - fromRound: 8
+    mid: 0.3
+    hard: 0.7
+  - fromRound: 9
     easy: 0
-    mid: 0.2
-    hard: 0.8
+    mid: 0.1
+    hard: 0.9
