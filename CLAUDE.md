@@ -44,7 +44,7 @@ Temas de la jam que cumple: **One More Time** (base) y **Something's Off** (el g
 - Al empezar una sesión, pregunta **quién está trabajando** (Otoniel, Nicole o Tania) y en qué tarea de `docs/PLAN.md`. Prioriza esa área y **no modifiques archivos de otra área** sin avisar primero.
 - **No edites a mano** archivos `.unity`, `.prefab`, `.asset`, `.mat` ni `.meta`. En su lugar:
   - escribe los scripts C# y luego da **pasos exactos en el Editor** (qué GameObject crear, qué componente agregar, qué campos asignar en el Inspector, qué tag o layer usar);
-  - para trabajo repetitivo (materiales, prefabs base, ScriptableObjects de datos), crea **scripts de Editor** en `Assets/_Project/Editor/` con `[MenuItem("Una Ronda Más/...")]` que los generen.
+  - para trabajo repetitivo (materiales, prefabs base, ScriptableObjects de datos), crea **scripts de Editor** en `Assets/_Project/Editor/` que los generen y agrega el paso, en su orden, a `SetupMenu.PrepareAll` (menú **Una Ronda Más/Crear todo**). No agregues menús nuevos para crear cosas: el menú solo tiene «Crear todo» y debajo Build, Pitch y Pruebas.
 - Unity crea los `.meta` solo; nunca los generes tú.
 - Todos los números de diseño (tiempos, metas, velocidades, probabilidades) viven en **`BalanceConfig`** (ScriptableObject). Nada de números mágicos en el código.
 - Campos con `[SerializeField] private`, agrupados con `[Header]` y con `[Tooltip]` cuando no sean obvios.
@@ -65,13 +65,14 @@ Assets/_Project/
 │   ├── Data/      BalanceConfig.cs, PrizeData.cs, RuleData.cs, PlayerModifiers.cs, GameStats.cs
 │   ├── Gameplay/  ContestantController.cs, TrackGenerator.cs, TrackSegment.cs, Obstacle.cs,
 │   │              Star.cs, WaterZone.cs, HammerSwing.cs, Hologram.cs, FinishArch.cs, StarMeshBuilder.cs,
-│   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs, SurpriseEvents.cs
+│   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs, SurpriseEvents.cs, TitoTricks.cs
 │   ├── Effects/   RuleEffects.cs, CameraShake.cs, CameraFollow.cs, RoundDrama.cs, FloatingTexts.cs, SpeedLines.cs,
 │   │              MarqueeLights.cs, StudioLightBeam.cs, WaterSurface.cs, FloatingBob.cs, Billboard.cs,
 │   │              MenuStage.cs, MenuCameraDrift.cs, RoundAnnouncer.cs, SpeedRibbon.cs
 │   └── UI/        MainMenuUI.cs, HowToPlayUI.cs, OptionsUI.cs, CreditsUI.cs, HUD.cs, HostBanner.cs,
-│                  HostFace.cs, HostLines.cs, PrizeScreen.cs, PauseMenu.cs, GameOverScreen.cs, TitlePulse.cs
-├── Editor/      herramientas del menú «Una Ronda Más/...»
+│                  HostFace.cs, HostLines.cs, PrizeScreen.cs, PauseMenu.cs, GameOverScreen.cs, TitlePulse.cs,
+│                  UiEntrance.cs, UiShine.cs, ButtonGlow.cs, LiveBadge.cs, TickerTape.cs (interfaz moderna)
+├── Editor/      herramientas del menú «Una Ronda Más» (SetupMenu: «Crear todo»)
 ├── Prefabs/     Gameplay/, Obstacles/, Segments/ (Easy_01..04, Mid_01..04, Hard_01..04), UI/
 ├── Data/        Balance.asset, Prizes/*.asset, Rules/*.asset
 ├── Resources/   HostLines.csv
@@ -84,7 +85,9 @@ Assets/_Project/
 | Script | Dueño | Qué hace |
 | --- | --- | --- |
 | `GameManager` | Nicole | Máquina de estados de la partida; ronda, estrellas, meta, vidas, tiempo, velocidad, apuesta, premios elegidos (`PlayerModifiers`) |
-| `RuleManager` | Nicole | Elige la regla de cada ronda, decide si Tito miente, resuelve el botón «¡Trampa!» |
+| `RuleManager` | Nicole | Elige la regla de cada ronda, decide si Tito miente, resuelve el botón «¡Trampa!» (aciertos con racha de detective, falsa alarma = −1 vida y espera) |
+| `TitoTricks` | Otoniel | Trampas en vivo a mitad de ronda: roba estrellas, infla la meta o cruza los controles; desde la ronda 4 también faroles. Ventana de 6 s para acusar (F8 en el Editor; Shift+F8 = farol) |
+| `PrizeOfferBuilder` | Nicole | Tarjetas de premio con rareza según la ronda (común, raro, épico), sin repetir premios ya elegidos; la apuesta ganada da tarjetas raras o épicas |
 | `SaveManager` (estática) | Nicole | `PlayerPrefs`: récord de ronda, récord de estrellas, partidas jugadas, volúmenes |
 | `TrackGenerator` | Nicole | Crea tramos adelante según la dificultad de la ronda, los mueve hacia el jugador y los borra al pasar |
 | `ContestantController` | Otoniel | Carriles, salto, deslizamiento, choques, caída al agua, invulnerabilidad |
@@ -92,7 +95,9 @@ Assets/_Project/
 | `StarStreak`, `RoundDrama`, `FloatingTexts` | Otoniel | Racha de estrellas con premio, destello y micro-pausa al chocar, cuenta regresiva, cámara lenta final, textos «+1» / «¡Uff!» |
 | `SurpriseEvents`, `RoundAnnouncer` | Otoniel | Eventos de Tito a mitad de ronda (lluvia de estrellas, estrellas dobles, apagón; F7 en el Editor) y carteles con barrido «¡YA!», «¡META!» |
 | `StudioSetCreator`, `GameFeelCreator` (Editor) | Otoniel | Arman el estudio (gradas con público, cartel, haces, flotadores, cañones) y el post-procesado en `Game.unity` |
-| `MainMenuStudioCreator` (Editor) | Otoniel | Menú principal con el estudio 3D detrás (Tito y la concursante saludando) y la UI en una columna; menú «Una Ronda Más/UI/Menú con el estudio 3D» |
+| `MainMenuStudioCreator` (Editor) | Otoniel | Menú principal con el estudio 3D detrás (Tito y la concursante saludando) y la UI en una columna; lo arma «Una Ronda Más/Crear todo» |
+| `UiModernizer` (Editor) | Otoniel | Interfaz moderna estilo transmisión de TV sobre las pantallas de Tania: paneles de vidrio con borde de neón, botones píldora con halo (`ButtonGlow`) y destello (`UiShine`, solo los principales), títulos con contorno, entradas animadas (`UiEntrance`), brillo de rareza en las tarjetas de premio, «● EN VIVO» (`LiveBadge`) y cinta de noticias (`TickerTape`) en el menú. Kit dibujado en `Art/UI/Modern`. Si hay una `.ttf`/`.otf` en `Fonts`, la usa para títulos. Último paso de «Crear todo» |
+| `AudienceCrowd` | Otoniel | Público de 72 personas que se va llenando con las rondas (`BalanceConfig`, «Público»); los nuevos llegan saltando. En el menú está lleno |
 | `AudioManager` | Tania | Música y efectos; persiste entre escenas (`DontDestroyOnLoad`); se crea solo si falta |
 | `HostBanner`, `HostFace`, `HostLines` | Tania | Anuncio de ronda/regla/apuesta, cara de Tito con expresiones, frases desde CSV |
 
@@ -119,6 +124,7 @@ public static class GameEvents
     public static event Action<bool> BetResolved;                // true = aceptó la apuesta
     public static event Action<bool> CheatCalled;               // true = acertó
     public static event Action<PrizeData> PrizeChosen;
+    public static event Action<PrizeType> PrizeTriggered;        // un premio salvó al jugador (Segunda oportunidad, Silbato, Seguro de apuesta)
     public static event Action<bool> PauseToggled;
     // Cada evento tiene su método Raise...(): GameEvents.RaiseStarsChanged(stars, goal);
 }
@@ -126,28 +132,31 @@ public static class GameEvents
 
 Eventos locales de efectos (Otoniel, fuera de `GameEvents` porque solo los usan los efectos): `StarStreak.StreakChanged(int)`,
 `StarStreak.MilestoneReached(int racha, int premio)`, `Obstacle.NearMiss(Obstacle)`, `ContestantController.StarCollected(Star)`,
-`SurpriseEvents.SurpriseStarted(SurpriseType, float duración)` y `SurpriseEvents.SurpriseEnded(SurpriseType)`.
+`SurpriseEvents.SurpriseStarted(SurpriseType, float duración)`, `SurpriseEvents.SurpriseEnded(SurpriseType)`,
+`TitoTricks.TrickStarted(TrickType, bool farol, int estrellas)` y `TitoTricks.TrickEnded(TrickType, bool farol, bool pillado)`.
 
 ## Flujo de una ronda
 
 `Announcement` (Tito anuncia ronda, meta y regla; desde la ronda 3 ofrece la apuesta) → `Running` (40 s) →
-- llegó a la meta con las estrellas: `PrizeSelection` (1 premio, 2 si ganó la apuesta) → siguiente `Announcement`;
+- llegó a la meta con las estrellas: `PrizeSelection` (siempre 1 premio; con la apuesta ganada las tarjetas son raras o épicas) → siguiente `Announcement`;
 - sin estrellas suficientes o sin vidas: `GameOver` → «¿Una ronda más?» reinicia en la ronda 1 sin pasar por el menú.
 
 El **temporizador manda**: la ronda termina a los 40 s exactos; el arco de meta es solo visual y se crea para que llegue al jugador justo a tiempo.
 
 ## Cómo usar los sistemas de Nicole (ya implementados)
 
-- `GameSystems.prefab` (`Prefabs/Gameplay`) trae `GameManager` + `RuleManager` + `TrackGenerator`. Va **una vez** en `Game.unity`, en (0, 0, 0). Si se agregan tramos nuevos: menú **Una Ronda Más/Prefabs/Crear o actualizar GameSystems**.
+- `GameSystems.prefab` (`Prefabs/Gameplay`) trae `GameManager` + `RuleManager` + `TrackGenerator`. Va **una vez** en `Game.unity`, en (0, 0, 0). Si se agregan tramos nuevos: menú **Una Ronda Más/Crear todo**.
 - Cuando llega cualquier evento, las propiedades de `GameManager.Instance` ya están actualizadas. `PhaseChanged` siempre se lanza al final.
 - **Anuncio:** `RuleAnnounced` → `PhaseChanged(Announcement)`. Leer `CurrentRound`, `BaseGoal`, `BetGoal`, `IsBetOffered`, `Rules.AnnouncedRule`. Sin apuesta (rondas 1–2) empieza sola a los `AnnouncementDuration` s; con apuesta espera a que la UI llame `AcceptBet()` o `DeclineBet()` (o `ConfirmAnnouncement(bool)`).
 - **Carrera:** `BetResolved` (solo si hubo apuesta) → `RuleApplied` → `RoundStarted` → `PhaseChanged(Running)`.
-- **Fin:** `RoundWon` → `PhaseChanged(PrizeSelection)`: la UI muestra `PrizeOffers` (3 `PrizeData`, `IsPoisoned` para el brillo raro) y llama `ChoosePrize(0..2)`; con apuesta ganada se eligen 2 (`PrizePicksRemaining`, `IsPrizeTaken(i)`). O bien `GameOver(stats)` → `PhaseChanged(GameOver)`; `LastStats` también tiene los datos.
+- **Fin:** `RoundWon` → `PhaseChanged(PrizeSelection)`: la UI muestra `PrizeOffers` (3 `PrizeData`, `IsPoisoned` para el brillo raro) y llama `ChoosePrize(0..2)`; siempre se elige 1 (`PrizePicksRemaining` vuelve a 0 y las tarjetas se bloquean; `IsPrizeTaken(i)`). O bien `GameOver(stats)` → `PhaseChanged(GameOver)`; `LastStats` también tiene los datos.
 - **Concursante (Otoniel):** al chocar lanza `GameEvents.RaiseContestantHit(HitCause.Obstacle o Water)`; GameManager aplica Escudo/Flotador y quita la vida. Lee `GameManager.Instance.Modifiers` (`JumpHeightMultiplier`, `JumpDurationMultiplier`, `LaneChangeDurationMultiplier`, `HasPoisonSpring`, `HasMagnet`), `Rules.IsApplied(RuleType.Mirror/Giant/NoJump/Blackout)` y los números de la sección «Concursante» de `Balance`. Tag **Player**.
 - **Estrellas:** prefabs `Star_Normal` y `Star_Golden` (`Prefabs/Gameplay`). Se ponen dentro de los tramos; llaman solas a `GameManager.Instance.CollectStar(esDorada)`.
 - **Tramos (Otoniel):** raíz con `TrackSegment` (pivote al **inicio**, 20 m hacia +Z, primeros y últimos 3 m sin obstáculos), marcar dificultad, obstáculos que tiene y `requiresJump` / `requiresSlide`; `hologramSlots` = puntos vacíos donde puede salir un holograma. Guardar en `Prefabs/Segments`; el que tenga «Safe» en el nombre es el tramo vacío. Revisar con **Una Ronda Más/Pruebas/Validar tramos**. Arco: `Prefabs/Gameplay/FinishArch.prefab`; holograma: un prefab con «Holo» en el nombre en `Prefabs/Obstacles`.
 - **Pausa:** Esc o P la maneja GameManager. La UI de pausa escucha `PauseToggled` y llama `SetPaused(false)`, `RestartGame()` o `GoToMainMenu()`.
-- **«¡Trampa!»:** tecla T (RuleManager) o `GameManager.Instance.Rules.CallCheat()` desde un botón; `Rules.CanCallCheat` para el aviso del HUD.
+- **«¡Trampa!»:** tecla T (RuleManager) o `GameManager.Instance.Rules.CallCheat()` desde un botón. Se puede acusar varias veces por ronda: acierta si hay una trampa en vivo abierta (`Rules.Tricks.IsActive` y no es farol) o si la regla anunciada es falsa (`Rules.HasHiddenLie`). Al acertar: `LastCheatReward`, `DetectiveStreak`, `LastCatchWasLie`; si descubre la mentira, `AppliedRule` pasa a null, se lanza `RuleApplied(null)` y se borran los hologramas. Falsa alarma: −1 vida y `CooldownLeft`. El HUD muestra el botón con `Rules.CheatsPossible` y lo habilita con `Rules.CanCallCheat`; el cartel de regla muestra lo que Tito **dijo** (`AnnouncedRule`).
+- **Trampas en vivo (`TitoTricks`, en GameSystems):** `GameManager.StealStars/ReturnStars` y `RigGoal/UnrigGoal` (`RiggedGoalExtra` para pintar la meta en rojo); los controles cruzados se leen con `Rules.IsApplied(RuleType.Mirror)`.
+- **Premios únicos:** 17 premios con `PrizeData.Rarity`; cada uno se elige una vez por partida (`MaxLevel = 1`, el corazón 9 pero nunca en dos premiaciones seguidas: `Modifiers.WasPickedLastScreen`). Se consulta con `Modifiers.Has(tipo)`. Efectos nuevos: Propina (`RoundStartStars`), Zapatillas (`LaneChangeDurationMultiplier`), Silbato (`TryUseWhistle`), Caja fuerte (`TrickPenaltyMultiplier`), Seguro de apuesta (`HasBetInsurance`), Súper imán (`MagnetRange`/`MagnetLateralReach`), Segunda oportunidad (`TryUseSecondChance`), Placa de detective (`CheatRewardMultiplier`), Contrato amañado (`GoalMultiplier`), Trébol (`GoldenStarBonus`), Lupa (pistas del HUD). Los premios que salvan al jugador lanzan `GameEvents.PrizeTriggered`.
 - **Guardado (Tania):** `SaveManager.BestRound`, `BestStars`, `GamesPlayed` (≥ 1 → el menú cambia), `MusicVolume`, `SfxVolume`.
 - **Pruebas:** `Scenes/Test_Nicole.unity` + `DebugOverlay` (panel F1 y atajos). Quitar `DebugOverlay` o desactivar «handleKeys» cuando la UI use las teclas 1-2-3.
 

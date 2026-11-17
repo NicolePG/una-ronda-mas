@@ -29,9 +29,10 @@ Además de esquivar, el jugador toma una decisión importante en cada ronda; ah�
 
 | Mecánica | Cómo funciona | Por qué divierte |
 | --- | --- | --- |
-| Botón «¡Trampa!» | Si crees que Tito mintió sobre la regla, presionas T durante la ronda. Si aciertas ganas 5 estrellas y a Tito se le cae el peluquín; si te equivocas pierdes 1 vida. Una vez por ronda. | El jugador observa, sospecha y arriesga; la mentira se vuelve un juego |
+| Botón «¡Trampa!» | Si crees que Tito hizo trampa, presionas T. Si aciertas, la trampa se deshace, a Tito se le cae el peluquín y ganas 4 + 2 × ronda estrellas (×1,5, ×2… con la racha de detective). Si te equivocas pierdes 1 vida y el botón se bloquea 2,5 s. Se puede acusar varias veces por ronda. | El jugador observa, sospecha y arriesga; pillar a Tito ayuda a llegar a la meta |
+| Trampas en vivo | Desde la ronda 2, a mitad de la carrera Tito se roba estrellas, infla la meta (ronda 3) o cruza los controles (ronda 5). Hay 6 s para acusarlo; si no, la trampa queda hecha. Desde la ronda 4 también hace faroles: guiña y distrae igual, pero no cambia nada | Hay que mirar el marcador y no solo la pista: ¿trampa o farol? |
 | Premios envenenados | Desde la ronda 4, uno de los 3 premios puede ser un regalo de Tito con un efecto oculto que se revela al elegirlo | Elegir premio deja de ser obvio |
-| La apuesta de Tito | Antes de cada ronda puedes apostar: la meta sube 50%, pero si ganas eliges 2 premios | Riesgo y recompensa en cada ronda |
+| La apuesta de Tito | Antes de cada ronda puedes apostar: la meta sube 50%, pero si ganas las 3 tarjetas de premio son raras o épicas | Riesgo y recompensa en cada ronda |
 | Obstáculos falsos | Cuando Tito miente, algunos obstáculos son hologramas que se pueden atravesar | La sorpresa de «Espera, ¿qué?» |
 | Caídas al agua | Al caer, el concursante salpica, Tito se ríe y el jugador reaparece en la pista | Perder da risa en lugar de frustrar |
 
@@ -53,7 +54,7 @@ El concursante corre solo hacia adelante; el jugador elige el carril, salta y se
 **Reglas base**
 
 - La pista tiene 3 carriles sobre el agua y cada ronda dura 40 segundos hasta la meta.
-- La meta de estrellas empieza en 20 y sube 8 por ronda (20, 28, 36…). Ajustado el domingo: con 10 y +5 sobraban estrellas (en la ronda 1 bastaba juntar ~9%).
+- La meta de estrellas empieza en 34 y sube 12 por ronda (34, 46, 58…): hay que juntar ~1 de cada 4 estrellas en la ronda 1 y ~6 de cada 10 en la ronda 8. Antes (20 y +8) las rondas 1 a 5 eran demasiado fáciles.
 - Estrella normal: 1 punto. Estrella dorada: 3 puntos; suele estar en lugares arriesgados.
 - El jugador empieza con 3 vidas. Chocar con un obstáculo o caer al agua quita 1 vida; el concursante reaparece en el carril central con 1 segundo de invulnerabilidad.
 - Si llega a la meta sin las estrellas necesarias o se queda sin vidas, queda eliminado.
@@ -63,37 +64,37 @@ El concursante corre solo hacia adelante; el jugador elige el carril, salta y se
 1. Tito anuncia la ronda y, desde la ronda 3, una regla especial. El jugador decide si acepta la apuesta.
 2. El concursante corre 40 segundos: cambia de carril, salta, se desliza y junta estrellas.
 3. Si cree que Tito mintió, el jugador lo acusa con «¡Trampa!».
-4. Si llega a la meta con las estrellas necesarias, elige 1 de 3 premios (2 si ganó la apuesta) y pasa a una ronda más rápida.
+4. Si llega a la meta con las estrellas necesarias, elige 1 de 3 premios (raros o épicos si ganó la apuesta) y pasa a una ronda más rápida.
 5. Si queda eliminado, ve la ronda alcanzada, sus estrellas totales y el récord, con el botón «¿Una ronda más?».
 
 El puntaje final es la suma de estrellas de todas las rondas. Todos los números son el punto de partida y se ajustan en el balance del domingo.
 
 ## Ronda por ronda
 
-La ronda 3 es la primera con regla especial y desde la ronda 4 Tito puede mentir; cada ronda la pista va 8% más rápido y la meta sube 8 estrellas.
+Cada ronda aprieta un poco más: la pista va 7,5% más rápido, la meta sube 12 estrellas, hay más tramos medios y difíciles y Tito hace más trampas. La ronda 2 ya trae regla y la primera trampa en vivo; desde la ronda 3 Tito puede mentir con la regla.
 
-| Ronda | Meta | Velocidad | Obstáculos que aparecen | Tito |
-| --- | --- | --- | --- | --- |
-| 1 | 20 | 8 m/s | Bloques y barras bajas | Explica cómo se juega |
-| 2 | 28 | 8,6 m/s | Se suman las barras altas | Sin regla especial |
-| 3 | 36 | 9,3 m/s | Se suma el martillo | Primera regla, siempre verdadera |
-| 4 | 44 | 10,1 m/s | Se suman los huecos al agua | Puede mentir; aparecen hologramas y premios envenenados |
-| 5 | 52 | 10,9 m/s | Tramos medios | Puede mentir |
-| 6 | 60 | 11,8 m/s | Tramos medios | Puede mentir |
-| 7 | 68 | 12,7 m/s | Tramos medios y difíciles | Puede mentir |
-| 8 | 76 | 13,7 m/s | Tramos difíciles | Puede mentir |
-| 9 | 84 | 14,8 m/s | Tramos difíciles | Puede mentir |
-| 10 | 92 | 16 m/s | Tramos difíciles | Final falso «FIN DEL PROGRAMA» (extra) |
+| Ronda | Meta | Velocidad | Tramos (fácil / medio / difícil) | Obstáculos nuevos | Tito |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 34 | 8,5 m/s | 100 / 0 / 0 | Bloques y barras bajas | Explica cómo se juega |
+| 2 | 46 | 9,1 m/s | 60 / 40 / 0 | Barras altas | Primera regla (verdadera); 1 trampa: robo de estrellas |
+| 3 | 58 | 9,8 m/s | 35 / 55 / 10 | Martillo y huecos al agua | Puede mentir (35%); 1 trampa; ya puede inflar la meta |
+| 4 | 70 | 10,6 m/s | 15 / 60 / 25 | Pelota rodante | Mentira 40%; 2 trampas; faroles; premios envenenados |
+| 5 | 82 | 11,4 m/s | 0 / 55 / 45 | — | Mentira 45%; 2 trampas; ya puede cruzar los controles |
+| 6 | 94 | 12,2 m/s | 0 / 55 / 45 | Rodillo barredor | Mentira 50%; 3 trampas |
+| 7 | 106 | 13,1 m/s | 0 / 30 / 70 | — | Mentira 55%; 3 trampas |
+| 8 | 118 | 14,1 m/s | 0 / 30 / 70 | — | Mentira 60%; 3 trampas |
+| 9 | 130 | 15,2 m/s | 0 / 10 / 90 | — | Mentira 65%; 3 trampas |
+| 10 | 142 | 16,3 m/s | 0 / 10 / 90 | — | Mentira 70% (tope) |
 
-Desde la ronda 11 la velocidad se queda en 16 m/s y solo sube la meta.
+Desde la ronda 11 la velocidad se queda en 17 m/s y solo sube la meta. Los faroles empiezan en 25% de las trampas y llegan a 45%. Todos los números están en `Balance.asset` («Crear todo» lo pone al día).
 
 **Ejemplo: la ronda 3**
 
-1. Tito aparece en la pantalla gigante: «¡Ronda 3! Meta: 36 estrellas. Y hoy… ¡todo vale doble!».
+1. Tito aparece en la pantalla gigante: «¡Ronda 3! Meta: 58 estrellas. Y hoy… ¡todo vale doble!». El cartel avisa: «Tito hará hasta 1 trampa».
 2. Tito ofrece su apuesta; el jugador la rechaza para ir seguro.
-3. La regla se aplica: cada estrella vale el doble, pero la pista va 30% más rápido.
-4. El jugador ya tiene 2 premios, por ejemplo Imán y Flotador. Aparece el primer martillo gigante.
-5. Si llega a la meta con 36 estrellas, elige otro premio y pasa a la ronda 4, donde Tito ya puede mentir.
+3. Se apagan las luces: la regla real era «Apagón». El cartel de la regla tiembla y se pone «¿¿??»; el jugador acusa con T y gana 10 estrellas.
+4. A los 20 s Tito señala al público («¡Miren allá!») y el número de la meta se pone en rojo: subió a 65. El jugador acusa otra vez y la meta vuelve a 58 (+10 estrellas, racha x2: +15).
+5. Si llega a la meta, elige un premio (ya pueden salir raros) y pasa a la ronda 4, donde empiezan los faroles.
 
 ## Contenido del juego
 
@@ -111,18 +112,31 @@ El MVP necesita 5 obstáculos, 6 premios, 4 premios envenenados y 5 reglas; lo m
 | Pelota rodante | Cambiar de carril; viene de frente | Ronda 5 | Extra |
 | Rodillo giratorio | Saltar en el momento justo; barre los 3 carriles | Ronda 6 | Extra |
 
-**Premios** (se elige 1 de 3 al ganar una ronda; se acumulan)
+**Premios** (se elige 1 de 3 al ganar una ronda; los premios se quedan toda la partida)
 
-| Premio | Efecto | Nivel |
+Cada premio se elige **una sola vez por partida**: lo que ya tienes no vuelve a salir, así cada premiación trae ventajas nuevas. El corazón es la excepción: se repite, pero nunca en dos premiaciones seguidas ni con las vidas llenas. Hay 17 premios, suficientes para tener novedades hasta las rondas 9 y 10, donde ya es muy difícil seguir; si se acaban, salen menos tarjetas.
+
+Cada tarjeta sortea su rareza según la ronda: los comunes salen siempre, los raros desde la ronda 2 (25% y suben 6% por ronda, hasta 60%) y los épicos desde la ronda 5 (12%, +4% por ronda, hasta 35%). Ganar la apuesta hace que las 3 tarjetas sean raras o épicas.
+
+| Premio | Rareza | Efecto |
 | --- | --- | --- |
-| Corazón extra | +1 vida, máximo 5 | MVP |
-| Imán | Atrae las estrellas de los carriles vecinos | MVP |
-| Flotador | La primera caída al agua de cada ronda no quita vida | MVP |
-| Escudo | Absorbe 1 choque por ronda | MVP |
-| Resorte | Salto más alto y más largo | MVP |
-| Cámara lenta | La pista va 10% más lenta: más tiempo para esquivar (la ronda sigue durando 40 s, así que pasan menos estrellas) | MVP |
-| Trébol | Aparecen más estrellas doradas | Extra |
-| Lupa | El cartel de Tito da una pista extra cuando miente | Extra |
+| Corazón extra | Común | +1 vida, máximo 5 (se repite, no seguido) |
+| Escudo | Común | Absorbe 1 choque por ronda |
+| Flotador | Común | La primera caída al agua de cada ronda no quita vida |
+| Propina | Común | Empiezas cada ronda con 5 estrellas (Tito también te las puede robar) |
+| Zapatillas | Común | Cambias de carril 30% más rápido |
+| Imán | Raro | Atrae las estrellas de los carriles vecinos |
+| Resorte | Raro | Salto más alto y más largo |
+| Cámara lenta | Raro | La pista va 10% más lenta: más tiempo para esquivar (pasan menos estrellas) |
+| Lupa | Raro | Te dice qué trampa hizo Tito, cuándo es un farol y si la regla es falsa |
+| Silbato | Raro | La primera falsa alarma de cada ronda no quita vida |
+| Caja fuerte | Raro | Tito solo puede robarte o inflarte la meta la mitad |
+| Seguro de apuesta | Raro | Si fallas la meta de la apuesta pero llegas a la normal, igual pasas de ronda (con tarjetas normales) |
+| Trébol | Épico | Cada estrella dorada vale 3 más |
+| Súper imán | Épico | Solo si ya tienes el Imán: atrae de los 3 carriles y desde 20 m |
+| Segunda oportunidad | Épico | Una vez por partida, al perder la última vida vuelves con 1 |
+| Placa de detective | Épico | Pillar a Tito da el doble de estrellas |
+| Contrato amañado | Épico | La meta de cada ronda baja 10% |
 
 **Premios envenenados** (desde la ronda 4, uno de los 3 puede serlo; tiene un brillo raro como pista)
 
@@ -133,7 +147,7 @@ El MVP necesita 5 obstáculos, 6 premios, 4 premios envenenados y 5 reglas; lo m
 | Cámara lenta | Hace lento el cambio de carril, no la pista |
 | Escudo | Solo dura los primeros 10 segundos de la ronda |
 
-**Reglas de Tito** (una por ronda desde la ronda 3)
+**Reglas de Tito** (una por ronda desde la ronda 2)
 
 | Regla | Qué pasa | Nivel |
 | --- | --- | --- |
@@ -189,13 +203,14 @@ La cámara va detrás y por encima del concursante, mirando hacia adelante; la p
 
 ## El giro: algo no está bien
 
-Lo extraño aparece desde la ronda 3 de la primera partida, porque los jurados suelen jugar solo una o dos veces; después, el juego guarda cuántas partidas jugaste y sigue cambiando.
+Lo extraño aparece desde la ronda 2 de la primera partida, porque los jurados suelen jugar solo una o dos veces; después, el juego guarda cuántas partidas jugaste y sigue cambiando.
 
 | Momento | Qué pasa |
 | --- | --- |
-| Rondas 1 y 2 | Todo normal. Tito es amable y explica las reglas. |
-| Desde la ronda 3 | Tito anuncia una regla especial en cada ronda y ofrece su apuesta. |
-| Desde la ronda 4 | Tito puede mentir (30%): anuncia una regla y aplica otra, y pone hologramas en la pista. El cartel de la regla tiembla cuando miente. Como extra, un cartel falso de «¡Atajo!» que lleva al agua. |
+| Ronda 1 | Todo normal. Tito es amable y explica las reglas. |
+| Desde la ronda 2 | Tito anuncia una regla especial en cada ronda y hace su primera trampa en vivo (se roba estrellas). El anuncio avisa cuántas trampas puede hacer. |
+| Desde la ronda 3 | Tito puede mentir con la regla (35%, +5% por ronda hasta 70%): anuncia una y aplica otra, y pone hologramas. El cartel muestra la regla anunciada y cada tanto falla («¿¿??»). También puede inflar la meta. Ofrece su apuesta. |
+| Desde la ronda 4 | Hace faroles: guiña, señala al público y el público murmura, pero no cambia nada. Desde la ronda 5 también cruza los controles. Como extra, un cartel falso de «¡Atajo!» que lleva al agua. |
 | Segunda partida | Tito te reconoce («Ah, volviste») y el botón «Jugar» pasa a decir «¿Una ronda más?». |
 | Desde la tercera partida | El título del menú tiembla y Tito comenta tus derrotas anteriores («Ya van 3, ¿eh?»). |
 | Ronda 10 (extra) | Se apagan las luces y aparece «FIN DEL PROGRAMA». Segundos después, Tito dice «Mentí. Una ronda más» y empieza la ronda 11. |
@@ -207,6 +222,10 @@ Lo extraño aparece desde la ronda 3 de la primera partida, porque los jurados s
 ## Menús y pantallas
 
 El juego tiene 9 pantallas; tras perder, el botón principal es «¿Una ronda más?», que reinicia en la ronda 1 sin pasar por el menú.
+
+**Estilo de transmisión de TV:** todas las pantallas usan paneles de vidrio oscuro con borde de neón dorado a rosa, botones píldora con halo al pasar el cursor (el principal es dorado y tiene un destello que lo cruza), títulos dorados con contorno y entradas animadas en cascada. El menú tiene el cartel «● EN VIVO» y una cinta de noticias abajo con los récords; el anuncio de cada ronda también lleva «EN VIVO». Las tarjetas de premio brillan con el color de su rareza.
+
+**Público:** las gradas tienen lugar para 72 personas. En la ronda 1 hay un tercio y cada ronda llega más gente (entran saltando) hasta llenar el estudio en la ronda 8.
 
 ![Figura 4. Flujo de pantallas: ciclo de rondas y regreso tras perder](img/flujo.png)
 
