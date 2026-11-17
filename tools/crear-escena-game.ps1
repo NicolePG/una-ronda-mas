@@ -1,4 +1,4 @@
-﻿# Corre «Una Ronda Más → Escena → Crear todo lo de Otoniel (Game.unity)» sin abrir Unity:
+﻿# Corre la parte de Game.unity de «Una Ronda Más → Crear todo» sin abrir Unity:
 # obstáculos, efectos, 12 tramos, concursante y Tito (modelos de Kenney), GameSystems, Game.unity y Build Settings.
 # Al final guarda una captura en Logs/Previews/game_preview.png.
 # Unity tiene que estar CERRADO. Uso, desde la raíz del proyecto:
@@ -21,7 +21,7 @@ if (-not (Test-Path $UnityPath)) {
 if (Test-Path $lockFile) {
     try { [System.IO.File]::Open($lockFile, 'Open', 'ReadWrite', 'None').Close() }
     catch {
-        Write-Host "Unity está abierto con este proyecto: usa el menú Una Ronda Más > Escena > Crear todo lo de Otoniel." -ForegroundColor Red
+        Write-Host "Unity está abierto con este proyecto: usa el menú Una Ronda Más > Crear todo." -ForegroundColor Red
         exit 3
     }
 }

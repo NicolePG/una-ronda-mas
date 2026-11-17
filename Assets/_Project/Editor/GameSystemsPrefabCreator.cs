@@ -3,21 +3,14 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Crea o actualiza Prefabs/Gameplay/GameSystems.prefab (GameManager + RuleManager + TrackGenerator)
+/// Crea o actualiza Prefabs/Gameplay/GameSystems.prefab (GameManager + RuleManager + TrackGenerator + TitoTricks)
 /// con los datos y los tramos que haya en Prefabs/Segments. Se pone UNA vez en Game.unity.
-/// Volver a ejecutarlo cuando Otoniel agregue tramos nuevos.
+/// Lo vuelve a ejecutar «Crear todo» (con los tramos nuevos que haya).
 /// </summary>
 public static class GameSystemsPrefabCreator
 {
     public const string PrefabPath = ProjectPaths.PrefabsGameplay + "/GameSystems.prefab";
     public const string FinishArchPath = ProjectPaths.PrefabsGameplay + "/FinishArch.prefab";
-
-    [MenuItem("Una Ronda Más/Prefabs/Crear o actualizar GameSystems (tramos incluidos)")]
-    public static void CreateOrUpdateMenu()
-    {
-        GameObject prefab = CreateOrUpdate();
-        if (prefab != null) Selection.activeObject = prefab;
-    }
 
     public static GameObject CreateOrUpdate()
     {
@@ -42,8 +35,9 @@ public static class GameSystemsPrefabCreator
         GameManager gm = GetOrAdd<GameManager>(root);
         RuleManager rules = GetOrAdd<RuleManager>(root);
         TrackGenerator track = GetOrAdd<TrackGenerator>(root);
+        TitoTricks tricks = GetOrAdd<TitoTricks>(root);
         var balance = AssetDatabase.LoadAssetAtPath<BalanceConfig>(ProjectPaths.Balance);
-        if (balance == null) Debug.LogWarning("Falta Balance.asset: ejecuta «Una Ronda Más/Datos/Crear Balance, premios y reglas».");
+        if (balance == null) Debug.LogWarning("Falta Balance.asset: usa «Una Ronda Más/Crear todo».");
 
         var gmSo = new SerializedObject(gm);
         ProjectPaths.SetObject(gmSo, "balance", balance);
@@ -54,6 +48,7 @@ public static class GameSystemsPrefabCreator
 
         var rulesSo = new SerializedObject(rules);
         ProjectPaths.SetArray(rulesSo, "rules", ProjectPaths.LoadAll<RuleData>(ProjectPaths.Rules));
+        ProjectPaths.SetObject(rulesSo, "tricks", tricks);
         rulesSo.ApplyModifiedPropertiesWithoutUndo();
 
         // Tramos: los que tienen "Safe" en el nombre son el tramo vacío; el resto entra al sorteo.

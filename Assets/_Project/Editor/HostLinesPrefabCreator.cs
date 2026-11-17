@@ -10,7 +10,6 @@ public static class HostLinesPrefabCreator
     private const string CsvPath = "Assets/_Project/Resources/HostLines.csv";
     private const string PrefabPath = "Assets/_Project/Prefabs/UI/HostLines_Canvas.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Crear prefab frases de Tito")]
     public static void Create()
     {
         if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) != null)

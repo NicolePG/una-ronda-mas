@@ -9,10 +9,8 @@ public static class UiPolishInstaller
     private const string ButtonPrefabPath = "Assets/_Project/Prefabs/UI/Button_Base.prefab";
     private const string MainMenuScenePath = "Assets/_Project/Scenes/MainMenu.unity";
 
-    [MenuItem("Una Ronda Más/UI/Aplicar pulido de botones y transiciones")]
     public static void Install()
     {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
         if (!InstallButtonHover()) return;
         if (!InstallMainMenuTransition()) return;
         AssetDatabase.SaveAssets();

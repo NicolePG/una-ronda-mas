@@ -13,16 +13,13 @@ public static class MainMenuSceneCreator
     private const string FontAssetPath = "Assets/_Project/Fonts/Font_UI_Dynamic.asset";
     private const string ButtonPrefabPath = "Assets/_Project/Prefabs/UI/Button_Base.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Crear escena MainMenu")]
     public static void Create()
     {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-
         TMP_FontAsset font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontAssetPath);
         GameObject buttonPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ButtonPrefabPath);
         if (font == null || buttonPrefab == null)
         {
-            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Créelos primero desde Una Ronda Más → UI.");
+            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Usa Una Ronda Más → Crear todo.");
             return;
         }
 

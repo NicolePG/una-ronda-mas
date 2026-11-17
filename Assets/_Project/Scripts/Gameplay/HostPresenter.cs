@@ -39,6 +39,7 @@ public class HostPresenter : MonoBehaviour
         GameEvents.CheatCalled += HandleCheatCalled;
         GameEvents.GameOver += HandleGameOver;
         GameEvents.RoundWon += HandleRoundWon;
+        TitoTricks.TrickStarted += HandleTrickStarted;
     }
 
     private void OnDisable()
@@ -48,6 +49,7 @@ public class HostPresenter : MonoBehaviour
         GameEvents.CheatCalled -= HandleCheatCalled;
         GameEvents.GameOver -= HandleGameOver;
         GameEvents.RoundWon -= HandleRoundWon;
+        TitoTricks.TrickStarted -= HandleTrickStarted;
     }
 
     private void HandleRuleAnnounced(RuleData rule, bool isLie) => Play(PointState, 1);
@@ -55,6 +57,8 @@ public class HostPresenter : MonoBehaviour
     private void HandleCheatCalled(bool correct) => Play(correct ? ShockState : LaughState, correct ? 1 : laughRepeats);
     private void HandleGameOver(GameStats stats) => Play(LaughState, laughRepeats + 1);
     private void HandleRoundWon(int round, int prizes) => Play(PointState, 1);
+    // «¡Miren allá!»: señala para distraer, sea trampa o farol.
+    private void HandleTrickStarted(TrickType type, bool bluff, int amount) => Play(PointState, 1);
 
     private void Play(string state, int repeats)
     {

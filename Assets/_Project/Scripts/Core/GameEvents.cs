@@ -24,6 +24,7 @@ public static class GameEvents
     public static event Action<bool> BetResolved;                // true = aceptó la apuesta
     public static event Action<bool> CheatCalled;                // true = acertó
     public static event Action<PrizeData> PrizeChosen;
+    public static event Action<PrizeType> PrizeTriggered;        // un premio salvó al jugador (Segunda oportunidad, Silbato, Seguro de apuesta)
     public static event Action<bool> PauseToggled;
 
     public static void RaisePhaseChanged(RoundPhase phase) => Invoke(PhaseChanged, phase);
@@ -39,6 +40,7 @@ public static class GameEvents
     public static void RaiseBetResolved(bool accepted) => Invoke(BetResolved, accepted);
     public static void RaiseCheatCalled(bool correct) => Invoke(CheatCalled, correct);
     public static void RaisePrizeChosen(PrizeData prize) => Invoke(PrizeChosen, prize);
+    public static void RaisePrizeTriggered(PrizeType type) => Invoke(PrizeTriggered, type);
     public static void RaisePauseToggled(bool paused) => Invoke(PauseToggled, paused);
 
     // Cada listener se llama por separado para que un error de uno no corte a los demás.

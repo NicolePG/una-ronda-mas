@@ -7,7 +7,6 @@ public static class HostFacePrefabCreator
     private const string MaterialsFolder = "Assets/_Project/Materials";
     private const string PrefabPath = "Assets/_Project/Prefabs/UI/HostFace.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Crear prefab cara 3D de Tito")]
     public static void Create()
     {
         if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) != null)

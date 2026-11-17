@@ -10,7 +10,6 @@ public static class UiAssetCreator
     private const string FontAssetPath = "Assets/_Project/Fonts/Font_UI_Dynamic.asset";
     private const string ButtonPrefabPath = "Assets/_Project/Prefabs/UI/Button_Base.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Crear fuente y botón base")]
     public static void CreateUiAssets()
     {
         ProjectPaths.EnsureFolder("Assets/_Project/Fonts");

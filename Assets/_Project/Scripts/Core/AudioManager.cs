@@ -56,7 +56,7 @@ public class AudioManager : MonoBehaviour
         AudioManager prefab = Resources.Load<AudioManager>("AudioManager");
         if (prefab == null)
         {
-            Debug.LogError("AudioManager: falta Resources/AudioManager.prefab. Ejecuta Una Ronda Más/Audio/Crear o actualizar AudioManager.");
+            Debug.LogError("AudioManager: falta Resources/AudioManager.prefab. Usa Una Ronda Más/Crear todo.");
             return;
         }
 

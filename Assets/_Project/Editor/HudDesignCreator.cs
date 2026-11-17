@@ -36,13 +36,12 @@ public static class HudDesignCreator
         public Sprite Panel, RuleChip, Cheat, Key, Star, Heart, Bar;
     }
 
-    [MenuItem("Una Ronda Más/UI/HUD con el diseño del lienzo")]
     public static void Create()
     {
         var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
         if (font == null)
         {
-            Debug.LogError($"Falta la fuente {FontPath} (menú de Tania «Crear fuente y botón base»).");
+            Debug.LogError($"Falta la fuente {FontPath} (menú «Una Ronda Más/Crear todo»).");
             return;
         }
         var balance = AssetDatabase.LoadAssetAtPath<BalanceConfig>(ProjectPaths.Balance);

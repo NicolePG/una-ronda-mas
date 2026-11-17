@@ -27,13 +27,6 @@ public static class TestSceneCreator
     private const float FloorSideMargin = 0.4f;
     private const float ContestantScale = 0.8f;   // cápsula de 2 m × 0,8 = 1,6 m
 
-    [MenuItem("Una Ronda Más/Pruebas/Crear escena de prueba (Nicole)")]
-    public static void CreateMenu()
-    {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-        Create();
-    }
-
     public static void Create()
     {
         MaterialCreator.CreateAll();

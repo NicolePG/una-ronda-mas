@@ -252,18 +252,11 @@ public static class SegmentCreator
         }},
     };
 
-    [MenuItem("Una Ronda Más/Prefabs/Crear tramos (Otoniel)")]
-    public static void CreateAllMenu()
-    {
-        CreateAll(AssetDatabase.LoadAssetAtPath<BalanceConfig>(ProjectPaths.Balance));
-        GameSystemsPrefabCreator.CreateOrUpdate();
-    }
-
     public static void CreateAll(BalanceConfig balance)
     {
         if (balance == null)
         {
-            Debug.LogError("Falta Balance.asset (menú Una Ronda Más/Datos).");
+            Debug.LogError("Falta Balance.asset (menú Una Ronda Más/Crear todo).");
             return;
         }
         ProjectPaths.EnsureFolder(ProjectPaths.PrefabsSegments);

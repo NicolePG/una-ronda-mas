@@ -32,6 +32,10 @@ public class PrizeScreen : MonoBehaviour
     private readonly UnityEngine.Events.UnityAction[] chooseActions =
         new UnityEngine.Events.UnityAction[OfferCount];
 
+    // Halo de cada tarjeta con el color de su rareza (lo agrega la interfaz moderna; puede faltar).
+    private readonly Image[] rarityGlows = new Image[OfferCount];
+    private readonly PrizeRarity[] shownRarity = new PrizeRarity[OfferCount];
+
     private void Awake()
     {
         if (panel == null || picksRemainingText == null || revealText == null
@@ -45,6 +49,12 @@ public class PrizeScreen : MonoBehaviour
         else
         {
             revealText.gameObject.SetActive(false);
+            for (int i = 0; i < OfferCount; i++)
+            {
+                Transform card = prizeNames[i].transform.parent;
+                Transform glow = card != null ? card.Find("RarityGlow") : null;
+                rarityGlows[i] = glow != null ? glow.GetComponent<Image>() : null;
+            }
         }
     }
 
@@ -84,6 +94,7 @@ public class PrizeScreen : MonoBehaviour
     private void Update()
     {
         if (panel == null || !panel.activeSelf) return;
+        PulseRarityGlows();
         if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) ChoosePrize(0);
         else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) ChoosePrize(1);
         else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) ChoosePrize(2);
@@ -150,6 +161,11 @@ public class PrizeScreen : MonoBehaviour
             bool taken = hasOffer && game.IsPrizeTaken(i);
 
             if (prizeButtons[i] != null) prizeButtons[i].interactable = hasOffer && !taken;
+            if (rarityGlows[i] != null)
+            {
+                rarityGlows[i].gameObject.SetActive(hasOffer && !taken);
+                if (hasOffer) shownRarity[i] = prize.Rarity;
+            }
             if (!hasOffer)
             {
                 if (prizeNames[i] != null) prizeNames[i].text = "—";
@@ -165,7 +181,7 @@ public class PrizeScreen : MonoBehaviour
             if (prizeDescriptions[i] != null)
                 prizeDescriptions[i].text = taken && prize.IsPoisoned
                     ? prize.PoisonReveal
-                    : prize.Description;
+                    : $"<color={RarityColor(prize.Rarity)}><b>{RarityLabel(prize.Rarity)}</b></color>\n{prize.Description}";
 
             if (prizeIcons[i] != null)
             {
@@ -178,6 +194,34 @@ public class PrizeScreen : MonoBehaviour
                 poisonIndicators[i].SetActive(prize.IsPoisoned && !taken);
         }
     }
+
+    // Las raras y épicas laten; la común brilla quieta y suave.
+    private void PulseRarityGlows()
+    {
+        float wave = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 3.2f);
+        for (int i = 0; i < OfferCount; i++)
+        {
+            Image glow = rarityGlows[i];
+            if (glow == null || !glow.gameObject.activeSelf) continue;
+            ColorUtility.TryParseHtmlString(RarityColor(shownRarity[i]), out Color c);
+            c.a = shownRarity[i] == PrizeRarity.Common ? 0.35f : Mathf.Lerp(0.45f, 1f, wave);
+            glow.color = c;
+        }
+    }
+
+    private static string RarityLabel(PrizeRarity rarity) => rarity switch
+    {
+        PrizeRarity.Epic => "ÉPICO",
+        PrizeRarity.Rare => "RARO",
+        _ => "COMÚN",
+    };
+
+    private static string RarityColor(PrizeRarity rarity) => rarity switch
+    {
+        PrizeRarity.Epic => "#F7B11D",
+        PrizeRarity.Rare => "#7FC8FF",
+        _ => "#CFC6EA",
+    };
 
     private void ChoosePrize(int index)
     {

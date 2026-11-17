@@ -64,6 +64,7 @@ public class FloatingTexts : MonoBehaviour
         GameEvents.RoundStarted += HandleRoundStarted;
         GameEvents.ContestantHit += HandleHit;
         Obstacle.NearMiss += HandleNearMiss;
+        TitoTricks.TrickStarted += HandleTrickStarted;
     }
 
     private void OnDisable()
@@ -72,6 +73,14 @@ public class FloatingTexts : MonoBehaviour
         GameEvents.RoundStarted -= HandleRoundStarted;
         GameEvents.ContestantHit -= HandleHit;
         Obstacle.NearMiss -= HandleNearMiss;
+        TitoTricks.TrickStarted -= HandleTrickStarted;
+    }
+
+    // Robo de Tito: «−N» rojo sobre el concursante (es la pista más clara de la trampa).
+    private void HandleTrickStarted(TrickType type, bool bluff, int amount)
+    {
+        if (bluff || type != TrickType.StealStars || amount <= 0) return;
+        Spawn($"-{amount}", new Vector3(0f, 0.4f, 0f), hitColor, 1.4f);
     }
 
     private void HandleRoundStarted(int round, int goal, float speed) => lastStars = 0;

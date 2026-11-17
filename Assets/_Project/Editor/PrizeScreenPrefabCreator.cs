@@ -10,7 +10,6 @@ public static class PrizeScreenPrefabCreator
     private const string ButtonPrefabPath = "Assets/_Project/Prefabs/UI/Button_Base.prefab";
     private const string PrefabPath = "Assets/_Project/Prefabs/UI/PrizeScreen_Canvas.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Crear prefab pantalla de Premios")]
     public static void Create()
     {
         if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) != null)
@@ -23,7 +22,7 @@ public static class PrizeScreenPrefabCreator
         GameObject buttonTemplate = AssetDatabase.LoadAssetAtPath<GameObject>(ButtonPrefabPath);
         if (font == null || buttonTemplate == null)
         {
-            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Créelos primero desde Una Ronda Más → UI.");
+            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Usa Una Ronda Más → Crear todo.");
             return;
         }
 

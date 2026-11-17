@@ -11,11 +11,8 @@ public static class HowToPlayMenuInstaller
     private const string FontAssetPath = "Assets/_Project/Fonts/Font_UI_Dynamic.asset";
     private const string ButtonPrefabPath = "Assets/_Project/Prefabs/UI/Button_Base.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Agregar Cómo jugar a MainMenu")]
     public static void Install()
     {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-
         var scene = EditorSceneManager.OpenScene(ScenePath);
         MainMenuUI menu = Object.FindObjectOfType<MainMenuUI>();
         if (menu == null)
@@ -28,7 +25,7 @@ public static class HowToPlayMenuInstaller
         Transform existingPanel = canvas.Find("HowToPlayPanel");
         if (existingPanel != null)
         {
-            Debug.LogWarning("MainMenu ya tiene HowToPlayPanel; no se duplicó la interfaz.");
+            Debug.Log("MainMenu ya tiene HowToPlayPanel; no se duplicó la interfaz.");
             return;
         }
 
@@ -36,7 +33,7 @@ public static class HowToPlayMenuInstaller
         GameObject buttonPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ButtonPrefabPath);
         if (font == null || buttonPrefab == null)
         {
-            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Créelos primero desde Una Ronda Más → UI.");
+            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Usa Una Ronda Más → Crear todo.");
             return;
         }
 

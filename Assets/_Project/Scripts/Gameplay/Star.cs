@@ -68,9 +68,9 @@ public class Star : MonoBehaviour
         Vector3 worldBase = parent != null ? parent.TransformPoint(baseLocalPosition) : baseLocalPosition;
         float ahead = worldBase.z - player.position.z;
         float dx = player.position.x - worldBase.x;
-        BalanceConfig b = gm.Balance;
-        if (ahead <= 0f || ahead > b.MagnetRange) return;
-        if (Mathf.Abs(dx) < MagnetSnapDistance || Mathf.Abs(dx) > b.MagnetLateralReach) return;
+        PlayerModifiers modifiers = gm.Modifiers;
+        if (ahead <= 0f || ahead > modifiers.MagnetRange) return;
+        if (Mathf.Abs(dx) < MagnetSnapDistance || Mathf.Abs(dx) > modifiers.MagnetLateralReach) return;
 
         // Velocidad lateral para llegar al carril del jugador antes de que la estrella lo alcance.
         float timeToReach = Mathf.Max(ahead / gm.CurrentSpeed * MagnetArrivalFactor, Time.deltaTime);

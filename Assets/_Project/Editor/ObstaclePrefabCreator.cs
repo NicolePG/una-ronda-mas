@@ -52,7 +52,6 @@ public static class ObstaclePrefabCreator
     private const float SweeperPostHeight = 0.6f;
     private const float StarGlowSize = 1.5f;
 
-    [MenuItem("Una Ronda Más/Prefabs/Crear obstáculos, arco y efectos (Otoniel)")]
     public static void CreateAll()
     {
         ProjectPaths.EnsureFolder(ProjectPaths.PrefabsObstacles);

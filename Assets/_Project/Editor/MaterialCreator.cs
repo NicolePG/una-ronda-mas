@@ -10,7 +10,6 @@ public static class MaterialCreator
     private const float GoldEmission = 0.35f;
     private const float StarLightEmission = 0.25f;
 
-    [MenuItem("Una Ronda Más/Materiales/Crear materiales de la paleta")]
     public static void CreateAll()
     {
         ProjectPaths.EnsureFolder(ProjectPaths.Materials);

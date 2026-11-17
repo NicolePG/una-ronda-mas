@@ -28,7 +28,7 @@ public static class BalanceReport
         var balance = AssetDatabase.LoadAssetAtPath<BalanceConfig>(ProjectPaths.Balance);
         if (balance == null)
         {
-            Debug.LogError("Falta Balance.asset (menú Una Ronda Más/Datos).");
+            Debug.LogError("Falta Balance.asset (menú Una Ronda Más/Crear todo).");
             return null;
         }
 

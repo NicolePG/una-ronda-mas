@@ -89,9 +89,15 @@ public class HostBanner : MonoBehaviour
 
         bool betOffered = game.IsBetOffered;
         if (promptText != null)
+        {
             promptText.text = betOffered
                 ? $"¿Aceptas la apuesta? La meta sube a {game.BetGoal} estrellas."
                 : "¡Prepárate para correr!";
+            // Aviso de las trampas en vivo: así el jugador sabe que tiene que vigilar a Tito.
+            int tricks = game.Balance.GetTrickCount(game.CurrentRound);
+            if (tricks > 0)
+                promptText.text += $"\n<color=#FF8A8A>Tito hará hasta {tricks} trampa{(tricks > 1 ? "s" : "")}: ¡atrápalo con T!</color>";
+        }
 
         if (acceptBetButton != null) acceptBetButton.gameObject.SetActive(betOffered);
         if (declineBetButton != null) declineBetButton.gameObject.SetActive(betOffered);

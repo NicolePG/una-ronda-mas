@@ -10,7 +10,6 @@ public static class GameOverPrefabCreator
     private const string ButtonPrefabPath = "Assets/_Project/Prefabs/UI/Button_Base.prefab";
     private const string PrefabPath = "Assets/_Project/Prefabs/UI/GameOver_Canvas.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Crear prefab pantalla Eliminado")]
     public static void Create()
     {
         if (AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath) != null)
@@ -23,7 +22,7 @@ public static class GameOverPrefabCreator
         GameObject buttonTemplate = AssetDatabase.LoadAssetAtPath<GameObject>(ButtonPrefabPath);
         if (font == null || buttonTemplate == null)
         {
-            Debug.LogError("Falta la fuente dinámica o Button_Base. Ejecuta primero «Una Ronda Más/UI/Crear fuente y botón base».");
+            Debug.LogError("Falta la fuente dinámica o Button_Base. Usa «Una Ronda Más/Crear todo».");
             return;
         }
 

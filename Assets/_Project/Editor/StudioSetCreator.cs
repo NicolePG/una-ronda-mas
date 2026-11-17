@@ -31,7 +31,8 @@ public static class StudioSetCreator
     private const float BleacherStep = 0.6f;
     private const float BleacherStartZ = 0f;
     private const float BleacherLength = 56f;
-    private const int SeatsPerRow = 7;
+    private const int SeatsPerRow = 12;            // 2 lados × 3 filas × 12 = 72 personas (se llenan con las rondas)
+    private const float SeatSpacing = 4.2f;
     private const float AudienceHeight = 1.35f;
     private const float BackWallZ = 122f;
     private const float SignY = 25f;
@@ -210,7 +211,7 @@ public static class StudioSetCreator
 
                 for (int seatIndex = 0; seatIndex < SeatsPerRow; seatIndex++)
                 {
-                    float z = BleacherStartZ + 4f + seatIndex * 7.5f + (row % 2) * 3.5f;
+                    float z = BleacherStartZ + 4f + seatIndex * SeatSpacing + (row % 2) * SeatSpacing * 0.5f;
                     GameObject model = models[random.Next(models.Count)];
                     if (!controllers.TryGetValue(model, out RuntimeAnimatorController controller))
                         controllers[model] = controller = AudienceController(model.name);

@@ -29,7 +29,7 @@ public static class SegmentValidator
         if (balance == null)
         {
             problems = 1;
-            return "Falta Balance.asset (menú Una Ronda Más/Datos).";
+            return "Falta Balance.asset (menú Una Ronda Más/Crear todo).";
         }
 
         var counts = new int[3];

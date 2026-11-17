@@ -35,13 +35,6 @@ public static class MainMenuStudioCreator
     private static readonly Color StarLight = IconPainter.Hex("#FBD97A");
     private static readonly Color DeepPurple = IconPainter.Hex("#2A1650");
 
-    [MenuItem("Una Ronda Más/UI/Menú con el estudio 3D (Otoniel)")]
-    public static void CreateMenu()
-    {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-        Create();
-    }
-
     public static void Create()
     {
         Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);

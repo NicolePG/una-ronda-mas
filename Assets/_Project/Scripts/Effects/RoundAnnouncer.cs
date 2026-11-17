@@ -24,6 +24,8 @@ public class RoundAnnouncer : MonoBehaviour
     [SerializeField] private Color rainColor = new Color32(251, 217, 122, 255);
     [SerializeField] private Color doubleColor = new Color32(247, 177, 29, 255);
     [SerializeField] private Color blackoutColor = new Color32(183, 156, 255, 255);
+    [SerializeField] private Color caughtColor = new Color32(247, 177, 29, 255);
+    [SerializeField] private Color falseAlarmColor = new Color32(255, 100, 100, 255);
 
     [Header("Animación")]
     [Tooltip("Segundos que tardan las franjas en cruzar.")]
@@ -37,6 +39,7 @@ public class RoundAnnouncer : MonoBehaviour
     private string eventName;
     private int lastStars;
     private int lastGoal;
+    private float cheatShownAt = -10f;
 
     private void OnEnable()
     {
@@ -45,6 +48,8 @@ public class RoundAnnouncer : MonoBehaviour
         GameEvents.RoundStarted += HandleRoundStarted;
         SurpriseEvents.SurpriseStarted += HandleSurpriseStarted;
         SurpriseEvents.SurpriseEnded += HandleSurpriseEnded;
+        GameEvents.CheatCalled += HandleCheatCalled;
+        GameEvents.PrizeTriggered += HandlePrizeTriggered;
     }
 
     private void OnDisable()
@@ -54,6 +59,32 @@ public class RoundAnnouncer : MonoBehaviour
         GameEvents.RoundStarted -= HandleRoundStarted;
         SurpriseEvents.SurpriseStarted -= HandleSurpriseStarted;
         SurpriseEvents.SurpriseEnded -= HandleSurpriseEnded;
+        GameEvents.CheatCalled -= HandleCheatCalled;
+        GameEvents.PrizeTriggered -= HandlePrizeTriggered;
+    }
+
+    private void HandleCheatCalled(bool correct)
+    {
+        GameManager gm = GameManager.Instance;
+        if (gm == null || gm.Rules == null) return;
+        RuleManager rules = gm.Rules;
+        if (!correct)
+        {
+            string cost = rules.LastFalseAlarmForgiven ? "El silbato te salvó: no pierdes vida" : $"No había trampa  ·  -{gm.Balance.CheatPenaltyLives} vida";
+            Show("¡FALSA ALARMA!", cost, falseAlarmColor, 1.3f);
+            return;
+        }
+        string what = rules.LastCatchWasLie ? "¡La regla era falsa!" : "¡Trampa deshecha!";
+        string streak = rules.DetectiveStreak >= 2 ? $"  ·  racha x{rules.DetectiveStreak}" : string.Empty;
+        Show("¡PILLADO!", $"{what}  +{rules.LastCheatReward} estrellas{streak}", caughtColor, 1.5f);
+        cheatShownAt = Time.unscaledTime;
+    }
+
+    // Premios que salvan al jugador (el Silbato se muestra en la falsa alarma).
+    private void HandlePrizeTriggered(PrizeType type)
+    {
+        if (type == PrizeType.SecondChance) Show("¡SEGUNDA OPORTUNIDAD!", "Vuelves con 1 vida", caughtColor, 1.6f);
+        else if (type == PrizeType.BetInsurance) Show("¡SEGURO DE APUESTA!", "No llegaste a la apuesta, pero pasas de ronda", caughtColor, 1.6f);
     }
 
     private void Start()
@@ -77,10 +108,15 @@ public class RoundAnnouncer : MonoBehaviour
     private void HandleStarsChanged(int stars, int goal)
     {
         GameManager gm = GameManager.Instance;
-        bool crossed = lastStars < goal && stars >= goal && goal > 0 && lastGoal == goal;
+        // La meta puede moverse (Tito la infla o roba estrellas): cuenta el paso de «no llegaba» a «llega».
+        bool reachedBefore = lastGoal > 0 && lastStars >= lastGoal;
+        bool crossed = !reachedBefore && goal > 0 && stars >= goal;
         lastStars = stars;
         lastGoal = goal;
-        if (crossed && gm != null && gm.Phase == RoundPhase.Running) Show("¡META!", "Lo que sumes ahora es puntaje", goalColor, 1.2f);
+        // Si justo se pilló a Tito, manda el cartel de «¡PILLADO!».
+        bool cheatJustShown = Time.unscaledTime - cheatShownAt < 1f;
+        if (crossed && !cheatJustShown && gm != null && gm.Phase == RoundPhase.Running)
+            Show("¡META!", "Lo que sumes ahora es puntaje", goalColor, 1.2f);
     }
 
     private void HandleSurpriseStarted(SurpriseType type, float duration)

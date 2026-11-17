@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// premios elegidos, tiempo y ronda, regla activa y botón «¡Trampa!» (también con la tecla T).
 /// Animado: los números suben de a poco, la barra de meta se llena y brilla al llegar, y cada estrella
 /// que toma el concursante vuela desde la pista hasta el contador.
-/// Lo arma el menú «Una Ronda Más/UI/HUD con el diseño del lienzo».
+/// Lo arma el menú «Una Ronda Más/Crear todo» (HudDesignCreator).
 /// </summary>
 public class HUD : MonoBehaviour
 {
@@ -70,8 +70,18 @@ public class HUD : MonoBehaviour
     [SerializeField] private TMP_Text ruleText;
 
     [Header("¡Trampa!")]
-    [Tooltip("Botón visible mientras se puede acusar a Tito.")]
+    [Tooltip("Botón visible en las rondas en que Tito puede hacer trampa.")]
     [SerializeField] private Button cheatButton;
+    [Tooltip("Color del contador cuando Tito roba estrellas y de la meta inflada.")]
+    [SerializeField] private Color trickColor = new Color32(255, 100, 100, 255);
+    [Tooltip("Segundos que el contador queda en rojo tras un robo.")]
+    [SerializeField, Min(0.1f)] private float stealFlashTime = 0.9f;
+    [Tooltip("Cuánto late el botón mientras Tito trama algo (0,1 = +10%).")]
+    [SerializeField, Min(0f)] private float cheatPulse = 0.12f;
+    [Tooltip("Cada cuántos segundos «falla» el cartel cuando la regla es falsa.")]
+    [SerializeField, Min(0.5f)] private float lieGlitchInterval = 3.2f;
+    [Tooltip("Segundos que dura cada falla del cartel.")]
+    [SerializeField, Min(0.05f)] private float lieGlitchTime = 0.35f;
 
     [Header("Animación")]
     [Tooltip("Tamaño máximo del rebote al juntar estrellas.")]
@@ -107,13 +117,42 @@ public class HUD : MonoBehaviour
     private RectTransform canvasRect;
     private ContestantController contestant;
 
+    // Trampas de Tito
+    private TMP_Text cheatSub;
+    private string cheatSubDefault = string.Empty;
+    private string trickHex;
+    private float stealFlashUntil = -1f;
+    private RuleData shownRule;
+    private RectTransform ruleChipRect;
+    private Vector2 ruleChipHome;
+    private Color ruleTextColor = Color.white;
+    private bool lieGlitching;
+    private float lieGlitchEndsAt;
+    private float nextLieGlitchAt;
+    private int writtenStars = -1;
+    private int writtenGoal = -1;
+    private bool writtenRigged;
+
     private void Awake()
     {
         if (starsText == null || timeText == null || roundText == null || ruleChip == null || cheatButton == null)
-            Debug.LogError("HUD: faltan referencias (usa el menú Una Ronda Más/UI/HUD con el diseño del lienzo).", this);
+            Debug.LogError("HUD: faltan referencias (usa el menú Una Ronda Más/Crear todo).", this);
         if (heartsRow != null) heartsHome = heartsRow.anchoredPosition;
         if (prizeIconTemplate != null) prizeIconTemplate.gameObject.SetActive(false);
-        if (cheatButton != null) cheatButton.onClick.AddListener(CallCheat);
+        if (cheatButton != null)
+        {
+            cheatButton.onClick.AddListener(CallCheat);
+            Transform sub = cheatButton.transform.Find("CheatSub");
+            cheatSub = sub != null ? sub.GetComponent<TMP_Text>() : null;
+            if (cheatSub != null) cheatSubDefault = cheatSub.text;
+        }
+        if (ruleChip != null)
+        {
+            ruleChipRect = ruleChip.transform as RectTransform;
+            if (ruleChipRect != null) ruleChipHome = ruleChipRect.anchoredPosition;
+        }
+        if (ruleText != null) ruleTextColor = ruleText.color;
+        trickHex = ColorUtility.ToHtmlStringRGB(trickColor);
         canvasRect = transform as RectTransform;
         CreateFlyers();
     }
@@ -132,6 +171,7 @@ public class HUD : MonoBehaviour
         GameEvents.TimeChanged += HandleTimeChanged;
         GameEvents.RuleApplied += HandleRuleApplied;
         GameEvents.PrizeChosen += HandlePrizeChosen;
+        TitoTricks.TrickStarted += HandleTrickStarted;
 
         RefreshFromGameManager();
     }
@@ -145,12 +185,14 @@ public class HUD : MonoBehaviour
         GameEvents.TimeChanged -= HandleTimeChanged;
         GameEvents.RuleApplied -= HandleRuleApplied;
         GameEvents.PrizeChosen -= HandlePrizeChosen;
+        TitoTricks.TrickStarted -= HandleTrickStarted;
         SetContestant(null);
     }
 
     private void Update()
     {
         RefreshCheatButton();
+        UpdateLieGlitch();
         if (contestant != ContestantController.Current) SetContestant(ContestantController.Current);
         AnimateCounters();
         AnimateFlyers();
@@ -194,7 +236,22 @@ public class HUD : MonoBehaviour
         timeText.color = warning ? warningColor : timeColor;
     }
 
-    private void HandleRuleApplied(RuleData rule) => SetRule(rule);
+    // El cartel muestra lo que Tito DIJO (la mentira es el juego); se oculta al descubrirla.
+    private void HandleRuleApplied(RuleData rule) => SetRule(DisplayedRule());
+
+    private static RuleData DisplayedRule()
+    {
+        GameManager game = GameManager.Instance;
+        if (game == null || game.Rules == null || game.Phase != RoundPhase.Running) return null;
+        return game.Rules.LieExposed ? null : game.Rules.AnnouncedRule;
+    }
+
+    private void HandleTrickStarted(TrickType type, bool bluff, int amount)
+    {
+        if (bluff || type == TrickType.CrossedControls) return;
+        stealFlashUntil = Time.unscaledTime + stealFlashTime;
+        bumpUntil = Time.unscaledTime + bumpTime;
+    }
 
     private void HandlePrizeChosen(PrizeData prize)
     {
@@ -215,7 +272,8 @@ public class HUD : MonoBehaviour
         SetStars(game.RoundStars, game.CurrentGoal, true);
         SetLives(game.Lives);
         HandleTimeChanged(game.TimeRemaining);
-        SetRule(game.Phase == RoundPhase.Running ? game.Rules.AppliedRule : null);
+        SetRule(DisplayedRule());
+        nextLieGlitchAt = Time.unscaledTime + lieGlitchInterval;
         RefreshCheatButton();
     }
 
@@ -261,8 +319,20 @@ public class HUD : MonoBehaviour
         bool reached = targetGoal > 0 && targetStars >= targetGoal;
         if (starsText != null)
         {
-            starsText.SetText("{0} / {1}", Mathf.RoundToInt(shownStars), targetGoal);
-            starsText.color = reached ? goalReachedColor : starsColor;
+            // Meta inflada por Tito: el número de la meta queda en rojo (si no lo pillaron a tiempo, se queda así).
+            GameManager game = GameManager.Instance;
+            bool rigged = game != null && game.RiggedGoalExtra > 0;
+            int stars = Mathf.RoundToInt(shownStars);
+            if (stars != writtenStars || targetGoal != writtenGoal || rigged != writtenRigged)
+            {
+                if (rigged) starsText.text = $"{stars} / <color=#{trickHex}>{targetGoal}</color>";
+                else starsText.SetText("{0} / {1}", stars, targetGoal);
+                writtenStars = stars;
+                writtenGoal = targetGoal;
+                writtenRigged = rigged;
+            }
+            bool stolen = Time.unscaledTime < stealFlashUntil;
+            starsText.color = stolen ? trickColor : reached ? goalReachedColor : starsColor;
         }
         if (scoreText != null) scoreText.SetText("PUNTAJE {0}", Mathf.RoundToInt(shownScore));
         if (goalFill != null)
@@ -358,6 +428,8 @@ public class HUD : MonoBehaviour
 
     private void SetRule(RuleData rule)
     {
+        shownRule = rule;
+        EndLieGlitch();
         if (ruleChip != null) ruleChip.SetActive(rule != null);
         if (rule == null) return;
         if (ruleText != null) ruleText.text = rule.DisplayName;
@@ -368,13 +440,86 @@ public class HUD : MonoBehaviour
         }
     }
 
-    private void RefreshCheatButton()
+    // Regla falsa sin descubrir: cada tanto el cartel tiembla y se pone «¿¿??» (con la Lupa, deja ver la regla real).
+    private void UpdateLieGlitch()
     {
         GameManager game = GameManager.Instance;
-        bool canCallCheat = game != null && game.Rules != null && game.Rules.CanCallCheat;
-        if (cheatButton != null && cheatButton.gameObject.activeSelf != canCallCheat)
-            cheatButton.gameObject.SetActive(canCallCheat);
+        RuleManager rules = game != null ? game.Rules : null;
+        bool hiddenLie = rules != null && game.Phase == RoundPhase.Running && !game.IsPaused
+            && rules.HasHiddenLie && shownRule != null;
+        if (!hiddenLie)
+        {
+            EndLieGlitch();
+            return;
+        }
+
+        float now = Time.unscaledTime;
+        if (!lieGlitching && now >= nextLieGlitchAt)
+        {
+            lieGlitching = true;
+            lieGlitchEndsAt = now + lieGlitchTime;
+            bool magnifier = game.Modifiers.Has(PrizeType.Magnifier) && rules.AppliedRule != null;
+            if (ruleText != null)
+            {
+                ruleText.text = magnifier ? $"¿{rules.AppliedRule.DisplayName}?" : "¿¿??";
+                ruleText.color = trickColor;
+            }
+        }
+        if (!lieGlitching) return;
+        if (ruleChipRect != null) ruleChipRect.anchoredPosition = ruleChipHome + new Vector2(Mathf.Sin(now * 90f) * 5f, 0f);
+        if (now >= lieGlitchEndsAt) EndLieGlitch();
     }
+
+    private void EndLieGlitch()
+    {
+        if (!lieGlitching) return;
+        lieGlitching = false;
+        nextLieGlitchAt = Time.unscaledTime + lieGlitchInterval * Random.Range(0.7f, 1.3f);
+        if (ruleChipRect != null) ruleChipRect.anchoredPosition = ruleChipHome;
+        if (ruleText != null)
+        {
+            ruleText.color = ruleTextColor;
+            if (shownRule != null) ruleText.text = shownRule.DisplayName;
+        }
+    }
+
+    private void RefreshCheatButton()
+    {
+        if (cheatButton == null) return;
+        GameManager game = GameManager.Instance;
+        RuleManager rules = game != null ? game.Rules : null;
+        bool visible = rules != null && game.Phase == RoundPhase.Running && rules.CheatsPossible;
+        if (cheatButton.gameObject.activeSelf != visible) cheatButton.gameObject.SetActive(visible);
+        if (!visible) return;
+
+        cheatButton.interactable = rules.CanCallCheat;
+        TitoTricks tricks = rules.Tricks;
+        bool suspicious = tricks != null && tricks.IsActive;
+        float pulse = suspicious ? 1f + cheatPulse * (0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 14f)) : 1f;
+        cheatButton.transform.localScale = Vector3.one * pulse;
+        if (cheatSub != null) cheatSub.text = CheatHint(game, rules, tricks);
+    }
+
+    private string CheatHint(GameManager game, RuleManager rules, TitoTricks tricks)
+    {
+        if (rules.CooldownLeft > 0f) return "espera…";
+        // Lupa: dice qué trampa hizo Tito, si es un farol y si la regla es falsa.
+        bool magnifier = game.Modifiers.Has(PrizeType.Magnifier);
+        if (tricks != null && tricks.IsActive)
+        {
+            if (!magnifier) return "¿Tito trama algo?";
+            return tricks.IsBluff ? "¡es un farol!" : TrickHint(tricks.ActiveType);
+        }
+        if (magnifier && rules.HasHiddenLie) return "¡la regla es falsa!";
+        return cheatSubDefault;
+    }
+
+    private static string TrickHint(TrickType type) => type switch
+    {
+        TrickType.StealStars => "¡te robó estrellas!",
+        TrickType.RigGoal => "¡infló la meta!",
+        _ => "¡cruzó tus controles!",
+    };
 
     private void CallCheat()
     {

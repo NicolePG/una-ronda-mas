@@ -1,5 +1,5 @@
-﻿# Corre «Una Ronda Más → Preparar todo (Nicole)» sin abrir Unity:
-# TMP Essentials, materiales, Balance, premios, reglas, estrellas, GameSystems, Test_Nicole.unity y docs/BALANCE.md.
+﻿# Corre «Una Ronda Más → Crear todo» sin abrir Unity:
+# TMP Essentials, materiales, datos, UI, HUD, audio, MainMenu, Game.unity, Test_Nicole.unity y docs/BALANCE.md.
 # Unity tiene que estar CERRADO. Uso, desde la raíz del proyecto:
 #   powershell -ExecutionPolicy Bypass -File tools/preparar-todo.ps1
 param(
@@ -18,28 +18,15 @@ if (-not (Test-Path $UnityPath)) {
 if (Test-Path $lockFile) {
     try { [System.IO.File]::Open($lockFile, 'Open', 'ReadWrite', 'None').Close() }
     catch {
-        Write-Host "Unity está abierto con este proyecto: usa el menú Una Ronda Más > Preparar todo (Nicole)." -ForegroundColor Red
+        Write-Host "Unity está abierto con este proyecto: usa el menú Una Ronda Más > Crear todo." -ForegroundColor Red
         exit 3
     }
 }
 
 New-Item -ItemType Directory -Force (Join-Path $project "Logs") | Out-Null
-Write-Host "Preparando el proyecto con Unity en modo batch... log: $log"
-$arguments = @("-batchmode", "-quit", "-projectPath", "`"$project`"",
-    "-executeMethod", "SetupMenu.PrepareAll", "-logFile", "`"$log`"")
-$process = Start-Process -FilePath $UnityPath -ArgumentList $arguments -Wait -PassThru -NoNewWindow
-$errors = Select-String -Path $log -Pattern "error CS\d+" | Select-Object -First 10
-if ($errors) {
-    Write-Host "Errores de compilación:" -ForegroundColor Red
-    $errors | ForEach-Object { Write-Host $_.Line }
-    exit 1
-}
-if ($process.ExitCode -ne 0) {
-    Write-Host "Unity terminó con código $($process.ExitCode). Revisa $log" -ForegroundColor Red
-    exit $process.ExitCode
-}
 
-# TMP Essentials: en modo batch se importan con -importPackage (ImportPackage desde código no alcanza a terminar).
+# TMP Essentials primero (la fuente de la UI sale de ahí): en modo batch se importan con -importPackage
+# (ImportPackage desde código no alcanza a terminar).
 if (-not (Test-Path (Join-Path $project "Assets\TextMesh Pro\Resources"))) {
     $tmpPackage = Get-ChildItem (Join-Path $project "Library\PackageCache") -Filter "TMP Essential Resources.unitypackage" -Recurse -ErrorAction SilentlyContinue |
         Where-Object { $_.FullName -like "*com.unity.textmeshpro@*" } | Select-Object -First 1
@@ -53,6 +40,21 @@ if (-not (Test-Path (Join-Path $project "Assets\TextMesh Pro\Resources"))) {
             exit 1
         }
     }
-    else { Write-Host "No encontré el paquete de TMP Essentials en Library\PackageCache." -ForegroundColor Yellow }
+    else { Write-Host "No encontré el paquete de TMP Essentials en Library\PackageCache (ábrelo una vez en Unity)." -ForegroundColor Yellow }
 }
-Write-Host "Listo. Abre Unity y dale Play en Assets/_Project/Scenes/Test_Nicole.unity." -ForegroundColor Green
+
+Write-Host "Creando todo con Unity en modo batch... log: $log"
+$arguments = @("-batchmode", "-quit", "-projectPath", "`"$project`"",
+    "-executeMethod", "SetupMenu.PrepareAll", "-logFile", "`"$log`"")
+$process = Start-Process -FilePath $UnityPath -ArgumentList $arguments -Wait -PassThru -NoNewWindow
+$errors = Select-String -Path $log -Pattern "error CS\d+" | Select-Object -First 10
+if ($errors) {
+    Write-Host "Errores de compilación:" -ForegroundColor Red
+    $errors | ForEach-Object { Write-Host $_.Line }
+    exit 1
+}
+if ($process.ExitCode -ne 0) {
+    Write-Host "Unity terminó con código $($process.ExitCode). Revisa $log" -ForegroundColor Red
+    exit $process.ExitCode
+}
+Write-Host "Listo. Abre Unity y dale Play en Assets/_Project/Scenes/MainMenu.unity." -ForegroundColor Green

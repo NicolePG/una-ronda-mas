@@ -12,7 +12,6 @@ public static class AudioImportOptimizer
     private const float EffectQuality = 0.6f;
     private const long LargeClipBytes = 300_000;   // voces y efectos largos
 
-    [MenuItem("Una Ronda Más/Build/Optimizar audio para WebGL")]
     public static void Optimize()
     {
         int count = 0;

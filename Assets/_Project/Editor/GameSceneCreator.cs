@@ -42,13 +42,6 @@ public static class GameSceneCreator
     private static readonly string[] UiPrefabs =
         { "HUD_Canvas", "HostBanner_Canvas", "HostLines_Canvas", "PrizeScreen_Canvas", "PauseMenu_Canvas", "GameOver_Canvas" };
 
-    [MenuItem("Una Ronda Más/Escena/Crear todo lo de Otoniel (Game.unity)", false, 1)]
-    public static void CreateAllMenu()
-    {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
-        CreateAll();
-    }
-
     /// <summary>Obstáculos, efectos, tramos, personajes, GameSystems y Game.unity, en ese orden.</summary>
     public static void CreateAll()
     {

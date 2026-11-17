@@ -44,7 +44,6 @@ public static class MenuStyler
     private static readonly Color Gold = Hex("#F7B11D");
     private static readonly Color Lavender = Hex("#B79CFF");
 
-    [MenuItem("Una Ronda Más/UI/Estilo del estudio (fondo, paneles y botones)")]
     public static void Apply()
     {
         ProjectPaths.EnsureFolder(Folder);

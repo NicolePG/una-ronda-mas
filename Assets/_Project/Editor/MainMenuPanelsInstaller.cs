@@ -11,10 +11,8 @@ public static class MainMenuPanelsInstaller
     private const string FontAssetPath = "Assets/_Project/Fonts/Font_UI_Dynamic.asset";
     private const string ButtonPrefabPath = "Assets/_Project/Prefabs/UI/Button_Base.prefab";
 
-    [MenuItem("Una Ronda Más/UI/Agregar Opciones y Créditos a MainMenu")]
     public static void Install()
     {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
         var scene = EditorSceneManager.OpenScene(ScenePath);
 
         MainMenuUI menu = Object.FindObjectOfType<MainMenuUI>();
@@ -26,7 +24,7 @@ public static class MainMenuPanelsInstaller
 
         if (menu.transform.Find("OptionsPanel") != null || menu.transform.Find("CreditsPanel") != null)
         {
-            Debug.LogWarning("MainMenu ya contiene paneles de Opciones o Créditos; no se modificó para evitar duplicados.");
+            Debug.Log("MainMenu ya contiene paneles de Opciones o Créditos; no se modificó para evitar duplicados.");
             return;
         }
 
@@ -34,7 +32,7 @@ public static class MainMenuPanelsInstaller
         GameObject buttonPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ButtonPrefabPath);
         if (font == null || buttonPrefab == null)
         {
-            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Créelos primero desde Una Ronda Más → UI.");
+            Debug.LogError("Falta Font_UI_Dynamic o Button_Base. Usa Una Ronda Más → Crear todo.");
             return;
         }
 

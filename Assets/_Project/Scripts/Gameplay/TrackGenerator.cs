@@ -130,12 +130,28 @@ public class TrackGenerator : MonoBehaviour
         lastPicked = null;
     }
 
+    /// <summary>Saca los hologramas de la pista y no pone más (al descubrir la mentira de Tito).</summary>
+    public void RemoveHolograms()
+    {
+        spawnHolograms = false;
+        foreach (ActiveSegment segment in active)
+        {
+            if (segment.Instance == null) continue;
+            foreach (Obstacle obstacle in segment.Instance.GetComponentsInChildren<Obstacle>(true))
+            {
+                if (obstacle.IsFake) SafeDestroy(obstacle.gameObject);
+            }
+        }
+    }
+
     /// <summary>¿Puede salir este tramo en esta ronda con esta regla?</summary>
     public static bool IsSegmentAllowed(TrackSegment segment, int round, RuleData appliedRule, BalanceConfig b)
     {
         if (segment.HasHighBar && round < b.HighBarFromRound) return false;
         if (segment.HasHammer && round < b.HammerFromRound) return false;
         if (segment.HasWaterGap && round < b.WaterGapFromRound) return false;
+        if (segment.HasRollingBall && round < b.RollingBallFromRound) return false;
+        if (segment.HasSweeper && round < b.SweeperFromRound) return false;
         return PassesRule(segment, appliedRule);
     }
 

@@ -33,12 +33,7 @@ public static class WebGLBuildTools
     /// <summary>Ajusta Player Settings y Build Settings. Devuelve false si falta el módulo WebGL.</summary>
     public static bool Configure(bool switchPlatform)
     {
-        PlayerSettings.productName = ProductName;
-        PlayerSettings.defaultWebScreenWidth = ScreenWidth;
-        PlayerSettings.defaultWebScreenHeight = ScreenHeight;
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
-        PlayerSettings.WebGL.decompressionFallback = true;
-        UpdateBuildScenes();
+        ApplySettings();
 
         if (!IsWebGLInstalled)
         {
@@ -50,6 +45,17 @@ public static class WebGLBuildTools
         if (switchPlatform && EditorUserBuildSettings.activeBuildTarget != BuildTarget.WebGL)
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
         return true;
+    }
+
+    /// <summary>Player Settings de WebGL y escenas del build. No pide el módulo WebGL (lo usa «Crear todo»).</summary>
+    public static void ApplySettings()
+    {
+        PlayerSettings.productName = ProductName;
+        PlayerSettings.defaultWebScreenWidth = ScreenWidth;
+        PlayerSettings.defaultWebScreenHeight = ScreenHeight;
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        PlayerSettings.WebGL.decompressionFallback = true;
+        UpdateBuildScenes();
     }
 
     /// <summary>Pone MainMenu y Game (si existen) en Build Settings, en ese orden.</summary>

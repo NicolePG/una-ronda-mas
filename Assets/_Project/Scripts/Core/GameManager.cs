@@ -162,12 +162,13 @@ public class GameManager : MonoBehaviour
         poisonChosenThisRound = false;
         CurrentRound = round;
         RoundStars = 0;
+        RiggedGoalExtra = 0;
         BetAccepted = false;
         prizeOffers.Clear();
         prizeTaken = new bool[0];
         PrizePicksRemaining = 0;
 
-        BaseGoal = balance.GetGoal(round) + Modifiers.ConsumeGoalPenalty();
+        BaseGoal = Mathf.CeilToInt(balance.GetGoal(round) * Modifiers.GoalMultiplier) + Modifiers.ConsumeGoalPenalty();
         IsBetOffered = round >= balance.FirstBetRound;
         BetGoal = IsBetOffered ? balance.GetBetGoal(BaseGoal) : BaseGoal;
         CurrentGoal = BaseGoal;
@@ -223,6 +224,9 @@ public class GameManager : MonoBehaviour
         GameEvents.RaiseLivesChanged(Lives);
         GameEvents.RaiseTimeChanged(TimeRemaining);
         GameEvents.RaisePhaseChanged(Phase);
+
+        // Propina: arranca la ronda con estrellas (Tito también se las puede robar).
+        if (Modifiers.RoundStartStars > 0) AddStars(Modifiers.RoundStartStars);
     }
 
     /// <summary>Para el botón «Aceptar» de la apuesta.</summary>
@@ -249,14 +253,27 @@ public class GameManager : MonoBehaviour
 
     private void EndRound()
     {
-        if (RoundStars >= CurrentGoal) WinRound();
-        else TriggerGameOver();
+        if (RoundStars >= CurrentGoal)
+        {
+            WinRound();
+            return;
+        }
+        // Seguro de apuesta: falló la meta de la apuesta pero llegó a la normal; gana sin el premio doble.
+        if (BetAccepted && Modifiers.HasBetInsurance && RoundStars >= BaseGoal + RiggedGoalExtra)
+        {
+            BetAccepted = false;
+            GameEvents.RaisePrizeTriggered(PrizeType.BetInsurance);
+            WinRound();
+            return;
+        }
+        TriggerGameOver();
     }
 
     private void WinRound()
     {
+        Modifiers.BeginPrizeScreen();
         prizeOffers.Clear();
-        prizeOffers.AddRange(PrizeOfferBuilder.Build(prizePool, CurrentRound, Lives, balance));
+        prizeOffers.AddRange(PrizeOfferBuilder.Build(prizePool, CurrentRound, Lives, Modifiers, BetAccepted, balance));
         prizeTaken = new bool[prizeOffers.Count];
         int picks = BetAccepted ? balance.PrizesPerBetWin : balance.PrizesPerWin;
         PrizePicksRemaining = Mathf.Min(picks, prizeOffers.Count);
@@ -267,7 +284,7 @@ public class GameManager : MonoBehaviour
 
         if (PrizePicksRemaining == 0)
         {
-            Debug.LogWarning("GameManager: no hay premios para elegir (¿prizePool vacío?). Se pasa a la siguiente ronda.");
+            Debug.Log("GameManager: ya no quedan premios nuevos para ofrecer. Se pasa a la siguiente ronda.");
             StartCoroutine(AdvanceAfterDelay(balance.AfterPrizeDelay));
         }
     }
@@ -326,9 +343,52 @@ public class GameManager : MonoBehaviour
     public void CollectStar(bool golden)
     {
         if (Phase != RoundPhase.Running) return;
-        int value = golden ? balance.GoldenStarValue : balance.NormalStarValue;
+        int value = golden ? balance.GoldenStarValue + Modifiers.GoldenStarBonus : balance.NormalStarValue;
         if (ruleManager.IsApplied(RuleType.DoubleValue)) value *= balance.DoubleValueStarMultiplier;
         AddStars(value);
+    }
+
+    // ---------- Trampas en vivo de Tito (TitoTricks) ----------
+
+    /// <summary>Estrellas que la meta tiene de más por la trampa «meta inflada».</summary>
+    public int RiggedGoalExtra { get; private set; }
+
+    /// <summary>Tito se lleva estrellas de la ronda. Devuelve cuántas se llevó de verdad.</summary>
+    public int StealStars(int amount)
+    {
+        if (Phase != RoundPhase.Running) return 0;
+        int stolen = Mathf.Clamp(amount, 0, RoundStars);
+        if (stolen == 0) return 0;
+        RoundStars -= stolen;
+        TotalStars -= stolen;
+        GameEvents.RaiseStarsChanged(RoundStars, CurrentGoal);
+        return stolen;
+    }
+
+    /// <summary>Devuelve estrellas robadas (al descubrir la trampa).</summary>
+    public void ReturnStars(int amount)
+    {
+        if (Phase != RoundPhase.Running || amount <= 0) return;
+        AddStars(amount);
+    }
+
+    /// <summary>Tito sube la meta a escondidas.</summary>
+    public void RigGoal(int extra)
+    {
+        if (Phase != RoundPhase.Running || extra <= 0) return;
+        RiggedGoalExtra += extra;
+        CurrentGoal += extra;
+        GameEvents.RaiseStarsChanged(RoundStars, CurrentGoal);
+    }
+
+    /// <summary>Baja la meta inflada (al descubrir esa trampa; las que no se descubrieron siguen).</summary>
+    public void UnrigGoal(int extra)
+    {
+        int amount = Mathf.Clamp(extra, 0, RiggedGoalExtra);
+        if (amount == 0) return;
+        CurrentGoal -= amount;
+        RiggedGoalExtra -= amount;
+        if (Phase == RoundPhase.Running) GameEvents.RaiseStarsChanged(RoundStars, CurrentGoal);
     }
 
     /// <summary>Estrellas extra que no se multiplican (premio por acertar «¡Trampa!»).</summary>
@@ -356,7 +416,11 @@ public class GameManager : MonoBehaviour
     {
         if (Phase != RoundPhase.Running || amount <= 0) return;
         Lives = Mathf.Max(0, Lives - amount);
+        // Segunda oportunidad: una vez por partida vuelve con 1 vida en vez de quedar eliminado.
+        bool saved = Lives == 0 && Modifiers.TryUseSecondChance();
+        if (saved) Lives = 1;
         GameEvents.RaiseLivesChanged(Lives);
+        if (saved) GameEvents.RaisePrizeTriggered(PrizeType.SecondChance);
         if (Lives == 0) TriggerGameOver();
     }
 

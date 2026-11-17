@@ -56,6 +56,8 @@ public class HostFace : MonoBehaviour
         GameEvents.PhaseChanged += HandlePhaseChanged;
         GameEvents.CheatCalled += HandleCheatCalled;
         GameEvents.ContestantHit += HandleContestantHit;
+        TitoTricks.TrickStarted += HandleTrickStarted;
+        TitoTricks.TrickEnded += HandleTrickEnded;
     }
 
     private void OnDisable()
@@ -64,6 +66,8 @@ public class HostFace : MonoBehaviour
         GameEvents.PhaseChanged -= HandlePhaseChanged;
         GameEvents.CheatCalled -= HandleCheatCalled;
         GameEvents.ContestantHit -= HandleContestantHit;
+        TitoTricks.TrickStarted -= HandleTrickStarted;
+        TitoTricks.TrickEnded -= HandleTrickEnded;
         StopWigFlight();
         if (faceVisual != null) faceVisual.localPosition = visualHomePosition;
     }
@@ -97,7 +101,8 @@ public class HostFace : MonoBehaviour
 
     private void HandleCheatCalled(bool correct)
     {
-        isLying = false;
+        // Si todavía esconde una regla falsa, sigue temblando.
+        isLying = GameManager.Instance != null && GameManager.Instance.Rules.HasHiddenLie;
         if (correct)
         {
             SetExpression(false, false);
@@ -107,6 +112,21 @@ public class HostFace : MonoBehaviour
         {
             SetExpression(false, true);
         }
+    }
+
+    // Trampa en vivo o farol: guiña y tiembla igual en los dos casos (la pista está en el HUD, no en la cara).
+    private void HandleTrickStarted(TrickType type, bool bluff, int amount)
+    {
+        isLying = true;
+        SetExpression(true, false);
+    }
+
+    private void HandleTrickEnded(TrickType type, bool bluff, bool caught)
+    {
+        if (caught) return; // HandleCheatCalled ya hace volar el peluquín
+        GameManager game = GameManager.Instance;
+        isLying = game != null && game.Rules.HasHiddenLie;
+        SetExpression(false, !bluff);
     }
 
     private void HandleContestantHit(HitCause cause)

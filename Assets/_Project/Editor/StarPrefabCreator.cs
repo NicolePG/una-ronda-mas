@@ -12,7 +12,6 @@ public static class StarPrefabCreator
     private const float TriggerRadius = 0.5f;
     private const float GoldenScale = 1.35f;
 
-    [MenuItem("Una Ronda Más/Prefabs/Crear estrellas")]
     public static void CreateAll()
     {
         MaterialCreator.CreateAll();

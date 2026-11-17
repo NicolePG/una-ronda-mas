@@ -15,7 +15,6 @@ public static class UiLayoutFixer
     private const string PrizePath = "Assets/_Project/Prefabs/UI/PrizeScreen_Canvas.prefab";
     private const float IconSize = 96f;
 
-    [MenuItem("Una Ronda Más/UI/Arreglar botones y HUD (sin regenerar)")]
     public static void FixAll()
     {
         Edit(BannerPath, root =>
@@ -124,6 +123,7 @@ public static class UiLayoutFixer
 
     private static void Edit(string path, System.Action<GameObject> change)
     {
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(path) == null) return;   // en un proyecto nuevo el HUD se crea después
         GameObject root = PrefabUtility.LoadPrefabContents(path);
         try
         {

@@ -45,6 +45,8 @@ public class HostLines : MonoBehaviour
         GameEvents.CheatCalled += HandleCheatCalled;
         GameEvents.RoundWon += HandleRoundWon;
         GameEvents.GameOver += HandleGameOver;
+        TitoTricks.TrickStarted += HandleTrickStarted;
+        TitoTricks.TrickEnded += HandleTrickEnded;
     }
 
     private void OnDisable()
@@ -55,6 +57,8 @@ public class HostLines : MonoBehaviour
         GameEvents.CheatCalled -= HandleCheatCalled;
         GameEvents.RoundWon -= HandleRoundWon;
         GameEvents.GameOver -= HandleGameOver;
+        TitoTricks.TrickStarted -= HandleTrickStarted;
+        TitoTricks.TrickEnded -= HandleTrickEnded;
     }
 
     private void Update()
@@ -185,6 +189,14 @@ public class HostLines : MonoBehaviour
     }
 
     private void HandleCheatCalled(bool correct) => ShowMoment(correct ? "cheat_correct" : "cheat_failed");
+
+    // Distrae igual en una trampa real que en un farol.
+    private void HandleTrickStarted(TrickType type, bool bluff, int amount) => ShowMoment("trick_distract");
+
+    private void HandleTrickEnded(TrickType type, bool bluff, bool caught)
+    {
+        if (!caught && !bluff) ShowMoment("trick_missed");
+    }
 
     private void HandleRoundWon(int round, int prizesToChoose) => ShowMoment("victory");
 

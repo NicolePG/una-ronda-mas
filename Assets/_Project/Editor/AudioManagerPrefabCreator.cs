@@ -9,7 +9,6 @@ public static class AudioManagerPrefabCreator
     private const string ResourcesFolder = "Assets/_Project/Resources";
     private const string PrefabPath = ResourcesFolder + "/AudioManager.prefab";
 
-    [MenuItem("Una Ronda Más/Audio/Crear o actualizar AudioManager")]
     public static void CreateOrUpdate()
     {
         string effects = AudioRoot + "/Effects/";

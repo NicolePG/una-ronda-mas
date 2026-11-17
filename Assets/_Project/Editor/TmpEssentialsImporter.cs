@@ -11,13 +11,6 @@ public static class TmpEssentialsImporter
 
     public static bool IsImported => AssetDatabase.IsValidFolder(TmpFolder + "/Resources");
 
-    [MenuItem("Una Ronda Más/Importar TMP Essentials")]
-    public static void ImportMenu()
-    {
-        if (IsImported) Debug.Log("TMP Essentials ya están importados.");
-        else Import();
-    }
-
     public static bool Import()
     {
         if (IsImported) return true;

@@ -41,10 +41,6 @@ public static class CharacterPrefabCreator
         (HostPresenter.ShockState, "emote-no"),
     };
 
-    [MenuItem("Una Ronda Más/Prefabs/Crear personajes (Otoniel)")]
-    public static void CreateAllMenu() =>
-        CreateAll(AssetDatabase.LoadAssetAtPath<ParticleSystem>(ObstaclePrefabCreator.SplashPath));
-
     public static void CreateAll(ParticleSystem splash)
     {
         ProjectPaths.EnsureFolder(ProjectPaths.PrefabsGameplay);

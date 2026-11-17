@@ -47,6 +47,28 @@ public class TrackSegment : MonoBehaviour
     public bool RequiresSlide => requiresSlide;
     public IReadOnlyList<Transform> HologramSlots => hologramSlots;
 
+    // Se calcula una vez mirando los hijos: los prefabs ya armados no necesitan marcarlo a mano.
+    [System.NonSerialized] private int movingFlags = -1;
+
+    /// <summary>Tiene pelota rodante.</summary>
+    public bool HasRollingBall => (MovingFlags & 1) != 0;
+
+    /// <summary>Tiene rodillo barredor.</summary>
+    public bool HasSweeper => (MovingFlags & 2) != 0;
+
+    private int MovingFlags
+    {
+        get
+        {
+            if (movingFlags < 0)
+            {
+                movingFlags = (GetComponentInChildren<RollingBall>(true) != null ? 1 : 0)
+                    | (GetComponentInChildren<SweeperArm>(true) != null ? 2 : 0);
+            }
+            return movingFlags;
+        }
+    }
+
     /// <summary>Suma de los puntos de todas las estrellas del tramo.</summary>
     public int GetStarValue(BalanceConfig balance)
     {
