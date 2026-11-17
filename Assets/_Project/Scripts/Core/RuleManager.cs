@@ -58,13 +58,13 @@ public class RuleManager : MonoBehaviour
     /// <summary>Segundos que faltan para poder acusar de nuevo tras una falsa alarma.</summary>
     public float CooldownLeft => Mathf.Max(0f, cooldownUntil - Time.time);
 
-    /// <summary>¿Hay algo que Tito pueda estar tramando esta ronda? (el botón se muestra).</summary>
+    /// <summary>¿Tito ya puede hacer trampa en esta ronda (trampas en vivo o mentiras)? El botón «¡Acusar!» se muestra desde ahí.</summary>
     public bool CheatsPossible
     {
         get
         {
             GameManager gm = GameManager.Instance;
-            return gm != null && (AnnouncedRule != null || gm.CurrentRound >= gm.Balance.FirstTrickRound);
+            return gm != null && gm.CurrentRound >= Mathf.Min(gm.Balance.FirstTrickRound, gm.Balance.FirstLieRound);
         }
     }
 

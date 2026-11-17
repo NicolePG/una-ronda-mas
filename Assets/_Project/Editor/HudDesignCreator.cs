@@ -199,9 +199,9 @@ public static class HudDesignCreator
         RectTransform key = Panel(cheat, "KeyBadge", s.Key, left, new Vector2(14f, 3f), new Vector2(46f, 46f));
         Text(key, "KeyText", font, "T", Vector2.one * 0.5f, Vector2.zero, new Vector2(46f, 46f),
             26f, TextAlignmentOptions.Center, Color.white, true);
-        Text(cheat, "CheatTitle", font, "¡Trampa!", topLeft, new Vector2(72f, -10f), new Vector2(170f, 36f),
+        Text(cheat, "CheatTitle", font, "¡Acusar!", topLeft, new Vector2(72f, -10f), new Vector2(170f, 36f),
             30f, TextAlignmentOptions.Left, Color.white, true);
-        Text(cheat, "CheatSub", font, "disponible", topLeft, new Vector2(72f, -46f), new Vector2(170f, 20f),
+        Text(cheat, "CheatSub", font, "a Tito", topLeft, new Vector2(72f, -46f), new Vector2(170f, 20f),
             14f, TextAlignmentOptions.Left, Color.white, false);
         cheat.gameObject.SetActive(false);
 

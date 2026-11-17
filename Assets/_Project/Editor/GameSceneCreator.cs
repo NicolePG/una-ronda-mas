@@ -121,6 +121,13 @@ public static class GameSceneCreator
             AssetDatabase.LoadAssetAtPath<GameObject>(StarPrefabCreator.NormalPath),
             AssetDatabase.LoadAssetAtPath<GameObject>(StarPrefabCreator.GoldenPath), effects);
 
+        // Zonas oscuras con linterna (desde la ronda 4).
+        TMP_FontAsset signFont = UiModernizer.DisplayFont();
+        new GameObject("DarkZones").AddComponent<DarkZones>().EditorSetup(effects,
+            MaterialCreator.Load("Mat_Gold"), MaterialCreator.Load("Mat_StarLight"),
+            MaterialCreator.Load("Mat_Red"), MaterialCreator.Load("Mat_Grey"),
+            signFont, signFont != null ? UiModernizer.OutlineMaterial(signFont) : null);
+
         foreach (string name in UiPrefabs)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{ProjectPaths.Root}/Prefabs/UI/{name}.prefab");

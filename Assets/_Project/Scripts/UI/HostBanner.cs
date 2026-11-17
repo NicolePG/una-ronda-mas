@@ -96,7 +96,10 @@ public class HostBanner : MonoBehaviour
             // Aviso de las trampas en vivo: así el jugador sabe que tiene que vigilar a Tito.
             int tricks = game.Balance.GetTrickCount(game.CurrentRound);
             if (tricks > 0)
-                promptText.text += $"\n<color=#FF8A8A>Tito hará hasta {tricks} trampa{(tricks > 1 ? "s" : "")}: ¡atrápalo con T!</color>";
+                promptText.text += $"\n<color=#FF8A8A>Tito hará hasta {tricks} trampa{(tricks > 1 ? "s" : "")} solo: si lo pillas, ¡acúsalo con T!</color>";
+            // Zonas oscuras (DarkZones): la linterna dorada está antes de cada una.
+            if (game.Balance.GetDarkZoneCount(game.CurrentRound) > 0)
+                promptText.text += "\n<color=#FBD97A>Hay zonas oscuras: ¡agarra la linterna antes de entrar!</color>";
         }
 
         if (acceptBetButton != null) acceptBetButton.gameObject.SetActive(betOffered);

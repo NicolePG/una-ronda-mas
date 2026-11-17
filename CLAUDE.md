@@ -65,7 +65,7 @@ Assets/_Project/
 │   ├── Data/      BalanceConfig.cs, PrizeData.cs, RuleData.cs, PlayerModifiers.cs, GameStats.cs
 │   ├── Gameplay/  ContestantController.cs, TrackGenerator.cs, TrackSegment.cs, Obstacle.cs,
 │   │              Star.cs, WaterZone.cs, HammerSwing.cs, Hologram.cs, FinishArch.cs, StarMeshBuilder.cs,
-│   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs, SurpriseEvents.cs, TitoTricks.cs
+│   │              RollingBall.cs, SweeperArm.cs, StarStreak.cs, AudienceCrowd.cs, SurpriseEvents.cs, TitoTricks.cs, DarkZones.cs
 │   ├── Effects/   RuleEffects.cs, CameraShake.cs, CameraFollow.cs, RoundDrama.cs, FloatingTexts.cs, SpeedLines.cs,
 │   │              MarqueeLights.cs, StudioLightBeam.cs, WaterSurface.cs, FloatingBob.cs, Billboard.cs,
 │   │              MenuStage.cs, MenuCameraDrift.cs, RoundAnnouncer.cs, SpeedRibbon.cs
@@ -85,13 +85,13 @@ Assets/_Project/
 | Script | Dueño | Qué hace |
 | --- | --- | --- |
 | `GameManager` | Nicole | Máquina de estados de la partida; ronda, estrellas, meta, vidas, tiempo, velocidad, apuesta, premios elegidos (`PlayerModifiers`) |
-| `RuleManager` | Nicole | Elige la regla de cada ronda, decide si Tito miente, resuelve el botón «¡Trampa!» (aciertos con racha de detective, falsa alarma = −1 vida y espera) |
-| `TitoTricks` | Otoniel | Trampas en vivo a mitad de ronda: roba estrellas, infla la meta o cruza los controles; desde la ronda 4 también faroles. Ventana de 6 s para acusar (F8 en el Editor; Shift+F8 = farol) |
+| `RuleManager` | Nicole | Elige la regla de cada ronda, decide si Tito miente, resuelve el botón «¡Acusar!» (tecla T, desde la ronda 4; aciertos con racha de detective, falsa alarma = −1 vida y espera) |
+| `TitoTricks` | Otoniel | Trampas en vivo a mitad de ronda, solas (el jugador no las activa), desde la ronda 4: roba estrellas o infla la meta; desde la 6 cruza los controles; desde la 5 también faroles. Ventana de 6 s para acusar (F8 en el Editor; Shift+F8 = farol) |
 | `PrizeOfferBuilder` | Nicole | Tarjetas de premio con rareza según la ronda (común, raro, épico), sin repetir premios ya elegidos; la apuesta ganada da tarjetas raras o épicas |
 | `SaveManager` (estática) | Nicole | `PlayerPrefs`: récord de ronda, récord de estrellas, partidas jugadas, volúmenes |
 | `TrackGenerator` | Nicole | Crea tramos adelante según la dificultad de la ronda, los mueve hacia el jugador y los borra al pasar |
 | `ContestantController` | Otoniel | Carriles, salto, deslizamiento, choques, caída al agua, invulnerabilidad |
-| `RuleEffects` | Otoniel | Efectos visibles de cada regla aplicada (apagón, espejo, gigante, sin salto) |
+| `RuleEffects` | Otoniel | Efectos visibles de cada regla aplicada (apagón, espejo, gigante, sin salto) y la oscuridad de las zonas oscuras (`SetZoneDark`) |
 | `StarStreak`, `RoundDrama`, `FloatingTexts` | Otoniel | Racha de estrellas con premio, destello y micro-pausa al chocar, cuenta regresiva, cámara lenta final, textos «+1» / «¡Uff!» |
 | `SurpriseEvents`, `RoundAnnouncer` | Otoniel | Eventos de Tito a mitad de ronda (lluvia de estrellas, estrellas dobles, apagón; F7 en el Editor) y carteles con barrido «¡YA!», «¡META!» |
 | `StudioSetCreator`, `GameFeelCreator` (Editor) | Otoniel | Arman el estudio (gradas con público, cartel, haces, flotadores, cañones) y el post-procesado en `Game.unity` |
@@ -99,7 +99,8 @@ Assets/_Project/
 | `UiModernizer` (Editor) | Otoniel | Interfaz moderna estilo transmisión de TV sobre las pantallas de Tania: paneles de vidrio con borde de neón, botones píldora con halo (`ButtonGlow`) y destello (`UiShine`, solo los principales), títulos con contorno, entradas animadas (`UiEntrance`), brillo de rareza en las tarjetas de premio, «● EN VIVO» (`LiveBadge`) y cinta de noticias (`TickerTape`) en el menú. Kit dibujado en `Art/UI/Modern`. Si hay una `.ttf`/`.otf` en `Fonts`, la usa para títulos. Último paso de «Crear todo» |
 | `AudienceCrowd` | Otoniel | Público de 72 personas: en las rondas 1 y 2 hay público normal y desde la ronda 3 llega más gente de a poco en cada carrera, hasta llenarse en la ronda 8 (`BalanceConfig`, «Público»). En el menú está lleno |
 | `CrowdShouts` | Otoniel | Gritos 3D del público sobre las gradas: «¡WOW!», «¡BRAVO!» cuando juega bien, «¡UUUH!» al esquivar por un pelo, «¡JAJAJA!» al caer al agua y «¡BUUU!» al chocar (más si choca seguido) |
-| `CoachMessages` | Otoniel | Controles en pantalla al empezar la partida, aviso de cómo acusar a Tito en la primera ronda con trampas y mensajes de ánimo («¡Todo va bien!», «¡Mitad de la meta!», «¡Sin un rasguño!», «¡Arriba!»). Arma su propia interfaz |
+| `CoachMessages` | Otoniel | Controles en pantalla al empezar la partida, aviso de cómo acusar a Tito en la primera ronda con trampas, mensajes de ánimo («¡Todo va bien!», «¡Mitad de la meta!», «¡Sin un rasguño!», «¡Arriba!») y avisos urgentes de las zonas oscuras («¡Zona oscura adelante!», «¡Linterna!», «¡A ciegas!»). Arma su propia interfaz |
+| `DarkZones` | Otoniel | Zonas oscuras desde la ronda 4 (1 zona; 2 desde la 6): cartel rojo «ZONA OSCURA» en la entrada y una linterna dorada en un carril 45 m antes. Con linterna el reflector alumbra lejos; sin ella, casi a ciegas (`RuleEffects.SetZoneDark`). Se ubica con `TrackGenerator.Travelled`; no hay zonas con la regla Apagón (`BalanceConfig`, «Zonas oscuras») |
 | `AudioManager` | Tania | Música y efectos; persiste entre escenas (`DontDestroyOnLoad`); se crea solo si falta |
 | `HostBanner`, `HostFace`, `HostLines` | Tania | Anuncio de ronda/regla/apuesta, cara de Tito con expresiones, frases desde CSV |
 
@@ -136,7 +137,9 @@ Eventos locales de efectos (Otoniel, fuera de `GameEvents` porque solo los usan 
 `StarStreak.MilestoneReached(int racha, int premio)`, `Obstacle.NearMiss(Obstacle)`, `ContestantController.StarCollected(Star)`,
 `SurpriseEvents.SurpriseStarted(SurpriseType, float duración)`, `SurpriseEvents.SurpriseEnded(SurpriseType)`,
 `TitoTricks.TrickStarted(TrickType, bool farol, int estrellas)`, `TitoTricks.TrickEnded(TrickType, bool farol, bool pillado)`
-y `AudienceCrowd.CrowdGrew(int llegaron, int hay, int caben)`. `RoundAnnouncer.IsBusy` dice si hay un cartel grande en pantalla.
+`AudienceCrowd.CrowdGrew(int llegaron, int hay, int caben)`, `DarkZones.ZoneWarning()`, `DarkZones.FlashlightCollected()`,
+`DarkZones.ZoneEntered(bool conLinterna)` y `DarkZones.ZoneExited()`. `RoundAnnouncer.IsBusy` dice si hay un cartel grande en pantalla;
+`DarkZones.InZone`, si el concursante está en una zona oscura.
 
 ## Flujo de una ronda
 
@@ -157,7 +160,7 @@ El **temporizador manda**: la ronda termina a los 40 s exactos; el arco de meta 
 - **Estrellas:** prefabs `Star_Normal` y `Star_Golden` (`Prefabs/Gameplay`). Se ponen dentro de los tramos; llaman solas a `GameManager.Instance.CollectStar(esDorada)`.
 - **Tramos (Otoniel):** raíz con `TrackSegment` (pivote al **inicio**, 20 m hacia +Z, primeros y últimos 3 m sin obstáculos), marcar dificultad, obstáculos que tiene y `requiresJump` / `requiresSlide`; `hologramSlots` = puntos vacíos donde puede salir un holograma. Guardar en `Prefabs/Segments`; el que tenga «Safe» en el nombre es el tramo vacío. Revisar con **Una Ronda Más/Pruebas/Validar tramos**. Arco: `Prefabs/Gameplay/FinishArch.prefab`; holograma: un prefab con «Holo» en el nombre en `Prefabs/Obstacles`.
 - **Pausa:** Esc o P la maneja GameManager. La UI de pausa escucha `PauseToggled` y llama `SetPaused(false)`, `RestartGame()` o `GoToMainMenu()`.
-- **«¡Trampa!»:** tecla T (RuleManager) o `GameManager.Instance.Rules.CallCheat()` desde un botón. Se puede acusar varias veces por ronda: acierta si hay una trampa en vivo abierta (`Rules.Tricks.IsActive` y no es farol) o si la regla anunciada es falsa (`Rules.HasHiddenLie`). Al acertar: `LastCheatReward`, `DetectiveStreak`, `LastCatchWasLie`; si descubre la mentira, `AppliedRule` pasa a null, se lanza `RuleApplied(null)` y se borran los hologramas. Falsa alarma: −1 vida y `CooldownLeft`. El HUD muestra el botón con `Rules.CheatsPossible` y lo habilita con `Rules.CanCallCheat`; el cartel de regla muestra lo que Tito **dijo** (`AnnouncedRule`).
+- **«¡Acusar!»:** tecla T (RuleManager) o `GameManager.Instance.Rules.CallCheat()` desde un botón. Se puede acusar varias veces por ronda: acierta si hay una trampa en vivo abierta (`Rules.Tricks.IsActive` y no es farol) o si la regla anunciada es falsa (`Rules.HasHiddenLie`). Al acertar: `LastCheatReward`, `DetectiveStreak`, `LastCatchWasLie`; si descubre la mentira, `AppliedRule` pasa a null, se lanza `RuleApplied(null)` y se borran los hologramas. Falsa alarma: −1 vida y `CooldownLeft`. El HUD muestra el botón con `Rules.CheatsPossible` y lo habilita con `Rules.CanCallCheat`; el cartel de regla muestra lo que Tito **dijo** (`AnnouncedRule`).
 - **Trampas en vivo (`TitoTricks`, en GameSystems):** `GameManager.StealStars/ReturnStars` y `RigGoal/UnrigGoal` (`RiggedGoalExtra` para pintar la meta en rojo); los controles cruzados se leen con `Rules.IsApplied(RuleType.Mirror)`.
 - **Premios únicos:** 17 premios con `PrizeData.Rarity`; cada uno se elige una vez por partida (`MaxLevel = 1`, el corazón 9 pero nunca en dos premiaciones seguidas: `Modifiers.WasPickedLastScreen`). Se consulta con `Modifiers.Has(tipo)`. Efectos nuevos: Propina (`RoundStartStars`), Zapatillas (`LaneChangeDurationMultiplier`), Silbato (`TryUseWhistle`), Caja fuerte (`TrickPenaltyMultiplier`), Seguro de apuesta (`HasBetInsurance`), Súper imán (`MagnetRange`/`MagnetLateralReach`), Segunda oportunidad (`TryUseSecondChance`), Placa de detective (`CheatRewardMultiplier`), Contrato amañado (`GoalMultiplier`), Trébol (`GoldenStarBonus`), Lupa (pistas del HUD). Los premios que salvan al jugador lanzan `GameEvents.PrizeTriggered`.
 - **Guardado (Tania):** `SaveManager.BestRound`, `BestStars`, `GamesPlayed` (≥ 1 → el menú cambia), `MusicVolume`, `SfxVolume`.

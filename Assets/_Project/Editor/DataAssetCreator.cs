@@ -88,7 +88,7 @@ public static class DataAssetCreator
         target.ApplyModifiedPropertiesWithoutUndo();
         Object.DestroyImmediate(defaults);
         EditorUtility.SetDirty(balance);
-        Debug.Log($"Balance.asset actualizado a la versión {BalanceConfig.CurrentDataVersion}: dificultad, trampas de Tito y premios únicos.");
+        Debug.Log($"Balance.asset actualizado a la versión {BalanceConfig.CurrentDataVersion}: más dificultad, trampas de Tito desde la ronda 4 y zonas oscuras.");
     }
 
     private static void Prize(string file, PrizeType type, bool poisoned, PrizeRarity rarity, int maxLevel,

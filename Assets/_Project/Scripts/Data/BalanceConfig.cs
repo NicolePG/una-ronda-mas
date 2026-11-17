@@ -37,7 +37,7 @@ public struct DifficultyStage
 public class BalanceConfig : ScriptableObject
 {
     /// <summary>Versión de los valores por defecto. «Crear todo» pone el asset al día si es más viejo.</summary>
-    public const int CurrentDataVersion = 3;
+    public const int CurrentDataVersion = 4;
 
     [Tooltip("Versión de los datos (la usa «Crear todo» para actualizar el balance).")]
     [SerializeField, HideInInspector] private int dataVersion;
@@ -53,17 +53,17 @@ public class BalanceConfig : ScriptableObject
     [SerializeField, Min(0f)] private float poisonRevealDelay = 2f;
 
     [Header("Meta de estrellas")]
-    [Tooltip("Meta de la ronda 1. Con 34 hay que juntar ~1 de cada 4 estrellas; en la ronda 8 ya hacen falta ~6 de cada 10.")]
-    [SerializeField, Min(1)] private int baseGoal = 34;
+    [Tooltip("Meta de la ronda 1. Con 40 hay que juntar ~3 de cada 10 estrellas; en la ronda 8 ya hacen falta ~6 de cada 10.")]
+    [SerializeField, Min(1)] private int baseGoal = 40;
     [Tooltip("Cuánto sube la meta en cada ronda.")]
-    [SerializeField, Min(0)] private int goalPerRound = 12;
+    [SerializeField, Min(0)] private int goalPerRound = 14;
 
     [Header("Velocidad de la pista (m/s)")]
-    [SerializeField, Min(0.1f)] private float baseSpeed = 8.5f;
-    [Tooltip("Multiplicador por ronda: 1,075 = 7,5% más rápido cada ronda.")]
-    [SerializeField, Min(1f)] private float speedGrowthPerRound = 1.075f;
-    [Tooltip("Velocidad máxima (se alcanza en la ronda 11).")]
-    [SerializeField, Min(0.1f)] private float maxSpeed = 17f;
+    [SerializeField, Min(0.1f)] private float baseSpeed = 9.5f;
+    [Tooltip("Multiplicador por ronda: 1,08 = 8% más rápido cada ronda.")]
+    [SerializeField, Min(1f)] private float speedGrowthPerRound = 1.08f;
+    [Tooltip("Velocidad máxima (se alcanza en la ronda 10).")]
+    [SerializeField, Min(0.1f)] private float maxSpeed = 18f;
 
     [Header("Vidas")]
     [SerializeField, Min(1)] private int startLives = 3;
@@ -101,13 +101,13 @@ public class BalanceConfig : ScriptableObject
 
     [Header("Reglas de Tito")]
     [SerializeField, Min(1)] private int firstRuleRound = 2;
-    [SerializeField, Min(1)] private int firstLieRound = 3;
+    [SerializeField, Min(1)] private int firstLieRound = 4;
     [Tooltip("Probabilidad de que Tito mienta en firstLieRound.")]
-    [SerializeField, Range(0f, 1f)] private float lieChance = 0.35f;
+    [SerializeField, Range(0f, 1f)] private float lieChance = 0.4f;
     [Tooltip("Cuánto sube la probabilidad de mentira en cada ronda.")]
     [SerializeField, Range(0f, 1f)] private float lieChancePerRound = 0.05f;
     [Tooltip("Probabilidad máxima de mentira.")]
-    [SerializeField, Range(0f, 1f)] private float maxLieChance = 0.7f;
+    [SerializeField, Range(0f, 1f)] private float maxLieChance = 0.75f;
     [Tooltip("Todo vale doble: multiplicador del valor de las estrellas.")]
     [SerializeField, Min(1)] private int doubleValueStarMultiplier = 2;
     [Tooltip("Todo vale doble: multiplicador de la velocidad de la pista.")]
@@ -131,7 +131,7 @@ public class BalanceConfig : ScriptableObject
 
     [Header("Trampas en vivo de Tito")]
     [Tooltip("Desde qué ronda Tito hace trampas a mitad de la carrera.")]
-    [SerializeField, Min(1)] private int firstTrickRound = 2;
+    [SerializeField, Min(1)] private int firstTrickRound = 4;
     [Tooltip("Cada cuántas rondas suma una trampa más por ronda.")]
     [SerializeField, Min(1)] private int roundsPerExtraTrick = 2;
     [SerializeField, Min(1)] private int maxTricksPerRound = 3;
@@ -145,19 +145,39 @@ public class BalanceConfig : ScriptableObject
     [Tooltip("Robo de estrellas: mínimo que se lleva.")]
     [SerializeField, Min(1)] private int stealMin = 3;
     [Tooltip("Desde qué ronda puede inflar la meta.")]
-    [SerializeField, Min(1)] private int goalRigFromRound = 3;
+    [SerializeField, Min(1)] private int goalRigFromRound = 4;
     [Tooltip("Meta inflada: cuánto sube la meta (0,12 = +12%).")]
     [SerializeField, Range(0f, 1f)] private float goalRigFraction = 0.12f;
     [Tooltip("Meta inflada: mínimo de estrellas que sube.")]
     [SerializeField, Min(1)] private int goalRigMin = 4;
     [Tooltip("Desde qué ronda puede cruzar los controles (izquierda y derecha al revés).")]
-    [SerializeField, Min(1)] private int crossedFromRound = 5;
+    [SerializeField, Min(1)] private int crossedFromRound = 6;
     [Tooltip("Desde qué ronda Tito hace faroles: parece que hace trampa pero no cambia nada.")]
-    [SerializeField, Min(1)] private int bluffFromRound = 4;
+    [SerializeField, Min(1)] private int bluffFromRound = 5;
     [Tooltip("Probabilidad de que una trampa sea un farol en bluffFromRound.")]
     [SerializeField, Range(0f, 1f)] private float bluffChance = 0.25f;
     [SerializeField, Range(0f, 1f)] private float bluffChancePerRound = 0.04f;
     [SerializeField, Range(0f, 1f)] private float maxBluffChance = 0.45f;
+
+    [Header("Zonas oscuras (Otoniel)")]
+    [Tooltip("Desde qué ronda hay tramos a oscuras con una linterna antes.")]
+    [SerializeField, Min(1)] private int darkZoneFromRound = 4;
+    [Tooltip("Cada cuántas rondas suma una zona oscura más por ronda.")]
+    [SerializeField, Min(1)] private int roundsPerExtraDarkZone = 2;
+    [SerializeField, Min(1)] private int maxDarkZonesPerRound = 2;
+    [Tooltip("Metros de pista a oscuras.")]
+    [SerializeField, Min(10f)] private float darkZoneLength = 60f;
+    [Tooltip("Metros antes de la zona donde aparece la linterna.")]
+    [SerializeField, Min(5f)] private float flashlightLead = 45f;
+    [Tooltip("Sin linterna: alcance (m) e intensidad de la luz del concursante en la oscuridad.")]
+    [SerializeField, Min(1f)] private float darkSpotRange = 11f;
+    [SerializeField, Min(0f)] private float darkSpotIntensity = 1.8f;
+    [Tooltip("Con linterna: alcance (m) e intensidad.")]
+    [SerializeField, Min(1f)] private float flashlightSpotRange = 34f;
+    [SerializeField, Min(0f)] private float flashlightSpotIntensity = 4.5f;
+    [Tooltip("Parte de la ronda (0 a 1) donde pueden estar las zonas, contando la linterna.")]
+    [SerializeField, Range(0f, 1f)] private float darkZoneWindowStart = 0.2f;
+    [SerializeField, Range(0f, 1f)] private float darkZoneWindowEnd = 0.85f;
 
     [Header("Racha de estrellas (Otoniel)")]
     [Tooltip("Cada cuántas estrellas seguidas sin chocar hay premio.")]
@@ -193,7 +213,7 @@ public class BalanceConfig : ScriptableObject
     [Tooltip("Ronda desde la que aparecen tramos con pelota rodante.")]
     [SerializeField, Min(1)] private int rollingBallFromRound = 4;
     [Tooltip("Ronda desde la que aparecen tramos con rodillo barredor.")]
-    [SerializeField, Min(1)] private int sweeperFromRound = 6;
+    [SerializeField, Min(1)] private int sweeperFromRound = 5;
 
     [Header("Público (Otoniel)")]
     [Tooltip("Público normal (parte de las gradas, 0 a 1) en las primeras rondas.")]
@@ -293,13 +313,13 @@ public class BalanceConfig : ScriptableObject
     [Tooltip("Pesos de dificultad según la ronda. Se usa la última fila cuya ronda ya llegó.")]
     [SerializeField] private DifficultyStage[] difficultyStages =
     {
-        new DifficultyStage(1, 1f, 0f, 0f),
-        new DifficultyStage(2, 0.6f, 0.4f, 0f),
-        new DifficultyStage(3, 0.35f, 0.55f, 0.1f),
-        new DifficultyStage(4, 0.15f, 0.6f, 0.25f),
-        new DifficultyStage(5, 0f, 0.55f, 0.45f),
-        new DifficultyStage(7, 0f, 0.3f, 0.7f),
-        new DifficultyStage(9, 0f, 0.1f, 0.9f),
+        new DifficultyStage(1, 0.8f, 0.2f, 0f),
+        new DifficultyStage(2, 0.45f, 0.45f, 0.1f),
+        new DifficultyStage(3, 0.2f, 0.55f, 0.25f),
+        new DifficultyStage(4, 0.05f, 0.5f, 0.45f),
+        new DifficultyStage(5, 0f, 0.35f, 0.65f),
+        new DifficultyStage(7, 0f, 0.15f, 0.85f),
+        new DifficultyStage(9, 0f, 0.05f, 0.95f),
     };
 
     // Ronda
@@ -355,6 +375,20 @@ public class BalanceConfig : ScriptableObject
     public int GoalRigMin => goalRigMin;
     public int CrossedFromRound => crossedFromRound;
     public int BluffFromRound => bluffFromRound;
+
+    // Zonas oscuras
+    public float DarkZoneLength => darkZoneLength;
+    public float FlashlightLead => flashlightLead;
+    public float DarkSpotRange => darkSpotRange;
+    public float DarkSpotIntensity => darkSpotIntensity;
+    public float FlashlightSpotRange => flashlightSpotRange;
+    public float FlashlightSpotIntensity => flashlightSpotIntensity;
+    public float DarkZoneWindowStart => darkZoneWindowStart;
+    public float DarkZoneWindowEnd => Mathf.Max(darkZoneWindowStart, darkZoneWindowEnd);
+
+    /// <summary>Cuántas zonas oscuras tiene esta ronda.</summary>
+    public int GetDarkZoneCount(int round) =>
+        round < darkZoneFromRound ? 0 : Mathf.Min(maxDarkZonesPerRound, 1 + (round - darkZoneFromRound) / roundsPerExtraDarkZone);
 
     // Racha
     public int StreakMilestone => streakMilestone;

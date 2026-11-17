@@ -29,8 +29,9 @@ Además de esquivar, el jugador toma una decisión importante en cada ronda; ah�
 
 | Mecánica | Cómo funciona | Por qué divierte |
 | --- | --- | --- |
-| Botón «¡Trampa!» | Si crees que Tito hizo trampa, presionas T. Si aciertas, la trampa se deshace, a Tito se le cae el peluquín y ganas 4 + 2 × ronda estrellas (×1,5, ×2… con la racha de detective). Si te equivocas pierdes 1 vida y el botón se bloquea 2,5 s. Se puede acusar varias veces por ronda. | El jugador observa, sospecha y arriesga; pillar a Tito ayuda a llegar a la meta |
-| Trampas en vivo | Desde la ronda 2, a mitad de la carrera Tito se roba estrellas, infla la meta (ronda 3) o cruza los controles (ronda 5). Hay 6 s para acusarlo; si no, la trampa queda hecha. Desde la ronda 4 también hace faroles: guiña y distrae igual, pero no cambia nada | Hay que mirar el marcador y no solo la pista: ¿trampa o farol? |
+| Botón «¡Acusar!» | Tito hace trampa solo; el jugador no la activa. Si crees que Tito hizo trampa, presionas T (o el botón «¡Acusar!», que aparece desde la ronda 4). Si aciertas, la trampa se deshace, a Tito se le cae el peluquín y ganas 4 + 2 × ronda estrellas (×1,5, ×2… con la racha de detective). Si te equivocas pierdes 1 vida y el botón se bloquea 2,5 s. Se puede acusar varias veces por ronda. | El jugador observa, sospecha y arriesga; pillar a Tito ayuda a llegar a la meta |
+| Trampas en vivo | Desde la ronda 4, a mitad de la carrera Tito se roba estrellas o infla la meta; desde la ronda 6 también cruza los controles. Hay 6 s para acusarlo; si no, la trampa queda hecha. Desde la ronda 5 también hace faroles: guiña y distrae igual, pero no cambia nada | Hay que mirar el marcador y no solo la pista: ¿trampa o farol? |
+| Zonas oscuras | Desde la ronda 4, uno o dos tramos de la pista se quedan a oscuras (un cartel rojo «ZONA OSCURA» marca la entrada). Unos metros antes flota una linterna dorada en un carril: con ella ves lejos; sin ella corres casi a ciegas y solo brillan las estrellas | Hay que desviarse a buscar la linterna, y entrar sin ella da miedo |
 | Premios envenenados | Desde la ronda 4, uno de los 3 premios puede ser un regalo de Tito con un efecto oculto que se revela al elegirlo | Elegir premio deja de ser obvio |
 | La apuesta de Tito | Antes de cada ronda puedes apostar: la meta sube 50%, pero si ganas las 3 tarjetas de premio son raras o épicas | Riesgo y recompensa en cada ronda |
 | Obstáculos falsos | Cuando Tito miente, algunos obstáculos son hologramas que se pueden atravesar | La sorpresa de «Espera, ¿qué?» |
@@ -47,7 +48,7 @@ El concursante corre solo hacia adelante; el jugador elige el carril, salta y se
 | Cambiar de carril | A / D o flechas izquierda y derecha | Stick izquierdo |
 | Saltar | Espacio o W | Botón A |
 | Deslizarse | S o flecha abajo | Botón B |
-| Acusar a Tito («¡Trampa!») | T | Botón Y |
+| Acusar a Tito («¡Acusar!», desde la ronda 4) | T | Botón Y |
 | Pausa | Esc | Start |
 | Elegir premio o apuesta | Clic o teclas 1, 2 y 3 | Cruceta y botón A |
 
@@ -61,9 +62,9 @@ El concursante corre solo hacia adelante; el jugador elige el carril, salta y se
 
 **Una partida, paso a paso**
 
-1. Tito anuncia la ronda y, desde la ronda 3, una regla especial. El jugador decide si acepta la apuesta.
-2. El concursante corre 40 segundos: cambia de carril, salta, se desliza y junta estrellas.
-3. Si cree que Tito mintió, el jugador lo acusa con «¡Trampa!».
+1. Tito anuncia la ronda y, desde la ronda 2, una regla especial. Desde la ronda 3 el jugador decide si acepta la apuesta.
+2. El concursante corre 40 segundos: cambia de carril, salta, se desliza, junta estrellas y, desde la ronda 4, busca la linterna antes de cada zona oscura.
+3. Desde la ronda 4 Tito hace trampa solo; si el jugador cree que Tito mintió o hizo trampa, lo acusa con T («¡Acusar!»).
 4. Si llega a la meta con las estrellas necesarias, elige 1 de 3 premios (raros o épicos si ganó la apuesta) y pasa a una ronda más rápida.
 5. Si queda eliminado, ve la ronda alcanzada, sus estrellas totales y el récord, con el botón «¿Una ronda más?».
 
@@ -71,30 +72,33 @@ El puntaje final es la suma de estrellas de todas las rondas. Todos los números
 
 ## Ronda por ronda
 
-Cada ronda aprieta un poco más: la pista va 7,5% más rápido, la meta sube 12 estrellas, hay más tramos medios y difíciles y Tito hace más trampas. La ronda 2 ya trae regla y la primera trampa en vivo; desde la ronda 3 Tito puede mentir con la regla.
+Cada ronda aprieta más: la pista va 8% más rápido, la meta sube 14 estrellas y hay más tramos medios y difíciles desde el principio. Las rondas 1 a 3 enseñan a correr (la 2 ya trae regla, siempre verdadera). **Desde la ronda 4 empieza el juego de verdad:** Tito miente con la regla, hace trampas en vivo solo y aparecen las zonas oscuras con linterna.
 
-| Ronda | Meta | Velocidad | Tramos (fácil / medio / difícil) | Obstáculos nuevos | Tito |
-| --- | --- | --- | --- | --- | --- |
-| 1 | 34 | 8,5 m/s | 100 / 0 / 0 | Bloques y barras bajas | Explica cómo se juega |
-| 2 | 46 | 9,1 m/s | 60 / 40 / 0 | Barras altas | Primera regla (verdadera); 1 trampa: robo de estrellas |
-| 3 | 58 | 9,8 m/s | 35 / 55 / 10 | Martillo y huecos al agua | Puede mentir (35%); 1 trampa; ya puede inflar la meta |
-| 4 | 70 | 10,6 m/s | 15 / 60 / 25 | Pelota rodante | Mentira 40%; 2 trampas; faroles; premios envenenados |
-| 5 | 82 | 11,4 m/s | 0 / 55 / 45 | — | Mentira 45%; 2 trampas; ya puede cruzar los controles |
-| 6 | 94 | 12,2 m/s | 0 / 55 / 45 | Rodillo barredor | Mentira 50%; 3 trampas |
-| 7 | 106 | 13,1 m/s | 0 / 30 / 70 | — | Mentira 55%; 3 trampas |
-| 8 | 118 | 14,1 m/s | 0 / 30 / 70 | — | Mentira 60%; 3 trampas |
-| 9 | 130 | 15,2 m/s | 0 / 10 / 90 | — | Mentira 65%; 3 trampas |
-| 10 | 142 | 16,3 m/s | 0 / 10 / 90 | — | Mentira 70% (tope) |
+| Ronda | Meta | Velocidad | Tramos (fácil / medio / difícil) | Obstáculos nuevos | Tito | Zonas oscuras |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | 40 | 9,5 m/s | 80 / 20 / 0 | Bloques y barras bajas | Explica cómo se juega | — |
+| 2 | 54 | 10,3 m/s | 45 / 45 / 10 | Barras altas | Primera regla (verdadera) | — |
+| 3 | 68 | 11,1 m/s | 20 / 55 / 25 | Martillo y huecos al agua | Regla verdadera; ofrece su apuesta | — |
+| 4 | 82 | 12,0 m/s | 5 / 50 / 45 | Pelota rodante | Puede mentir (40%); 1 trampa (robo o meta inflada); premios envenenados | 1 |
+| 5 | 96 | 12,9 m/s | 0 / 35 / 65 | Rodillo barredor | Mentira 45%; 1 trampa; faroles | 1 |
+| 6 | 110 | 14,0 m/s | 0 / 35 / 65 | — | Mentira 50%; 2 trampas; ya puede cruzar los controles | 2 |
+| 7 | 124 | 15,1 m/s | 0 / 15 / 85 | — | Mentira 55%; 2 trampas | 2 |
+| 8 | 138 | 16,3 m/s | 0 / 15 / 85 | — | Mentira 60%; 3 trampas | 2 |
+| 9 | 152 | 17,6 m/s | 0 / 5 / 95 | — | Mentira 65%; 3 trampas | 2 |
+| 10 | 166 | 18 m/s | 0 / 5 / 95 | — | Mentira 70%; 3 trampas | 2 |
 
-Desde la ronda 11 la velocidad se queda en 17 m/s y solo sube la meta. Los faroles empiezan en 25% de las trampas y llegan a 45%. Todos los números están en `Balance.asset` («Crear todo» lo pone al día).
+Desde la ronda 10 la velocidad se queda en 18 m/s y solo sube la meta; la mentira llega al tope de 75% en la ronda 11. Los faroles empiezan en 25% de las trampas y llegan a 45%. Hay que juntar ~29% de las estrellas de la pista en la ronda 1, ~50% en la 4 y ~69% en la 10 (sin contar robos ni zonas oscuras). Todos los números están en `Balance.asset` («Crear todo» lo pone al día).
 
-**Ejemplo: la ronda 3**
+**Zonas oscuras:** cada zona mide 60 m (unos 5 s de carrera en la ronda 4). Unos 45 m antes de la entrada flota una linterna dorada que gira en un carril al azar, y aparece el aviso «¡ZONA OSCURA ADELANTE!». Si el concursante pasa por su carril, la agarra («¡LINTERNA!»): dentro de la zona su reflector alumbra 34 m. Si no, entra «¡A CIEGAS!»: la luz alcanza unos 11 m y solo se ven bien las estrellas, que brillan solas. Cada linterna sirve solo para su zona. Con la regla Apagón no hay zonas (ya está todo oscuro).
 
-1. Tito aparece en la pantalla gigante: «¡Ronda 3! Meta: 58 estrellas. Y hoy… ¡todo vale doble!». El cartel avisa: «Tito hará hasta 1 trampa».
+**Ejemplo: la ronda 4**
+
+1. Tito aparece en la pantalla gigante: «¡Ronda 4! Meta: 82 estrellas. Y hoy… ¡todo vale doble!». El cartel avisa: «Tito hará hasta 1 trampa solo: si lo pillas, ¡acúsalo con T!» y «Hay zonas oscuras».
 2. Tito ofrece su apuesta; el jugador la rechaza para ir seguro.
-3. Se apagan las luces: la regla real era «Apagón». El cartel de la regla tiembla y se pone «¿¿??»; el jugador acusa con T y gana 10 estrellas.
-4. A los 20 s Tito señala al público («¡Miren allá!») y el número de la meta se pone en rojo: subió a 65. El jugador acusa otra vez y la meta vuelve a 58 (+10 estrellas, racha x2: +15).
-5. Si llega a la meta, elige un premio (ya pueden salir raros) y pasa a la ronda 4, donde empiezan los faroles.
+3. Izquierda y derecha están al revés: la regla real era «Espejo». El cartel de la regla tiembla y se pone «¿¿??»; el jugador acusa con T, los controles vuelven a la normalidad y gana 12 estrellas.
+4. A los 20 s Tito señala al público («¡Miren allá!») y el número de la meta se pone en rojo: subió a 92. El jugador acusa otra vez y la meta vuelve a 82 (+12 estrellas, racha x1,5: +18).
+5. Aparece el aviso «¡ZONA OSCURA ADELANTE!»: la linterna gira en el carril derecho. El jugador cambia de carril, la agarra y cruza la zona viendo los obstáculos.
+6. Si llega a la meta, elige un premio y pasa a la ronda 5, donde empiezan los faroles.
 
 ## Contenido del juego
 
@@ -203,20 +207,20 @@ La cámara va detrás y por encima del concursante, mirando hacia adelante; la p
 
 ## El giro: algo no está bien
 
-Lo extraño aparece desde la ronda 2 de la primera partida, porque los jurados suelen jugar solo una o dos veces; después, el juego guarda cuántas partidas jugaste y sigue cambiando.
+Las rondas 1 a 3 parecen un concurso normal (sirven para aprender a correr); lo extraño estalla en la ronda 4. Después, el juego guarda cuántas partidas jugaste y sigue cambiando.
 
 | Momento | Qué pasa |
 | --- | --- |
 | Ronda 1 | Todo normal. Tito es amable y explica las reglas. |
-| Desde la ronda 2 | Tito anuncia una regla especial en cada ronda y hace su primera trampa en vivo (se roba estrellas). El anuncio avisa cuántas trampas puede hacer. |
-| Desde la ronda 3 | Tito puede mentir con la regla (35%, +5% por ronda hasta 70%): anuncia una y aplica otra, y pone hologramas. El cartel muestra la regla anunciada y cada tanto falla («¿¿??»). También puede inflar la meta. Ofrece su apuesta. |
-| Desde la ronda 4 | Hace faroles: guiña, señala al público y el público murmura, pero no cambia nada. Desde la ronda 5 también cruza los controles. Como extra, un cartel falso de «¡Atajo!» que lleva al agua. |
+| Rondas 2 y 3 | Tito anuncia una regla especial en cada ronda, siempre verdadera. Desde la ronda 3 ofrece su apuesta. |
+| Desde la ronda 4 | Tito hace trampa solo, sin que el jugador haga nada: se roba estrellas o infla la meta a mitad de la carrera, y puede mentir con la regla (40%, +5% por ronda hasta 75%): anuncia una y aplica otra, y pone hologramas. El cartel muestra la regla anunciada y cada tanto falla («¿¿??»). Aparece el botón «¡Acusar!» (tecla T) y el aviso «¡Desde ahora Tito hace trampa!». También empiezan las zonas oscuras con linterna. |
+| Desde la ronda 5 | Hace faroles: guiña, señala al público y el público murmura, pero no cambia nada. Desde la ronda 6 también cruza los controles. Como extra, un cartel falso de «¡Atajo!» que lleva al agua. |
 | Segunda partida | Tito te reconoce («Ah, volviste») y el botón «Jugar» pasa a decir «¿Una ronda más?». |
 | Desde la tercera partida | El título del menú tiembla y Tito comenta tus derrotas anteriores («Ya van 3, ¿eh?»). |
 | Ronda 10 (extra) | Se apagan las luces y aparece «FIN DEL PROGRAMA». Segundos después, Tito dice «Mentí. Una ronda más» y empieza la ronda 11. |
 
 - **La broma nunca atrapa al jugador:** en la versión de escritorio, la primera vez que pulsa «Salir», Tito pregunta «¿De verdad te vas?», pero salir siempre funciona.
-- **La mentira tiene pistas:** el cartel tiembla y los hologramas parpadean; el jugador atento la descubre y la acusa con «¡Trampa!».
+- **La mentira tiene pistas:** el cartel tiembla y los hologramas parpadean; el jugador atento la descubre y la acusa con «¡Acusar!» (T).
 - **Frases de Tito:** entre 25 y 35 frases cortas, agrupadas por momento: inicio de ronda, regla, apuesta, caída al agua, acusación acertada, acusación fallida, victoria y eliminación.
 
 ## Menús y pantallas
@@ -227,7 +231,7 @@ El juego tiene 9 pantallas; tras perder, el botón principal es «¿Una ronda m�
 
 **Público:** las gradas tienen lugar para 72 personas. En las rondas 1 y 2 hay público normal (25 personas); desde la ronda 3, en cada carrera llegan unas 8 personas más, de a poco y saltando, hasta llenar el estudio en la ronda 8. El público grita sobre las gradas: «¡WOW!», «¡BRAVO!» u «¡OLÉ!» con las rachas, la meta o al pillar a Tito; «¡UUUH!» al esquivar por un pelo; «¡JAJAJA!» al caer al agua y «¡BUUU!» al chocar (más abucheos si choca seguido).
 
-**Ayudas en pantalla:** al empezar la partida se ven los controles unos segundos; en la primera ronda con trampas, cómo acusar a Tito. Durante la carrera aparecen mensajes de ánimo: «¡Todo va bien!», «¡Mitad de la meta!», «¡Ya casi!», «¡Sin un rasguño!», «¡Qué reflejos!», «¡Arriba!» después de un golpe y «¡Llega más público!».
+**Ayudas en pantalla:** al empezar la partida se ven los controles unos segundos; en la primera ronda con trampas, cómo acusar a Tito. Durante la carrera aparecen mensajes de ánimo: «¡Todo va bien!», «¡Mitad de la meta!», «¡Ya casi!», «¡Sin un rasguño!», «¡Qué reflejos!», «¡Arriba!» después de un golpe y «¡Llega más público!». Las zonas oscuras tienen avisos urgentes que pasan primero: «¡Zona oscura adelante!», «¡Linterna!» y «¡A ciegas!».
 
 ![Figura 4. Flujo de pantallas: ciclo de rondas y regreso tras perder](img/flujo.png)
 
@@ -244,7 +248,7 @@ La pausa se abre con Esc durante cualquier ronda y vuelve al mismo punto.
 | Opciones | Volumen de música, volumen de efectos y pantalla completa | Se guardan con el SaveManager |
 | Créditos | Equipo y licencias de los assets | Obligatorio si algún asset es CC-BY |
 | Anuncio de Tito | Número de ronda, meta, regla especial y la apuesta (aceptar o rechazar) | Avanza al elegir |
-| HUD | Estrellas y meta, tiempo, vidas, ronda, regla activa y aviso de «¡Trampa!» disponible | Siempre visible durante la ronda |
+| HUD | Estrellas y meta, tiempo, vidas, ronda, regla activa y botón «¡Acusar!» (desde la ronda 4) | Siempre visible durante la ronda |
 | Premios | 3 tarjetas con nombre, ícono y efecto; un regalo de Tito puede estar escondido | Clic o teclas 1, 2 y 3 |
 | Pausa | Continuar, Reiniciar, Opciones y Menú principal | Detiene la ronda |
 | Eliminado | Ronda alcanzada, estrellas totales y récord; botones «¿Una ronda más?» y Menú | «¿Una ronda más?» es el botón grande y viene seleccionado |

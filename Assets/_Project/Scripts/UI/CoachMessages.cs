@@ -8,6 +8,7 @@ using UnityEngine.UI;
 /// - Al empezar cada partida, los controles durante unos segundos; en la primera ronda con trampas, cómo acusar a Tito.
 /// - Mensajes de ánimo cuando todo va bien: mitad de la meta, «¡ya casi!», buen ritmo, sin chocar, reflejos,
 ///   «¡arriba!» después de un golpe y cuando llega más público. Uno a la vez y con pausa entre ellos.
+/// - Avisos urgentes de las zonas oscuras (DarkZones): «¡Zona oscura adelante!», «¡Linterna!», «¡A ciegas!».
 /// Arma su propia interfaz por código (no necesita prefab). Tiempo sin escala para las animaciones.
 /// </summary>
 [DisallowMultipleComponent]
@@ -29,6 +30,8 @@ public class CoachMessages : MonoBehaviour
     [Header("Ánimo")]
     [Tooltip("Segundos mínimos entre un mensaje y el siguiente.")]
     [SerializeField, Min(0.5f)] private float minGap = 3.5f;
+    [Tooltip("Segundos mínimos antes de un aviso urgente (zona oscura, linterna).")]
+    [SerializeField, Min(0.2f)] private float urgentGap = 0.8f;
     [SerializeField, Min(0.5f)] private float toastTime = 2.2f;
     [Tooltip("En qué parte de la ronda (0 a 1) se revisa si va al ritmo de la meta.")]
     [SerializeField, Range(0.1f, 0.9f)] private float paceCheckAt = 0.45f;
@@ -46,6 +49,7 @@ public class CoachMessages : MonoBehaviour
     {
         public string Title, Sub;
         public float Duration, QueuedAt;
+        public bool Urgent;   // aviso de juego (zona oscura): no espera la pausa entre mensajes
     }
 
     private readonly List<Message> queue = new List<Message>();
@@ -76,6 +80,9 @@ public class CoachMessages : MonoBehaviour
         GameEvents.ContestantHit += HandleHit;
         Obstacle.NearMiss += HandleNearMiss;
         AudienceCrowd.CrowdGrew += HandleCrowdGrew;
+        DarkZones.ZoneWarning += HandleZoneWarning;
+        DarkZones.FlashlightCollected += HandleFlashlight;
+        DarkZones.ZoneEntered += HandleZoneEntered;
     }
 
     private void OnDisable()
@@ -85,6 +92,9 @@ public class CoachMessages : MonoBehaviour
         GameEvents.ContestantHit -= HandleHit;
         Obstacle.NearMiss -= HandleNearMiss;
         AudienceCrowd.CrowdGrew -= HandleCrowdGrew;
+        DarkZones.ZoneWarning -= HandleZoneWarning;
+        DarkZones.FlashlightCollected -= HandleFlashlight;
+        DarkZones.ZoneEntered -= HandleZoneEntered;
     }
 
     // ---------- Eventos ----------
@@ -111,7 +121,7 @@ public class CoachMessages : MonoBehaviour
         if (!trickTipShown && gm.CurrentRound >= gm.Balance.FirstTrickRound)
         {
             trickTipShown = true;
-            Enqueue("¡TITO HACE TRAMPA!", "Si ves algo raro (estrellas, meta o controles), presiona T", 3.5f);
+            Enqueue("¡DESDE AHORA TITO HACE TRAMPA!", "Si ves algo raro (estrellas, meta o controles), acúsalo con T", 3.5f);
         }
     }
 
@@ -152,6 +162,18 @@ public class CoachMessages : MonoBehaviour
     private void HandleCrowdGrew(int added, int visible, int total) =>
         Enqueue("¡LLEGA MÁS PÚBLICO!", $"+{added} espectadores · {visible} de {total}");
 
+    // Zonas oscuras: van primero en la cola porque hay que reaccionar ya.
+    private void HandleZoneWarning() =>
+        Enqueue("¡ZONA OSCURA ADELANTE!", "Agarra la linterna dorada antes de entrar", 2.6f, true);
+
+    private void HandleFlashlight() =>
+        Enqueue("¡LINTERNA!", "Ahora vas a ver en la oscuridad", 1.8f, true);
+
+    private void HandleZoneEntered(bool withLight)
+    {
+        if (!withLight) Enqueue("¡A CIEGAS!", "Sin linterna: sigue las estrellas que brillan", 2.2f, true);
+    }
+
     // ---------- Cada frame ----------
 
     private void Update()
@@ -160,7 +182,8 @@ public class CoachMessages : MonoBehaviour
         CheckRound();
         AnimateControls(now);
 
-        if (!ControlsVisible(now) && !RoundAnnouncer.IsBusy && queue.Count > 0 && now - lastToastAt >= minGap)
+        if (!ControlsVisible(now) && !RoundAnnouncer.IsBusy && queue.Count > 0
+            && (now - lastToastAt >= minGap || (queue[0].Urgent && now - lastToastAt >= urgentGap)))
         {
             Message message = queue[0];
             queue.RemoveAt(0);
@@ -203,10 +226,22 @@ public class CoachMessages : MonoBehaviour
         return gm != null && gm.Phase == RoundPhase.Running && !gm.IsPaused;
     }
 
-    private void Enqueue(string title, string sub, float duration = 0f)
+    private void Enqueue(string title, string sub, float duration = 0f, bool urgent = false)
     {
-        if (queue.Count >= 3) queue.RemoveAt(0);
-        queue.Add(new Message { Title = title, Sub = sub, Duration = duration > 0f ? duration : toastTime, QueuedAt = Time.unscaledTime });
+        if (queue.Count >= 3)
+        {
+            int drop = queue.FindIndex(m => !m.Urgent); // primero se descarta el ánimo más viejo
+            queue.RemoveAt(drop >= 0 ? drop : 0);
+        }
+        var message = new Message
+        {
+            Title = title, Sub = sub, Duration = duration > 0f ? duration : toastTime,
+            QueuedAt = Time.unscaledTime, Urgent = urgent,
+        };
+        // Los urgentes se adelantan a los mensajes de ánimo.
+        int index = urgent ? queue.FindIndex(m => !m.Urgent) : -1;
+        if (index >= 0) queue.Insert(index, message);
+        else queue.Add(message);
     }
 
     private static string Pick(string[] options) => options[Random.Range(0, options.Length)];
