@@ -97,7 +97,9 @@ Assets/_Project/
 | `StudioSetCreator`, `GameFeelCreator` (Editor) | Otoniel | Arman el estudio (gradas con público, cartel, haces, flotadores, cañones) y el post-procesado en `Game.unity` |
 | `MainMenuStudioCreator` (Editor) | Otoniel | Menú principal con el estudio 3D detrás (Tito y la concursante saludando) y la UI en una columna; lo arma «Una Ronda Más/Crear todo» |
 | `UiModernizer` (Editor) | Otoniel | Interfaz moderna estilo transmisión de TV sobre las pantallas de Tania: paneles de vidrio con borde de neón, botones píldora con halo (`ButtonGlow`) y destello (`UiShine`, solo los principales), títulos con contorno, entradas animadas (`UiEntrance`), brillo de rareza en las tarjetas de premio, «● EN VIVO» (`LiveBadge`) y cinta de noticias (`TickerTape`) en el menú. Kit dibujado en `Art/UI/Modern`. Si hay una `.ttf`/`.otf` en `Fonts`, la usa para títulos. Último paso de «Crear todo» |
-| `AudienceCrowd` | Otoniel | Público de 72 personas que se va llenando con las rondas (`BalanceConfig`, «Público»); los nuevos llegan saltando. En el menú está lleno |
+| `AudienceCrowd` | Otoniel | Público de 72 personas: en las rondas 1 y 2 hay público normal y desde la ronda 3 llega más gente de a poco en cada carrera, hasta llenarse en la ronda 8 (`BalanceConfig`, «Público»). En el menú está lleno |
+| `CrowdShouts` | Otoniel | Gritos 3D del público sobre las gradas: «¡WOW!», «¡BRAVO!» cuando juega bien, «¡UUUH!» al esquivar por un pelo, «¡JAJAJA!» al caer al agua y «¡BUUU!» al chocar (más si choca seguido) |
+| `CoachMessages` | Otoniel | Controles en pantalla al empezar la partida, aviso de cómo acusar a Tito en la primera ronda con trampas y mensajes de ánimo («¡Todo va bien!», «¡Mitad de la meta!», «¡Sin un rasguño!», «¡Arriba!»). Arma su propia interfaz |
 | `AudioManager` | Tania | Música y efectos; persiste entre escenas (`DontDestroyOnLoad`); se crea solo si falta |
 | `HostBanner`, `HostFace`, `HostLines` | Tania | Anuncio de ronda/regla/apuesta, cara de Tito con expresiones, frases desde CSV |
 
@@ -133,7 +135,8 @@ public static class GameEvents
 Eventos locales de efectos (Otoniel, fuera de `GameEvents` porque solo los usan los efectos): `StarStreak.StreakChanged(int)`,
 `StarStreak.MilestoneReached(int racha, int premio)`, `Obstacle.NearMiss(Obstacle)`, `ContestantController.StarCollected(Star)`,
 `SurpriseEvents.SurpriseStarted(SurpriseType, float duración)`, `SurpriseEvents.SurpriseEnded(SurpriseType)`,
-`TitoTricks.TrickStarted(TrickType, bool farol, int estrellas)` y `TitoTricks.TrickEnded(TrickType, bool farol, bool pillado)`.
+`TitoTricks.TrickStarted(TrickType, bool farol, int estrellas)`, `TitoTricks.TrickEnded(TrickType, bool farol, bool pillado)`
+y `AudienceCrowd.CrowdGrew(int llegaron, int hay, int caben)`. `RoundAnnouncer.IsBusy` dice si hay un cartel grande en pantalla.
 
 ## Flujo de una ronda
 

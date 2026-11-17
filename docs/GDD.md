@@ -225,7 +225,9 @@ El juego tiene 9 pantallas; tras perder, el botón principal es «¿Una ronda m�
 
 **Estilo de transmisión de TV:** todas las pantallas usan paneles de vidrio oscuro con borde de neón dorado a rosa, botones píldora con halo al pasar el cursor (el principal es dorado y tiene un destello que lo cruza), títulos dorados con contorno y entradas animadas en cascada. El menú tiene el cartel «● EN VIVO» y una cinta de noticias abajo con los récords; el anuncio de cada ronda también lleva «EN VIVO». Las tarjetas de premio brillan con el color de su rareza.
 
-**Público:** las gradas tienen lugar para 72 personas. En la ronda 1 hay un tercio y cada ronda llega más gente (entran saltando) hasta llenar el estudio en la ronda 8.
+**Público:** las gradas tienen lugar para 72 personas. En las rondas 1 y 2 hay público normal (25 personas); desde la ronda 3, en cada carrera llegan unas 8 personas más, de a poco y saltando, hasta llenar el estudio en la ronda 8. El público grita sobre las gradas: «¡WOW!», «¡BRAVO!» u «¡OLÉ!» con las rachas, la meta o al pillar a Tito; «¡UUUH!» al esquivar por un pelo; «¡JAJAJA!» al caer al agua y «¡BUUU!» al chocar (más abucheos si choca seguido).
+
+**Ayudas en pantalla:** al empezar la partida se ven los controles unos segundos; en la primera ronda con trampas, cómo acusar a Tito. Durante la carrera aparecen mensajes de ánimo: «¡Todo va bien!», «¡Mitad de la meta!», «¡Ya casi!», «¡Sin un rasguño!», «¡Qué reflejos!», «¡Arriba!» después de un golpe y «¡Llega más público!».
 
 ![Figura 4. Flujo de pantallas: ciclo de rondas y regreso tras perder](img/flujo.png)
 
